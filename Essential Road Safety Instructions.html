@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Road Safety Guide | सड़क सुरक्षा मार्गदर्शिका</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* === CSS Variables for Theme === */
+        :root {
+            --primary-color: #0056b3;
+            /* Dark Blue */
+            --secondary-color: #e6f7ff;
+            /* Light Blue for Tips */
+            --highlight-color: #ff9900;
+            /* Orange for emphasis */
+            --text-color: #333;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            /* Slightly less transparent */
+        }
+
+          /* ===== Background Image Cover (Assuming 'index.jpg' exists) ===== */
+        body {
+            font-family: 'Poppins', 'Open Sans', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                /* Image of smart city traffic management */
+                url('Photoes/index.jpg') center/cover no-repeat fixed;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 950px;
+            /* Slightly wider container */
+            margin: 20px auto;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 12px;
+            /* Softer corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            /* More prominent shadow */
+            /* Add animation for initial load */
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Keyframe for initial fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            margin-top: 25px;
+            transition: color 0.3s;
+        }
+
+        h2 i {
+            margin-right: 10px;
+            color: var(--highlight-color);
+        }
+
+        ul,
+        ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .rule-list li {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid transparent;
+            transition: border-left 0.3s ease, background-color 0.3s;
+            cursor: default;
+            /* Hint of interactiveness */
+        }
+
+        /* Interactive hover effect for rules */
+        .rule-list li:hover {
+            border-left: 3px solid var(--highlight-color);
+            background-color: rgba(0, 86, 179, 0.05);
+            /* Light hover background */
+        }
+
+        .sign-table {
+            width: 100%;
+            border-collapse: separate;
+            /* Use separate for rounded corners */
+            border-spacing: 0;
+            margin-top: 15px;
+            overflow: hidden;
+            /* For border radius */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sign-table th,
+        .sign-table td {
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .sign-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        /* Zebra-striping for table rows */
+        .sign-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .sign-table tr:hover td {
+            background-color: #e0f2ff;
+            /* Highlight row on hover */
+        }
+
+        .tip {
+            background-color: var(--secondary-color);
+            border-left: 6px solid var(--highlight-color);
+            /* Highlight color border */
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-style: italic;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip p {
+            margin: 0;
+        }
+
+        /* === Language Toggle Button === */
+        .lang-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            /* Pill shape */
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-toggle-container:hover {
+            background: #004499;
+            /* Darker on hover */
+            transform: scale(1.05);
+        }
+
+        .lang-toggle-container i {
+            margin-left: 8px;
+        }
+
+        /* Class for smooth language transition */
+        .content-section {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .hidden {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            pointer-events: none;
+            /* Disable interaction when hidden */
+        }
+
+        .hindi {
+            font-family: 'Arial', 'Noto Sans Devanagari', sans-serif;
+        }
+
+        /* === BACK BUTTON === */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: white;
+            background-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.4);
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+
+        /* === Search Bar Styling === */
+        #searchContainer {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        #safetySearch {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #safetySearch:focus {
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+        }
+
+        #searchContainer i {
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.5em;
+        }
+
+        /* === Responsive Design === */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .lang-toggle-container {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .sign-table th,
+            .sign-table td {
+                display: block;
+                width: 100%;
+                text-align: right;
+            }
+
+            .sign-table th {
+                text-align: center;
+            }
+
+            .sign-table td:before {
+                /* Label the data in small screens */
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                color: var(--primary-color);
+            }
+        }
+    </style>
+</head>
+
+<body onload="setInitialLanguage()">
+
+    <div class="lang-toggle-container" id="languageToggle" onclick="toggleLanguage()">
+        Switch to Hindi <i class="fas fa-language"></i>
+    </div>
+
+    <div class="container">
+
+        <div id="searchContainer">
+            <i class="fas fa-search"></i>
+            <input type="text" id="safetySearch" placeholder="Search for a rule, sign, or keyword...">
+        </div>
+
+        <div id="englishContent" class="content-section">
+            <h1>🚦 Essential Road Safety Instructions</h1>
+            <p class="tip"><i class="fas fa-exclamation-triangle"></i> Basic information for drivers and pedestrians to
+                ensure safety and prevent accidents. Always follow local laws and traffic regulations.</p>
+
+            <h2 data-search="four wheeler car rules vehicle maintenance safety seats"><i class="fas fa-car-side"></i> 1.
+                Four-Wheeler (Car) Specific Rules</h2>
+            <ul class="rule-list">
+                <li><strong>Vehicle Maintenance:</strong> Regularly check your tires, brakes, fluid levels, and lights.
+                    A well-maintained vehicle is critical for safe driving.</li>
+                <li><strong>Adjust and Position:</strong> Before starting, adjust your seat, mirrors (rear and side),
+                    and head restraints for optimal visibility and comfort.</li>
+                <li><strong>Child Safety Seats:</strong> Ensure all children are secured in appropriate child safety
+                    seats or booster seats in the back seat, as required by law.</li>
+                <li><strong>Secure Loose Items:</strong> Keep heavy or loose items in the trunk or secured in the cabin,
+                    as they can become dangerous projectiles in a sudden stop or collision.</li>
+            </ul>
+
+            <hr>
+
+            <h2
+                data-search="general driving rules speed seat belt distracted driving 3-second rule impaired turn signals">
+                <i class="fas fa-road"></i> 2. General Driving Rules (For Motorists)</h2>
+            <ul class="rule-list">
+                <li><strong>Obey Speed Limits:</strong> Never exceed the posted speed limit. Reduce speed in bad weather
+                    (rain, fog, snow) or high-traffic areas.</li>
+                <li><strong>Always Wear Your Seat Belt:</strong> Ensure all occupants of the vehicle (front and back)
+                    are buckled up. It is the most effective safety device.</li>
+                <li><strong>Avoid Distracted Driving:</strong> Do not use a mobile phone for texting, calling, or
+                    browsing while the vehicle is in motion. Keep your focus entirely on the road.</li>
+                <li><strong>Maintain Following Distance:</strong> Use the <strong>3-second rule</strong> to ensure a
+                    safe gap between your vehicle and the one ahead. Increase to 4 or more seconds in poor conditions.
+                </li>
+                <li><strong>Never Drive Impaired:</strong> Driving under the influence of alcohol or drugs is illegal
+                    and life-threatening. Plan for a designated driver or use a ride-share service.</li>
+                <li><strong>Use Turn Signals:</strong> Signal your intentions (turning or changing lanes) well in
+                    advance so other drivers and pedestrians know your plan.</li>
+            </ul>
+
+            <hr>
+
+            <h2
+                data-search="pedestrian cyclist safety crosswalks stop look listen sidewalks visible night distractions">
+                <i class="fas fa-person-walking"></i> 3. Pedestrian and Cyclist Safety</h2>
+            <ul class="rule-list">
+                <li><strong>Use Crosswalks:</strong> Only cross the road at designated crosswalks (zebra crossings) or
+                    intersections.</li>
+                <li><strong>Stop, Look, and Listen:</strong> Before crossing, <strong>Stop</strong> at the curb,
+                    <strong>Look left, right, and left again</strong>, and <strong>Listen</strong> for approaching
+                    vehicles.</li>
+                <li><strong>Walk on Sidewalks:</strong> Always use the sidewalk. If there is no sidewalk, walk on the
+                    side of the road <strong>facing</strong> oncoming traffic.</li>
+                <li><strong>Be Visible at Night:</strong> Wear light-colored clothing or use reflective gear and
+                    flashlights when walking after dark.</li>
+                <li><strong>No Distractions:</strong> Do not use headphones at a high volume or look at your phone while
+                    crossing streets. You need to be aware of your surroundings.</li>
+            </ul>
+
+            <hr>
+
+            <h2 data-search="traffic signals red yellow green flashing light meaning stop proceed"><i
+                    class="fas fa-lightbulb"></i> 4. Traffic Signals and Their Meaning</h2>
+            <ol class="rule-list">
+                <li><strong>Red Light:</strong> You <strong>must stop</strong> completely behind the white stop line.
+                </li>
+                <li><strong>Yellow Light (Amber):</strong> Indicates the light is about to turn red. You <strong>must
+                        prepare to stop</strong> unless you are so close to the intersection that stopping safely would
+                    cause a risk.</li>
+                <li><strong>Green Light:</strong> You may <strong>proceed</strong> through the intersection, but only if
+                    the way is clear and safe.</li>
+                <li><strong>Flashing Red Light:</strong> Treat it as a <strong>Stop Sign</strong>. Stop completely, then
+                    proceed only when safe.</li>
+            </ol>
+
+            <hr>
+
+            <h2 data-search="road signs symbols regulatory warning information circles triangles diamonds"><i
+                    class="fas fa-sign-hanging"></i> 5. Common Road Signs and Symbols</h2>
+            <table class="sign-table">
+                <thead>
+                    <tr>
+                        <th>Sign Type (Shape/Color)</th>
+                        <th>Purpose (What it means)</th>
+                        <th>Example Symbol/Instruction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Sign Type:"><strong>Regulatory Signs</strong> (Circles / Red & White)</td>
+                        <td data-label="Purpose:">Convey laws and regulations. You <strong>must obey</strong> these
+                            signs.</td>
+                        <td data-label="Example:"><strong>STOP</strong> (Octagon), <strong>Yield</strong> (Triangle),
+                            <strong>No U-Turn</strong> (Red circle with a line through it)</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Sign Type:"><strong>Warning Signs</strong> (Triangles or Diamonds /
+                            Yellow/Orange)</td>
+                        <td data-label="Purpose:">Alert drivers to potential hazards or unusual conditions ahead.</td>
+                        <td data-label="Example:"><strong>Winding Road</strong>, <strong>Sharp Curve</strong>,
+                            <strong>School Zone</strong> (Often a pentagon), <strong>Pedestrian Crossing</strong></td>
+                    </tr>
+                    <tr>
+                        <td data-label="Sign Type:"><strong>Information Signs</strong> (Rectangles / Blue, Green, or
+                            White)</td>
+                        <td data-label="Purpose:">Provide guidance, directions, and essential information.</td>
+                        <td data-label="Example:"><strong>Exit Sign</strong>, <strong>Highway Route Marker</strong>,
+                            <strong>Parking Area</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <p><strong><i class="fas fa-hands-helping"></i> Reminder:</strong> Road safety is a shared
+                    responsibility. Be patient, be visible, and be predictable!</p>
+            </div>
+        </div>
+
+        <div id="hindiContent" class="content-section hidden hindi">
+            <h1>🚦 आवश्यक सड़क सुरक्षा निर्देश</h1>
+            <p class="tip"><i class="fas fa-exclamation-triangle"></i> यह मार्गदर्शिका चालकों और पैदल यात्रियों के लिए
+                सुरक्षा सुनिश्चित करने और दुर्घटनाओं को रोकने के लिए बुनियादी जानकारी प्रदान करती है। हमेशा स्थानीय
+                कानूनों और यातायात नियमों का पालन करें।</p>
+
+            <h2 data-search="चार पहिया कार नियम वाहन रखरखाव बाल सुरक्षा सीट"><i class="fas fa-car-side"></i> 1. चार
+                पहिया वाहन (कार) के लिए विशिष्ट नियम</h2>
+            <ul class="rule-list">
+                <li><strong>वाहन का रखरखाव:</strong> अपने टायर, ब्रेक, द्रव स्तर और लाइटों की नियमित रूप से जाँच करें।
+                    सुरक्षित ड्राइविंग के लिए एक अच्छी तरह से रखा गया वाहन महत्वपूर्ण है।</li>
+                <li><strong>समायोजन और स्थिति:</strong> शुरू करने से पहले, इष्टतम दृश्यता और आराम के लिए अपनी सीट, दर्पण
+                    (पीछे और बगल के), और सिर के अवरोधों (हेड रेस्ट) को समायोजित करें।</li>
+                <li><strong>बाल सुरक्षा सीटें:</strong> सुनिश्चित करें कि सभी बच्चे कानून के अनुसार पिछली सीट पर उपयुक्त
+                    बाल सुरक्षा सीटों या बूस्टर सीटों में सुरक्षित हैं।</li>
+                <li><strong>ढीले सामान को सुरक्षित करें:</strong> भारी या ढीले सामान को डिक्की में रखें या केबिन में
+                    सुरक्षित करें, क्योंकि अचानक रुकने या टक्कर में वे खतरनाक प्रक्षेप्य (objects) बन सकते हैं।</li>
+            </ul>
+
+            <hr>
+
+            <h2 data-search="सामान्य ड्राइविंग नियम गति सीट बेल्ट विचलित ड्राइविंग 3 सेकंड नियम नशे में टर्न सिग्नल"><i
+                    class="fas fa-road"></i> 2. सामान्य ड्राइविंग नियम (मोटर चालकों के लिए)</h2>
+            <ul class="rule-list">
+                <li><strong>गति सीमा का पालन करें:</strong> निर्धारित गति सीमा से कभी अधिक न चलाएं। खराब मौसम (बारिश,
+                    कोहरा, बर्फ) या अधिक यातायात वाले क्षेत्रों में गति कम करें।</li>
+                <li><strong>हमेशा अपनी सीट बेल्ट पहनें:</strong> सुनिश्चित करें कि वाहन के सभी यात्री (आगे और पीछे) सीट
+                    बेल्ट लगाए हुए हैं। यह सबसे प्रभावी सुरक्षा उपकरण है।</li>
+                <li><strong>विचलित ड्राइविंग से बचें:</strong> जब वाहन चल रहा हो तो टेक्स्टिंग, कॉल करने या ब्राउज़िंग
+                    के लिए मोबाइल फोन का उपयोग न करें। अपना ध्यान पूरी तरह से सड़क पर रखें।</li>
+                <li><strong>दूरी बनाए रखें:</strong> अपने वाहन और आगे वाले वाहन के बीच एक सुरक्षित अंतर सुनिश्चित करने
+                    के लिए <strong>3 सेकंड के नियम</strong> का उपयोग करें। खराब परिस्थितियों में इसे 4 या अधिक सेकंड तक
+                    बढ़ा दें।</li>
+                <li><strong>कभी भी नशे में गाड़ी न चलाएं:</strong> शराब या नशीली दवाओं के प्रभाव में गाड़ी चलाना अवैध और
+                    जानलेवा है। नामित ड्राइवर (designated driver) की योजना बनाएं या राइड-शेयर सेवा का उपयोग करें।</li>
+                <li><strong>टर्न सिग्नल का उपयोग करें:</strong> मोड़ने या लेन बदलने से पहले अपने इरादे को संकेत दें ताकि
+                    अन्य चालकों और पैदल यात्रियों को आपकी योजना पता चले।</li>
+            </ul>
+
+            <hr>
+
+            <h2
+                data-search="पैदल यात्री साइकिल चालक सुरक्षा क्रॉसिंग रुकें देखें सुनें फुटपाथ रात में दृश्यमान विचलन नहीं">
+                <i class="fas fa-person-walking"></i> 3. पैदल यात्री और साइकिल चालक सुरक्षा</h2>
+            <ul class="rule-list">
+                <li><strong>क्रॉसिंग का उपयोग करें:</strong> सड़क को केवल निर्दिष्ट क्रॉसिंग (ज़ेबरा क्रॉसिंग) या
+                    चौराहों पर ही पार करें।</li>
+                <li><strong>रुकें, देखें और सुनें:</strong> पार करने से पहले, किनारे पर <strong>रुकें</strong>,
+                    <strong>बाएँ, दाएँ और फिर से बाएँ देखें</strong>, और आने वाले वाहनों को <strong>सुनें</strong>।</li>
+                <li><strong>फुटपाथ पर चलें:</strong> हमेशा फुटपाथ का उपयोग करें। यदि कोई फुटपाथ नहीं है, तो सड़क के
+                    किनारे आने वाले यातायात की ओर <strong>मुँह करके</strong> चलें।</li>
+                <li><strong>रात में दृश्यमान रहें:</strong> अंधेरा होने के बाद चलते समय हल्के रंग के कपड़े पहनें या
+                    चिंतनशील गियर और टॉर्च का उपयोग करें।</li>
+                <li><strong>कोई विचलन नहीं:</strong> सड़कों को पार करते समय हेडफ़ोन का उपयोग तेज़ आवाज़ में न करें या
+                    अपने फ़ोन को न देखें। आपको अपने परिवेश के बारे में जागरूक होने की आवश्यकता है।</li>
+            </ul>
+
+            <hr>
+
+            <h2 data-search="यातायात सिग्नल लाल पीली हरी चमकती बत्ती अर्थ रुकें आगे बढ़ें"><i
+                    class="fas fa-lightbulb"></i> 4. यातायात सिग्नल और उनका अर्थ</h2>
+            <ol class="rule-list">
+                <li><strong>लाल बत्ती:</strong> आपको सफेद स्टॉप लाइन के पीछे पूरी तरह से <strong>रुकना चाहिए</strong>।
+                </li>
+                <li><strong>पीली बत्ती (एम्बर):</strong> इंगित करती है कि बत्ती जल्द ही लाल होने वाली है। आपको
+                    <strong>रुकने की तैयारी करनी चाहिए</strong> जब तक कि आप चौराहे के इतने करीब न हों कि सुरक्षित रूप से
+                    रुकने से जोखिम उत्पन्न हो।</li>
+                <li><strong>हरी बत्ती:</strong> आप चौराहे से <strong>आगे बढ़ सकते हैं</strong>, लेकिन तभी जब रास्ता साफ
+                    और सुरक्षित हो।</li>
+                <li><strong>चमकती लाल बत्ती:</strong> इसे <strong>रुकने के संकेत (Stop Sign)</strong> के रूप में मानें।
+                    पूरी तरह से रुकें, फिर तभी आगे बढ़ें जब सुरक्षित हो।</li>
+            </ol>
+
+            <hr>
+
+            <h2 data-search="सड़क संकेत प्रतीक नियामक चेतावनी सूचना वृत्त त्रिभुज हीरे"><i
+                    class="fas fa-sign-hanging"></i> 5. सामान्य सड़क संकेत और प्रतीक</h2>
+            <table class="sign-table">
+                <thead>
+                    <tr>
+                        <th>संकेत प्रकार (आकार/रंग)</th>
+                        <th>उद्देश्य (इसका क्या मतलब है)</th>
+                        <th>उदाहरण प्रतीक/निर्देश</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="संकेत प्रकार:"><strong>नियामक संकेत</strong> (Regulatory Signs) (वृत्त / लाल और
+                            सफेद)</td>
+                        <td data-label="उद्देश्य:">कानूनों और विनियमों को व्यक्त करते हैं। आपको इन संकेतों का
+                            <strong>पालन करना चाहिए</strong>।</td>
+                        <td data-label="उदाहरण:"><strong>रुकें</strong> (STOP) (अष्टकोणीय), <strong>रास्ता दें</strong>
+                            (Yield) (त्रिभुज), <strong>यू-टर्न नहीं</strong> (No U-Turn) (बीच में एक रेखा वाला लाल
+                            वृत्त)</td>
+                    </tr>
+                    <tr>
+                        <td data-label="संकेत प्रकार:"><strong>चेतावनी संकेत</strong> (Warning Signs) (त्रिभुज या हीरे /
+                            पीला/नारंगी)</td>
+                        <td data-label="उद्देश्य:">आगे संभावित खतरों या असामान्य परिस्थितियों के बारे में चालकों को सचेत
+                            करते हैं।</td>
+                        <td data-label="उदाहरण:"><strong>घुमावदार सड़क</strong>, <strong>तेज मोड़</strong>,
+                            <strong>स्कूल क्षेत्र</strong> (अक्सर एक पंचकोण), <strong>पैदल यात्री क्रॉसिंग</strong></td>
+                    </tr>
+                    <tr>
+                        <td data-label="संकेत प्रकार:"><strong>सूचना संकेत</strong> (Information Signs) (आयत / नीला,
+                            हरा, या सफेद)</td>
+                        <td data-label="उद्देश्य:">मार्गदर्शन, दिशाएं और आवश्यक जानकारी प्रदान करते हैं।</td>
+                        <td data-label="उदाहरण:"><strong>निकास संकेत</strong> (Exit Sign), <strong>राजमार्ग मार्ग
+                                मार्कर</strong> (Highway Route Marker), <strong>पार्किंग क्षेत्र</strong> (Parking Area)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tip">
+                <p><strong><i class="fas fa-hands-helping"></i> याद रखें:</strong> सड़क सुरक्षा एक साझा जिम्मेदारी है।
+                    धैर्य रखें, दृश्यमान रहें और अनुमानित रहें!</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Main Menu</a>
+    </div>
+
+    <script>
+        // Initial state: English is shown, Hindi is hidden
+        let isEnglish = true;
+
+        // Function to set the initial language state on load
+        function setInitialLanguage() {
+            // Use a short delay to ensure CSS transitions apply on load
+            setTimeout(() => {
+                document.getElementById('englishContent').classList.remove('hidden');
+                document.getElementById('hindiContent').classList.add('hidden');
+                document.getElementById('languageToggle').innerHTML = 'Switch to Hindi <i class="fas fa-language"></i>';
+            }, 10);
+        }
+
+        // Function to toggle between English and Hindi
+        function toggleLanguage() {
+            const english = document.getElementById('englishContent');
+            const hindi = document.getElementById('hindiContent');
+            const toggleButton = document.getElementById('languageToggle');
+            const searchInput = document.getElementById('safetySearch');
+
+            // Apply fade-out effect
+            if (isEnglish) {
+                english.style.opacity = '0';
+            } else {
+                hindi.style.opacity = '0';
+            }
+
+            // Wait for fade-out, then switch content and fade-in
+            setTimeout(() => {
+                if (isEnglish) {
+                    //Hindi
+                    english.classList.add('hidden');
+                    hindi.classList.remove('hidden');
+                    hindi.style.opacity = '1';
+                    toggleButton.innerHTML = 'English <i class="fas fa-language"></i>';
+                    isEnglish = false;
+                } else {
+                    // Switch to English
+                    hindi.classList.add('hidden');
+                    english.classList.remove('hidden');
+                    english.style.opacity = '1';
+                    toggleButton.innerHTML = 'Hindi <i class="fas fa-language"></i>';
+                    isEnglish = true;
+                }
+
+                // Clear search and reset filter every time language is toggled
+                searchInput.value = '';
+                filterContent();
+
+            }, 500); // 500ms delay matches the CSS transition time
+        }
+
+        // === Interactive Search Filter Function ===
+        document.getElementById('safetySearch').addEventListener('keyup', filterContent);
+
+        function filterContent() {
+            const searchInput = document.getElementById('safetySearch');
+            const filter = searchInput.value.toUpperCase();
+
+            // Target the currently visible content section
+            const contentSection = isEnglish ? document.getElementById('englishContent') : document.getElementById('hindiContent');
+
+            // Get all major sections (h2, lists, tips, table)
+            const elements = contentSection.querySelectorAll('h2, ul, ol, .sign-table, .tip');
+
+            elements.forEach(element => {
+                let textContent = element.textContent || element.innerText;
+
+                // Include keywords from the h2 data-search attribute
+                if (element.tagName === 'H2') {
+                    textContent += ' ' + (element.getAttribute('data-search') || '');
+                }
+
+                // Check if the element contains the search term
+                if (textContent.toUpperCase().indexOf(filter) > -1) {
+                    element.style.display = ""; // Show element
+                } else {
+                    element.style.display = "none"; // Hide element
+                }
+            });
+        }
+    </script>
+
+
+
+
+
+
+  <!-- footer -->
+<footer
+    style="background-color: var(--dark-bg); color: var(--light-text); padding: 50px 0; font-family: 'Poppins', sans-serif;">
+    <div
+        style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding: 0 20px;">
+
+        <div class="footer-section">
+            <h3
+                style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em; display: flex; align-items: center;">
+                <span style="margin-right: 10px;">🚦</span> Road Safety Club
+            </h3>
+            <p style="line-height: 1.6;">
+                Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                roads safer
+                for all!
+            </p>
+
+            <button onclick="window.scrollTo({top:0, behavior:'smooth'});" class="back-to-top-btn"
+                style="margin-top: 25px; padding: 12px 25px; background-color: var(--accent-color); border: none; color: var(--dark-bg); font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                ↑ Zoom Back Up!
+            </button>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">📞 Connect With Us</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <li><a href="mailto:info@roadsafetyclub.com" class="footer-link email-link">info@roadsafetyclub.com</a>
+                </li>
+            </ul>
+
+            <h4 style="color: var(--light-text); margin-top: 15px; margin-bottom: 5px; font-weight: 600;">Team
+                Contacts:</h4>
+            <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                <li><a href="tel:9996445592" class="footer-link contact-list-link"><strong>Vivek Yadav:</strong>
+                        9996445592</a>
+                </li>
+                <li><a href="tel:9251399133" class="footer-link contact-list-link"><strong>Shri ji
+                            Aggarwal:</strong>
+                        9457057473</a></li>
+                <li><a href="tel:9389864319" class="footer-link contact-list-link"><strong>Shreya
+                            Chaudhary:</strong>
+                        9389864319</a></li>
+                <li><a href="tel:7056123205" class="footer-link contact-list-link"><strong>Ekta Pannu:</strong>
+                        7056123205</a>
+                </li>
+                <li><a href="tel:9457057473" class="footer-link contact-list-link"><strong>Khush Raghav:</strong>
+                        9251399133</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">🔗 Quick Resources</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <!-- This is the updated link -->
+                <li><a href="Road-safety-handbook.pdf" class="footer-link">Traffic Rules Handbook</a></li>
+                <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSf4sZdUmq6lhWxHyZ9yFuACp7wRLufzcB2VzmCBoVyg7qvn7w/viewform"
+                        class="footer-link">Join Our Volunteer Team</a></li>
+            </ul>
+
+            <div style="margin-top: 20px;">
+                <a href="#" class="social-icon" aria-label="Follow us on World Wide Web">🌐</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Facebook">📘</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Twitter">🐦</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Instagram">📸</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding-top: 25px; border-top: 1px solid var(--border-color); margin-top: 50px;">
+        <p>&copy; 2025 Road Safety Club. Drive Smart, Live Safe.</p>
+    </div>
+
+    <div id="cursor-wrapper" class="cursor-wrapper">
+        <div class="single-segment">
+            <div class="segment-color red"></div>
+            <div class="segment-color yellow"></div>
+            <div class="segment-color green"></div>
+        </div>
+    </div>
+    <style>
+        /* CSS Variables for easy color changes */
+        :root {
+            --dark-bg: #1a1a1a;
+            --light-text: #fff;
+            --accent-color: #ffcc00;
+            /* Yellow */
+            --accent-hover: #e6b800;
+            --border-color: #444;
+        }
+
+        footer {
+            /* This ensures the font-family from the inline style is the starting point */
+            font-family: 'Poppins', Arial, sans-serif !important;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 280px;
+            margin-bottom: 20px;
+        }
+
+        /* General Link Styling */
+        .footer-link {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+            display: inline-block;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+            /* Subtle shift */
+        }
+
+        /* Team Contact List specific styling - removes the phone icon for this block */
+        .contact-list-link {
+            padding-left: 20px;
+            /* Indent slightly for visual hierarchy */
+        }
+
+        /* Social Icon Animation */
+        .social-icon {
+            color: var(--light-text);
+            font-size: 24px;
+            margin-right: 15px;
+            /* Use margin-right for spacing */
+            display: inline-block;
+            transition: transform 0.3s, color 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            color: var(--accent-color);
+            transform: translateY(-5px) scale(1.1);
+            /* Lift and enlarge */
+        }
+
+        /* Back to Top Button hover */
+        .back-to-top-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px) scale(1.02);
+            /* Lift and slightly enlarge */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Clear focus state for accessibility */
+        .footer-link:focus,
+        .social-icon:focus,
+        .back-to-top-btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 3px;
+        }
+
+        /* Specific Link Icons (A friendlier touch) - Applied only to General/Email links */
+        .phone-link::before {
+            content: '📞 ';
+            color: var(--accent-color);
+        }
+
+        .email-link::before {
+            content: '📧 ';
+            color: var(--accent-color);
+        }
+
+    </style>
+    
+</footer>
+</body>
+
+</html>

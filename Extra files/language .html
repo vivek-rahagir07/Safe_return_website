@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>/* === Language Toggle Button === */
+       .lang-toggle-container {
+           position: fixed;
+           top: 20px;
+           right: 20px;
+           z-index: 1000;
+           background: var(--primary-color);
+           color: white;
+           padding: 10px 18px;
+           border-radius: 25px; /* Pill shape */
+           cursor: pointer;
+           font-weight: bold;
+           border: 2px solid white;
+           transition: all 0.3s ease-in-out;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+           display: flex;
+           align-items: center;
+       }
+       .lang-toggle-container:hover {
+           background: #004499; /* Darker on hover */
+           transform: scale(1.05);
+       }
+       .lang-toggle-container i {
+           margin-left: 8px;
+       }
+
+
+       /* Class for smooth language transition */
+       .content-section {
+           transition: opacity 0.5s ease-in-out;
+       }
+       .hidden {
+           opacity: 0;
+           height: 0;
+           overflow: hidden;
+           padding: 0;
+           margin: 0;
+           pointer-events: none; /* Disable interaction when hidden */
+       }
+      
+       .hindi {
+           font-family: 'Arial', 'Noto Sans Devanagari', sans-serif;
+       }
+</style>
+</head>
+<body>
+    <body onload="setInitialLanguage()">
+
+
+<div class="lang-toggle-container" id="languageToggle" onclick="toggleLanguage()">
+   Switch to Hindi <i class="fas fa-language"></i>
+</div>
+<script>
+   // Initial state: English is shown, Hindi is hidden
+   let isEnglish = true;
+
+
+   // Function to set the initial language state on load
+   function setInitialLanguage() {
+       // Use a short delay to ensure CSS transitions apply on load
+       setTimeout(() => {
+           document.getElementById('englishContent').classList.remove('hidden');
+           document.getElementById('hindiContent').classList.add('hidden');
+           document.getElementById('languageToggle').innerHTML = 'Switch to Hindi <i class="fas fa-language"></i>';
+       }, 10);
+   }
+
+
+   // Function to toggle between English and Hindi
+   function toggleLanguage() {
+       const english = document.getElementById('englishContent');
+       const hindi = document.getElementById('hindiContent');
+       const toggleButton = document.getElementById('languageToggle');
+       const searchInput = document.getElementById('safetySearch');
+
+
+       // Apply fade-out effect
+       if (isEnglish) {
+           english.style.opacity = '0';
+       } else {
+           hindi.style.opacity = '0';
+       }
+
+
+       // Wait for fade-out, then switch content and fade-in
+       setTimeout(() => {
+           if (isEnglish) {
+               //Hindi
+               english.classList.add('hidden');
+               hindi.classList.remove('hidden');
+               hindi.style.opacity = '1';
+               toggleButton.innerHTML = 'English <i class="fas fa-language"></i>';
+               isEnglish = false;
+           } else {
+               // Switch to English
+               hindi.classList.add('hidden');
+               english.classList.remove('hidden');
+               english.style.opacity = '1';
+               toggleButton.innerHTML = 'Hindi <i class="fas fa-language"></i>';
+               isEnglish = true;
+           }
+
+
+           // Clear search and reset filter every time language is toggled
+           searchInput.value = '';
+           filterContent();
+
+
+       }, 500); // 500ms delay matches the CSS transition time
+   }
+
+</script>
+
+
+</body>
+</html>

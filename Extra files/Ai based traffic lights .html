@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Based Traffic Lights - Smarter City</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #2c3e50;
+            --light-bg: #f5f9ff;
+            --card-bg: #ffffffcc;
+            /* slight transparency for overlay look */
+            --text-color: #34495e;
+            --hover-color: #0056b3;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== Background Image Cover ===== */
+        body {
+            font-family: 'Poppins', 'Open Sans', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                url('index.jpg') center/cover no-repeat fixed;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVIGATION BAR ===== */
+        header {
+            background: rgba(0, 123, 255, 0.95);
+            color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2.5rem;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: #f9a825;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #f9a825;
+        }
+
+        /* ===== CONTENT CONTAINER ===== */
+        .content {
+            max-width: 1100px;
+            margin: 120px auto 60px auto;
+            padding: 3em;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            border-top: 5px solid var(--primary-color);
+            animation: fadeIn 1s ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle-container {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+        }
+
+        .lang-toggle-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .lang-toggle-button:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .lang-toggle-button i {
+            margin-right: 8px;
+        }
+
+        /* ===== HEADERS ===== */
+        h2#title-h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            font-weight: 800;
+            text-align: center;
+            color: var(--secondary-color);
+            padding-bottom: 0.5em;
+            position: relative;
+            margin-bottom: 2em;
+            text-transform: uppercase;
+        }
+
+        h2#title-h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        h2#title-h2:hover::after {
+            width: 150px;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 3.5em;
+            font-size: 1.1em;
+            color: #333;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== SECTIONS ===== */
+        .ai-section h3 {
+            color: var(--primary-color);
+            margin-top: 2.5em;
+            margin-bottom: 1em;
+            font-size: 1.7em;
+            border-left: 8px solid var(--primary-color);
+            padding-left: 15px;
+            font-weight: 700;
+            background-color: #eaf3ff;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+
+        .ai-section ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .ai-section li {
+            background: #ffffffd9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-section li:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .ai-section li i {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .challenges-placeholder {
+            padding: 25px;
+            margin-top: 15px;
+            border: 2px dashed #95a5a6;
+            border-radius: 12px;
+            background-color: #ecf0f1c5;
+            font-style: italic;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 50px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            background-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .content {
+                padding: 1.5em;
+                margin: 100px 1rem;
+            }
+
+            .ai-section ul {
+                grid-template-columns: 1fr;
+            }
+        }
+         /* --- NEW HOME BUTTON STYLING --- */
+        #homeButton {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            padding: 8px 15px;
+            background-color: var(--color-secondary);
+            /* Using secondary color for distinction */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            /* Remove underline from the link */
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1em;
+            /* Ensures it's the same size as the toggle button */
+            z-index: 1020;
+            /* Ensure it's above the quick-nav and other elements */
+        }
+
+        #homeButton:hover {
+            background-color: #3b74d4;
+            /* Darker secondary on hover */
+            transform: scale(1.05);
+        }
+
+        /* Re-adjust the positioning of the buttons for the new flex layout */
+            #homeButton {
+                position: static;
+                /* Make it flow with content */
+                display: block;
+                width: 90%;
+                margin: 10px auto 0;
+                text-align: center;
+                order: 2;
+                /* Position it between the text and the language toggle */
+            }
+        /* --- END NEW HOME BUTTON STYLING --- */
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">🚦 Smart City Safety</div>
+            
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="lang-toggle-container">
+            <button class="lang-toggle-button" onclick="toggleLanguage()">
+                <i class="fas fa-language"></i> <span id="toggle-text">Change to Hindi</span>
+            </button>
+        </div>
+
+        <h2 id="title-h2" data-en="Why AI Traffic Lights?" data-hi="एआई ट्रैफिक लाइट्स क्यों?">Why AI Traffic Lights?
+        </h2>
+        <p class="subtitle" id="subtitle-p"
+            data-en="AI in traffic management focuses on <strong>real-time responsiveness</strong>, ensuring efficient flow, safety, and sustainability."
+            data-hi="ट्रैफिक प्रबंधन में एआई <strong>वास्तविक समय की प्रतिक्रिया</strong> पर केंद्रित है, जिससे कुशल प्रवाह, सुरक्षा और स्थिरता सुनिश्चित होती है।">
+            AI in traffic management focuses on <strong>real-time responsiveness</strong>, ensuring efficient flow,
+            safety, and sustainability.
+        </p>
+
+        <div class="ai-section">
+            <h3 id="works-h3">How AI Traffic Lights Work</h3>
+            <ul>
+                <li><i class="fas fa-magic"></i><strong>Adaptive Timers:</strong>
+                    <p>Signals automatically adjust based on real-time traffic data, removing fixed cycles.</p>
+                </li>
+                <li><i class="fas fa-video"></i><strong>Dynamic Detection:</strong>
+                    <p>Advanced cameras and sensors detect vehicle and pedestrian flow instantly.</p>
+                </li>
+                <li><i class="fas fa-microchip"></i><strong>Smart Algorithms:</strong>
+                    <p>AI models process live inputs to optimize waiting times and flow efficiency.</p>
+                </li>
+            </ul>
+
+            <h3 id="benefits-h3">Key Benefits of AI Traffic Lights</h3>
+            <ul>
+                <li><i class="fas fa-chart-line"></i><strong>Reduced Congestion:</strong>
+                    <p>Improves traffic movement efficiency by up to 40%.</p>
+                </li>
+                <li><i class="fas fa-clock"></i><strong>Less Waiting Time:</strong>
+                    <p>Dynamic light timing ensures smoother intersection movement.</p>
+                </li>
+                <li><i class="fas fa-truck-medical"></i><strong>Emergency Priority:</strong>
+                    <p>Automatically clears the way for ambulances and fire trucks.</p>
+                </li>
+                <li><i class="fas fa-seedling"></i><strong>Eco-Friendly:</strong>
+                    <p>Less idling leads to lower emissions and better air quality.</p>
+                </li>
+            </ul>
+
+            <h3 id="challenges-h3">Challenges (Future Improvements)</h3>
+            <p class="challenges-placeholder">
+            <ul>
+                <li><strong>High Initial Cost:</strong> The installation of advanced sensors, AI software, and
+                    communication infrastructure can be expensive.</li>
+                <li><strong>Data Security & Privacy:</strong> Collecting large amounts of traffic data raises concerns
+                    about data security and the privacy of individuals.</li>
+                <li><strong>Complexity:</strong> Designing, implementing, and maintaining these complex systems requires
+                    specialized expertise.</li>
+                <li><strong>System Reliability:</strong> Any failure in the AI system could lead to significant traffic
+                    disruptions, necessitating robust backup plans.</li>
+                <li><strong>Public Acceptance:</strong> Gaining public trust and acceptance for AI-driven decisions on
+                    public roads is crucial.</li>
+            </ul>
+            </p>
+        </div>
+
+        <a href="index(AI Traffic lights).html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Main
+            Menu</a>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+        function toggleLanguage() {
+            const newLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('title-h2').textContent = document.getElementById('title-h2').dataset[newLang];
+            document.getElementById('subtitle-p').innerHTML = document.getElementById('subtitle-p').dataset[newLang];
+            document.getElementById('toggle-text').textContent = newLang === 'en' ? 'Change to Hindi' : 'अंग्रेजी में बदलें (English)';
+            currentLang = newLang;
+        }
+    </script>
+</body>
+
+</html>

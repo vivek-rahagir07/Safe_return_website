@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Comprehensive Road Safety Knowledge Hub</title>
+    <style>
+        /* CSS Variables for better maintainability */
+        :root {
+            --color-primary: #1f4e79;
+            /* Header Background */
+            --color-secondary: #4a86e8;
+            /* Section Header */
+            --color-accent: #2ecc71;
+            /* Toggle Button */
+            --color-danger: #e74c3c;
+            /* Warning/Active Link/Back to Top */
+            --color-background-main: #f7f9fc;
+            /* Body Background */
+            --color-background-nav: #f0f4ff;
+            /* Quick Nav Background */
+            --color-text-dark: #333;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Changed for a more modern feel */
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background-main);
+            color: var(--color-text-dark);
+            scroll-behavior: smooth;
+            line-height: 1.6;
+        }
+
+        /* --- STICKY HEADER --- */
+        header {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            /* Make it sticky */
+            top: 0;
+            /* Stick to the top */
+            z-index: 1010;
+            /* Ensure it stays above other content */
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        p {
+            margin: 5px 0 0 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Language Toggle Button Styling */
+        #languageToggle {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            padding: 8px 15px;
+            background-color: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #languageToggle:hover {
+            background-color: #27ad60;
+            transform: scale(1.05);
+            /* Added slight scale */
+        }
+
+        /* --- NEW HOME BUTTON STYLING --- */
+        #homeButton {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            padding: 8px 15px;
+            background-color: var(--color-secondary);
+            /* Using secondary color for distinction */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            /* Remove underline from the link */
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1em;
+            /* Ensures it's the same size as the toggle button */
+            z-index: 1020;
+            /* Ensure it's above the quick-nav and other elements */
+        }
+
+        #homeButton:hover {
+            background-color: #3b74d4;
+            /* Darker secondary on hover */
+            transform: scale(1.05);
+        }
+
+        /* --- END NEW HOME BUTTON STYLING --- */
+
+        /* Quick Navigation Styling */
+        .quick-nav {
+            position: fixed;
+            top: 120px;
+            right: 10px;
+            background: var(--color-background-nav);
+            padding: 15px 10px;
+            /* Increased padding */
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+            z-index: 1000;
+            border-left: 4px solid var(--color-secondary);
+            /* Visual accent */
+        }
+
+        .quick-nav h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .quick-nav a {
+            display: block;
+            margin: 8px 0;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.95em;
+            padding: 5px 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .quick-nav a:hover {
+            background-color: #e0e6f7;
+        }
+
+        .quick-nav a.active {
+            color: white;
+            background-color: var(--color-danger);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Heading Styling */
+        h2.sectionHeading {
+            color: var(--color-secondary);
+            border-bottom: 3px solid var(--color-secondary);
+            padding-bottom: 8px;
+            margin-top: 60px;
+            font-size: 2em;
+            font-style: normal;
+            /* Removed italic */
+        }
+
+        /* Details/Summary Table Styling */
+        .safety-table details {
+            display: block;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            /* Increased shadow */
+        }
+
+        .safety-table summary {
+            display: flex;
+            cursor: pointer;
+            padding: 15px 20px;
+            font-weight: 700;
+            list-style: none;
+            outline: none;
+            transition: background-color 0.2s;
+            align-items: center;
+            font-size: 1.1em;
+            color: var(--color-primary);
+            border-radius: 8px;
+        }
+
+        /* Custom marker for details */
+        .safety-table summary::before {
+            content: '▶';
+            margin-right: 15px;
+            color: var(--color-accent);
+            font-size: 0.8em;
+            transition: transform 0.2s;
+        }
+
+        .safety-table details[open]>summary::before {
+            content: '▼';
+            color: var(--color-danger);
+        }
+
+        .safety-table summary:hover {
+            background-color: #e0e6f7;
+            /* Lighter shade of nav bg */
+        }
+
+        .details-content {
+            padding: 15px 20px 20px 45px;
+            background-color: #fbfbfc;
+            border-top: 1px solid #e0e0e0;
+            font-size: 1em;
+            line-height: 1.7;
+            /* Added smooth transition for height (tricky with details, but helps) */
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* JS will toggle a class for max-height to open/close smoothly */
+        .safety-table details[open] .details-content {
+            max-height: 500px;
+            /* Needs to be larger than content height */
+            transition: max-height 0.4s ease-in;
+        }
+
+
+        /* Category Tag Styling */
+        .category-tag {
+            padding: 6px 10px;
+            /* Increased padding */
+            border-radius: 20px;
+            /* Pill shape */
+            font-size: 0.8em;
+            margin-right: 20px;
+            font-style: italic;
+            color: white;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        /* Tag Colors */
+        .tag-signs {
+            background-color: #4a86e8;
+        }
+
+        .tag-defensive {
+            background-color: #2ecc71;
+        }
+
+        .tag-legal {
+            background-color: #9b59b6;
+        }
+
+        .tag-vehicle {
+            background-color: #e74c3c;
+        }
+
+        .tag-airbag {
+            background-color: #dc3545;
+        }
+
+        /* Initial state of language-specific elements */
+        .english {
+            display: inline;
+        }
+
+        .hindi {
+            display: none;
+        }
+
+
+        /* --- BACK TO TOP BUTTON --- */
+        #backToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background-color: var(--color-danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: none;
+            /* Initially hidden */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        #backToTop:hover {
+            background-color: #c0392b;
+        }
+
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .quick-nav {
+                position: static;
+                max-width: 100%;
+                margin: 20px auto;
+                border-left: none;
+                border-top: 4px solid var(--color-secondary);
+                text-align: center;
+            }
+
+            .quick-nav ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .quick-nav li {
+                margin: 5px;
+            }
+
+            .quick-nav a {
+                padding: 5px 10px;
+            }
+
+            /* Adjust header to use flexbox for better mobile layout */
+            header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            h1 {
+                order: 0;
+            }
+
+            p {
+                order: 1;
+            }
+
+            /* Re-adjust the positioning of the buttons for the new flex layout */
+            #homeButton {
+                position: static;
+                /* Make it flow with content */
+                display: block;
+                width: 90%;
+                margin: 10px auto 0;
+                text-align: center;
+                order: 2;
+                /* Position it between the text and the language toggle */
+            }
+
+            #languageToggle {
+                position: static;
+                display: block;
+                width: 90%;
+                margin: 10px auto 0;
+                order: 3;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="mainHeading" aria-live="polite">
+            <span class="english">The Road Safety Knowledge Hub</span>
+            <span class="hindi">सड़क सुरक्षा ज्ञान केंद्र</span>
+        </h1>
+        <p aria-live="polite">
+            <span class="english">A comprehensive guide to signs, safe driving, and legal compliance. Click any row to
+                expand details!</span>
+            <span class="hindi">संकेतों, सुरक्षित ड्राइविंग और कानूनी अनुपालन के लिए एक व्यापक मार्गदर्शिका। विवरण के
+                लिए किसी भी पंक्ति पर क्लिक करें!</span>
+        </p>
+
+        <a href="index.html" id="homeButton" aria-label="Go to Home Page">
+            <span class="english">←</span>
+            <span class="hindi">←</span>
+        </a>
+
+        <button id="languageToggle" onclick="toggleLanguage()" aria-controls="mainHeading quickNavList"
+            aria-label="Toggle language between English and Hindi">हिन्दी / English</button>
+    </header>
+
+    <nav class="quick-nav" aria-label="Quick Navigation">
+        <h3>Quick Navigation</h3>
+        <ul id="quickNavList" style="list-style: none; padding: 0;">
+            <li><a href="#defensive">Defensive Driving</a></li>
+            <li><a href="#trafficSigns">Traffic Signs</a></li>
+            <li><a href="#overtaking">Overtaking & Safety Gear</a></li>
+            <li><a href="#vehicleLegal">Vehicle & Legal</a></li>
+            <li><a href="#airbags">Airbags & Controls</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <h2 class="sectionHeading" id="defensive">
+            <span class="english">Core Defensive Driving Fundamentals 🚗</span>
+            <span class="hindi">बुनियादी रक्षात्मक ड्राइविंग सिद्धांत 🚗</span>
+        </h2>
+
+        <div class="safety-table" role="region" aria-labelledby="defensive">
+            <details>
+                <summary>
+                    <span class="category-tag tag-defensive english">Defensive Driving</span>
+                    <span class="category-tag tag-defensive hindi">रक्षात्मक ड्राइविंग</span>
+                    <span class="english">Maintain Safe Following Distance (3-Second Rule)</span>
+                    <span class="hindi">3-सेकंड नियम का उपयोग करके सुरक्षित दूरी बनाए रखें</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Always keep a minimum of 3 seconds distance from the vehicle ahead. This helps
+                        prevent rear-end collisions and gives time to react to sudden stops.</p>
+                    <p class="hindi">हमेशा आगे की गाड़ी से कम से कम 3 सेकंड की दूरी बनाए रखें। यह पीछे से टक्कर से बचने
+                        में मदद करता है और अचानक ब्रेक लगाने पर प्रतिक्रिया का समय देता है।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-defensive english">Anticipate Hazards</span>
+                    <span class="category-tag tag-defensive hindi">खतरों का पूर्वानुमान लगाएं</span>
+                    <span class="english">Scan the road and predict possible dangers.</span>
+                    <span class="hindi">सड़क को स्कैन करें और संभावित खतरों का अनुमान लगाएं।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Always check intersections, side roads, pedestrians, and traffic signals. Look
+                        ahead 10-15 seconds to anticipate braking or lane changes.</p>
+                    <p class="hindi">हमेशा चौराहों, साइड रोड्स, पैदल यात्री और ट्रैफिक सिग्नल्स पर ध्यान दें। ब्रेक या
+                        लेन बदलने की संभावना को 10-15 सेकंड पहले अनुमान लगाएं।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-defensive english">Avoid Distractions</span>
+                    <span class="category-tag tag-defensive hindi">ध्यान भटकने से बचें</span>
+                    <span class="english">Do not use phone or eat while driving.</span>
+                    <span class="hindi">गाड़ी चलाते समय फोन का उपयोग या भोजन न करें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Distracted driving is a leading cause of accidents. Focus entirely on the road
+                        and traffic.</p>
+                    <p class="hindi">ध्यान भटकने से होने वाली दुर्घटनाएँ बहुत सामान्य हैं। पूरी तरह से सड़क और ट्रैफिक
+                        पर ध्यान दें।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-defensive english">Speed Management</span>
+                    <span class="category-tag tag-defensive hindi">गति प्रबंधन</span>
+                    <span class="english">Drive within speed limits and adjust to road conditions.</span>
+                    <span class="hindi">गति सीमा के भीतर ड्राइव करें और सड़क की स्थिति के अनुसार समायोजित करें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Driving too fast reduces reaction time. Slow down in rain, fog, or crowded areas.
+                    </p>
+                    <p class="hindi">तेज ड्राइविंग प्रतिक्रिया समय कम कर देती है। बारिश, धुंध या भीड़ वाले इलाकों में
+                        धीमा चलाएं।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-defensive english">Emergency Maneuvers</span>
+                    <span class="category-tag tag-defensive hindi">आपातकालीन चालें</span>
+                    <span class="english">Know how to brake and steer safely in emergencies.</span>
+                    <span class="hindi">आपात स्थिति में सुरक्षित ब्रेक और स्टीयरिंग का ज्ञान रखें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Practice sudden stops, evasive maneuvers, and skid control in a safe environment.
+                    </p>
+                    <p class="hindi">सुरक्षित वातावरण में अचानक रोक, बचाव चाल और फिसलन नियंत्रण का अभ्यास करें।</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 class="sectionHeading" id="trafficSigns">
+            <span class="english">Traffic Signs and Road Markings 🛑</span>
+            <span class="hindi">यातायात संकेत और सड़क चिह्न 🛑</span>
+        </h2>
+
+        <div class="safety-table" role="region" aria-labelledby="trafficSigns">
+            <details>
+                <summary>
+                    <span class="category-tag tag-signs english">Regulatory Signs</span>
+                    <span class="category-tag tag-signs hindi">आदेशात्मक संकेत</span>
+                    <span class="english">Stop, Speed Limit, No Entry</span>
+                    <span class="hindi">स्टॉप, गति सीमा, नो एंट्री</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Regulatory signs must always be obeyed. Violating them can result in fines or
+                        accidents.</p>
+                    <p class="hindi">आदेशात्मक संकेतों का हमेशा पालन करना चाहिए। इसका उल्लंघन जुर्माने या दुर्घटना का
+                        कारण बन सकता है।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-signs english">Warning Signs</span>
+                    <span class="category-tag tag-signs hindi">सचेतक संकेत</span>
+                    <span class="english">Sharp Curve, School Zone, Pedestrian Crossing</span>
+                    <span class="hindi">तीखा मोड़, स्कूल ज़ोन, पैदल यात्री क्रॉसिंग</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Alert drivers to potential hazards ahead. Slow down and be ready to stop or
+                        maneuver.</p>
+                    <p class="hindi">ड्राइवरों को आगे संभावित खतरों के लिए सतर्क करते हैं। धीमा करें और रोकने या मोड़ने
+                        के लिए तैयार रहें।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-signs english">Informative Signs</span>
+                    <span class="category-tag tag-signs hindi">सूचनात्मक संकेत</span>
+                    <span class="english">Distance markers, Hospital, Petrol Pump</span>
+                    <span class="hindi">दूरी संकेतक, अस्पताल, पेट्रोल पंप</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Provide useful information for planning routes or emergency stops.</p>
+                    <p class="hindi">मार्ग योजना या आपातकालीन रुकावट के लिए उपयोगी जानकारी प्रदान करते हैं।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-signs english">Road Markings</span>
+                    <span class="category-tag tag-signs hindi">सड़क चिह्न</span>
+                    <span class="english">Lane lines, pedestrian lines, arrows</span>
+                    <span class="hindi">लेन लाइनें, पैदल यात्री लाइनें, तीर</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Road markings guide vehicle positioning and ensure lane discipline.</p>
+                    <p class="hindi">सड़क चिह्न वाहन की स्थिति का मार्गदर्शन करते हैं और लेन अनुशासन सुनिश्चित करते हैं।
+                    </p>
+                </div>
+            </details>
+        </div>
+
+        <h2 class="sectionHeading" id="overtaking">
+            <span class="english">Overtaking & Safety Gear 🛡️</span>
+            <span class="hindi">ओवरटेकिंग और सुरक्षा उपकरण 🛡️</span>
+        </h2>
+
+        <div class="safety-table" role="region" aria-labelledby="overtaking">
+            <details>
+                <summary>
+                    <span class="category-tag tag-vehicle english">Overtaking Rules</span>
+                    <span class="category-tag tag-vehicle hindi">ओवरटेकिंग नियम</span>
+                    <span class="english">Overtake only on clear road sections.</span>
+                    <span class="hindi">केवल साफ सड़क पर ओवरटेक करें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Check mirrors and blind spots. Signal properly before overtaking.</p>
+                    <p class="hindi">मिरर और ब्लाइंड स्पॉट देखें। ओवरटेक करने से पहले संकेत दें।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-vehicle english">Helmets & Seatbelts</span>
+                    <span class="category-tag tag-vehicle hindi">हेलमेट और सीटबेल्ट</span>
+                    <span class="english">Always wear helmets (2-wheelers) and seatbelts.</span>
+                    <span class="hindi">हमेशा हेलमेट और सीटबेल्ट पहनें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Reduces risk of head and body injuries during accidents.</p>
+                    <p class="hindi">दुर्घटना के दौरान सिर और शरीर की चोट का जोखिम कम करता है।</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 class="sectionHeading" id="vehicleLegal">
+            <span class="english">Vehicle & Legal Compliance 📜</span>
+            <span class="hindi">वाहन और कानूनी अनुपालन 📜</span>
+        </h2>
+
+        <div class="safety-table" role="region" aria-labelledby="vehicleLegal">
+            <details>
+                <summary>
+                    <span class="category-tag tag-legal english">Driving License</span>
+                    <span class="category-tag tag-legal hindi">ड्राइविंग लाइसेंस</span>
+                    <span class="english">Always drive with a valid license.</span>
+                    <span class="hindi">हमेशा वैध ड्राइविंग लाइसेंस के साथ ड्राइव करें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Carry your license at all times. Violations may result in fines or vehicle
+                        seizure.</p>
+                    <p class="hindi">हमेशा अपना ड्राइविंग लाइसेंस रखें। उल्लंघन पर जुर्माना या वाहन जब्त हो सकता है।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-legal english">Vehicle Documents</span>
+                    <span class="category-tag tag-legal hindi">वाहन दस्तावेज़</span>
+                    <span class="english">RC, Insurance, Pollution Certificate</span>
+                    <span class="hindi">आरसी, बीमा, प्रदूषण प्रमाणपत्र</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Keep all documents updated to avoid legal issues.</p>
+                    <p class="hindi">सभी दस्तावेज़ अपडेट रखें ताकि कानूनी समस्याओं से बचा जा सके।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-legal english">Traffic Rules Compliance</span>
+                    <span class="category-tag tag-legal hindi">यातायात नियमों का पालन</span>
+                    <span class="english">Obey signals, lane discipline, speed limits.</span>
+                    <span class="hindi">सिग्नल, लेन अनुशासन, गति सीमा का पालन करें।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Following traffic rules prevents accidents and legal penalties.</p>
+                    <p class="hindi">यातायात नियमों का पालन करने से दुर्घटनाओं और कानूनी दंड से बचा जा सकता है।</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 class="sectionHeading" id="airbags">
+            <span class="english">Airbags & Vehicle Control Systems 🛠️</span>
+            <span class="hindi">एयरबैग और वाहन नियंत्रण प्रणाली 🛠️</span>
+        </h2>
+
+        <div class="safety-table" role="region" aria-labelledby="airbags">
+            <details>
+                <summary>
+                    <span class="category-tag tag-airbag english">Airbags</span>
+                    <span class="category-tag tag-airbag hindi">एयरबैग</span>
+                    <span class="english">Front, side, curtain airbags.</span>
+                    <span class="hindi">सामने, साइड, कर्टन एयरबैग।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Inflate instantly during collisions to reduce head and chest injuries. Use with
+                        seatbelts for maximum safety.</p>
+                    <p class="hindi">टक्करों के दौरान एयरबैग तुरंत फुलते हैं ताकि सिर और छाती की चोट कम हो। अधिकतम
+                        सुरक्षा के लिए सीटबेल्ट के साथ उपयोग करें।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-airbag english">Anti-lock Braking System (ABS)</span>
+                    <span class="category-tag tag-airbag hindi">एंटी-लॉक ब्रेकिंग सिस्टम (ABS)</span>
+                    <span class="english">Prevents wheel lock during sudden braking.</span>
+                    <span class="hindi">अचानक ब्रेक लगाने पर पहियों को लॉक होने से रोकता है।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Helps maintain steering control on slippery surfaces, reducing accident risk.</p>
+                    <p class="hindi">फिसलन वाली सतह पर स्टीयरिंग नियंत्रण बनाए रखने में मदद करता है, दुर्घटना का जोखिम
+                        कम करता है।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-airbag english">Electronic Stability Control (ESC)</span>
+                    <span class="category-tag tag-airbag hindi">इलेक्ट्रॉनिक स्टेबिलिटी कंट्रोल (ESC)</span>
+                    <span class="english">Prevents skidding & loss of control.</span>
+                    <span class="hindi">स्किडिंग और नियंत्रण खोने से रोकता है।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Automatically applies brakes to individual wheels to maintain directional control
+                        in slippery conditions.</p>
+                    <p class="hindi">फिसलन वाली स्थिति में नियंत्रण बनाए रखने के लिए अलग-अलग पहियों पर स्वचालित ब्रेक
+                        लगाता है।</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <span class="category-tag tag-airbag english">Adaptive Cruise Control</span>
+                    <span class="category-tag tag-airbag hindi">एडेप्टिव क्रूज कंट्रोल</span>
+                    <span class="english">Maintains safe distance automatically from vehicles ahead.</span>
+                    <span class="hindi">आगे की गाड़ियों से सुरक्षित दूरी स्वतः बनाए रखता है।</span>
+                </summary>
+                <div class="details-content">
+                    <p class="english">Uses radar and cameras to detect vehicles and adjust speed, enhancing road safety
+                        during long drives.</p>
+                    <p class="hindi">राडार और कैमरों का उपयोग करता है, लंबी यात्राओं के दौरान सड़क सुरक्षा बढ़ाता है।
+                    </p>
+                </div>
+            </details>
+        </div>
+
+    </main>
+
+
+    <button id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Back to Top">
+        ↑
+    </button>
+
+    <script>
+        let currentLang = 'english';
+        const htmlElement = document.documentElement;
+        const pageTitle = document.getElementById('pageTitle');
+        const langToggle = document.getElementById('languageToggle');
+        const backToTopBtn = document.getElementById('backToTop');
+        const allDetails = document.querySelectorAll('.safety-table details'); // Select all <details> elements
+
+        // Use a descriptive object for language data
+        const langData = {
+            english: {
+                langAttr: 'en',
+                title: 'Comprehensive Road Safety Knowledge Hub',
+                buttonText: 'हिन्दी / English'
+            },
+            hindi: {
+                langAttr: 'hi',
+                title: 'सड़क सुरक्षा ज्ञान केंद्र',
+                buttonText: 'English / हिन्दी'
+            }
+        };
+
+        /**
+         * Toggles the display language between English and Hindi.
+         */
+        function toggleLanguage() {
+            // Determine the target language (flip the current one)
+            const targetLang = (currentLang === 'english') ? 'hindi' : 'english';
+            const showClass = targetLang;
+            const hideClass = (targetLang === 'english') ? 'hindi' : 'english';
+
+            // 1. Toggle Display of Content
+            // Use block display for paragraph/div elements and inline for spans/anchors
+            document.querySelectorAll(`.${showClass}`).forEach(el => {
+                const tag = el.tagName;
+                el.style.display = (tag === 'SPAN' || tag === 'A') ? 'inline' : 'block';
+            });
+            document.querySelectorAll(`.${hideClass}`).forEach(el => el.style.display = 'none');
+
+            // 2. Update Metadata and Button
+            const data = langData[targetLang];
+            htmlElement.lang = data.langAttr;
+            langToggle.textContent = data.buttonText;
+            pageTitle.textContent = data.title;
+
+            // Set the new current language
+            currentLang = targetLang;
+        }
+
+        /**
+         * Handles the accordion effect: closes all other details when one is opened.
+         * @param {Event} event - The toggle event from the details element.
+         */
+        function handleDetailsToggle(event) {
+            // Check if the current details element is being opened
+            if (event.target.open) {
+                // Loop through all details elements
+                allDetails.forEach(details => {
+                    // If the element is NOT the one that just triggered the event, close it.
+                    if (details !== event.target && details.open) {
+                        details.open = false;
+                    }
+                });
+            }
+        }
+
+        // --- Quick Navigation Highlighting Logic ---
+
+        const sections = document.querySelectorAll('h2.sectionHeading');
+        const navLinks = document.querySelectorAll('.quick-nav a');
+        const offset = 150; // Offset from the top of the viewport
+
+        const setActiveNavLink = () => {
+            let currentActiveSectionId = '';
+
+            // Find the section whose top edge is just above the offset
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= offset) {
+                    currentActiveSectionId = section.id;
+                }
+            });
+
+            // Set the active class on the corresponding link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentActiveSectionId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Edge case: ensure the first link is active when at the very top
+            if (window.scrollY < offset && sections.length > 0) {
+                navLinks[0].classList.add('active');
+            }
+        };
+
+        // --- Back to Top Button Logic ---
+        const toggleBackToTopButton = () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        // --- Initialization and Scroll Events ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initial Language Setup (Ensure English is visible first)
+            document.querySelectorAll('.hindi').forEach(el => el.style.display = 'none');
+            langToggle.textContent = langData.english.buttonText;
+
+            // 2. Add Accordion Listener
+            allDetails.forEach(details => {
+                details.addEventListener('toggle', handleDetailsToggle);
+            });
+
+            // 3. Initialize active nav link and back-to-top button
+            setActiveNavLink();
+            toggleBackToTopButton();
+        });
+
+
+        // Debounce scroll event handler
+        let scrollTimeout = null;
+        window.addEventListener('scroll', () => {
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+            scrollTimeout = setTimeout(() => {
+                setActiveNavLink();
+                toggleBackToTopButton();
+            }, 50); // Debounce the scroll event
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women Shield - Road Safety</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d4d;
+            --secondary-color: #222;
+            --light-bg: #f4f4f4;
+            --card-bg: #fff;
+            --text-color: #333;
+            --hover-color: #e63939;
+            --accent-color: #ffcc00;
+            --accent-hover: #e6b800;
+            --border-color: #444;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Simple Nav Bar --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 3em;
+            background: rgba(34, 34, 34, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+        }
+
+        .nav-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-title img {
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        .nav-back-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            padding: 0.5em 1em;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+        }
+
+        .nav-back-link:hover {
+            background: var(--accent-color);
+            color: var(--secondary-color);
+        }
+
+        /* --- Page Header --- */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+            color: var(--card-bg);
+            padding: 3em 1.5em;
+            text-align: center;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.2em, 5vw, 2.8em);
+            margin-bottom: 0.3em;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-header h1 i {
+            color: var(--accent-color);
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-header p {
+            font-size: 1.1em;
+            color: #f0f0f0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Main Content Area --- */
+        .content {
+            max-width: 1000px;
+            margin: 2.5em auto;
+            padding: 2em 1.5em;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 95%;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5em;
+            font-size: 1.8em;
+            text-align: center;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .content>p {
+            font-size: 1.1em;
+            color: #555;
+            text-align: center;
+            margin-bottom: 2em;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Feature Grid --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+            margin-bottom: 2.5em;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2em;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+        }
+
+        .feature-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3em;
+            color: var(--secondary-color);
+            margin-bottom: 0.5em;
+        }
+
+        .feature-card p {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* --- Accordion Tip Styles (Copied from index.html) --- */
+        .tips {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow var(--transition-speed);
+        }
+
+        .tips:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tip {
+            margin-bottom: 15px;
+            padding: 1.2em 1.5em;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .tip.active {
+            background: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        .tip-title {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+        }
+
+        .tip-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .tip-chevron {
+            flex-shrink: 0;
+            transition: transform var(--transition-speed) ease, color var(--transition-speed);
+            color: #aaa;
+        }
+
+        .tip.active .tip-chevron {
+            transform: rotate(90deg);
+            color: var(--primary-color);
+        }
+
+        .tip-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in-out 0.2s, padding 0.5s ease;
+            padding: 0 1.5em;
+            color: #555;
+            font-weight: normal;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .tip-details.open {
+            opacity: 1;
+            padding: 0 1.5em 1.5em;
+        }
+
+        /* --- NEW: Entry Shield Modal --- */
+        #shield-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(34, 34, 34, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1em;
+            transition: opacity 0.3s ease;
+        }
+
+        .shield-modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2.5em;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-top: 5px solid var(--accent-color);
+            z-index: 9999;
+            animation: fadeInModal 0.5s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* NEW: Styles for verification steps */
+        .shield-step {
+            display: none; /* Hide steps by default */
+        }
+        .shield-step.active {
+            display: block; /* Show active step */
+            animation: fadeInModal 0.5s ease-out;
+        }
+
+        .shield-modal-content i {
+            font-size: 3.5em;
+            color: var(--primary-color);
+            margin-bottom: 0.5em;
+        }
+
+        .shield-modal-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--secondary-color);
+            margin-bottom: 0.75em;
+            border: none;
+            padding: 0;
+            font-size: 1.6em;
+        }
+
+        .shield-modal-content p {
+            font-size: 1.05em;
+            color: #555;
+            margin-bottom: 2em;
+            line-height: 1.6;
+        }
+
+        /* NEW: Styles for fake upload buttons */
+        .upload-section {
+            margin-bottom: 1.5em;
+        }
+        
+        .upload-label {
+            display: block;
+            background: var(--light-bg);
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 1em;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .upload-label:hover {
+            background: #eee;
+        }
+
+        .upload-label span {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .upload-label i {
+             font-size: 1.5em;
+             color: var(--primary-color);
+             margin-bottom: 0;
+             margin-right: 10px;
+        }
+
+        .upload-status {
+            font-size: 0.9em;
+            color: #888;
+            transition: color 0.3s ease;
+        }
+
+        .upload-label.file-added .upload-status {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        /* Hide actual file input */
+        .fake-upload {
+            display: none;
+        }
+        /* END: Styles for fake upload buttons */
+
+
+        .shield-btn {
+            background: var(--primary-color);
+            color: var(--card-bg);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            padding: 0.8em 1.5em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        .shield-btn:hover:not(:disabled) {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .shield-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* NEW: Loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1em auto 1.5em;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- NEW: Blink Animation --- */
+        .blink-me {
+            /* Blinks the icon after verification */
+            animation: blinker 1.5s linear infinite;
+        }
+
+        @keyframes blinker {
+            0%, 100% {
+                opacity: 1;
+                color: var(--accent-color);
+            }
+            50% {
+                opacity: 0.3;
+                color: #fff; /* Blink to header color */
+            }
+        }
+        /* --- END Blink Animation --- */
+
+        /* --- END Entry Shield --- */
+
+        /* --- Simple Footer --- */
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--light-bg);
+            padding: 2em;
+            text-align: center;
+            margin-top: auto;
+            /* Pushes footer to bottom */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- === NEW: Entry Shield Modal === -->
+    <div id="shield-overlay">
+        <div class="shield-modal-content">
+
+            <!-- === Step 1: Affirmation === -->
+            <div id="step-1" class="shield-step active">
+                <i class="fas fa-shield-alt"></i>
+                <h2>A Dedicated Space</h2>
+                <p>This "Women Shield" area is dedicated to providing safety resources and features for women.
+                    <br><br>
+                    By entering, you affirm your support for this mission.
+                </p>
+                <button id="shield-affirm-btn" class="shield-btn">I Affirm and Continue</button>
+            </div>
+
+            <!-- === Step 2: Verification (Simulated) === -->
+            <div id="step-2" class="shield-step">
+                <i class="fas fa-user-check"></i>
+                <h2>Identity Verification</h2>
+                <p>To ensure this remains a dedicated space, please complete this one-time verification step.</p>
+                
+                <div class="upload-section">
+                    <!-- FIXED: Added 'for' attribute and corrected class typo -->
+                    <label class="upload-label" id="label-photo" for="fake-photo-upload">
+                        <div>
+                            <i class="fas fa-camera"></i>
+                            <span>Take Live Photo</span>
+                        </div>
+                        <span class="upload-status" id="status-photo">Pending...</span>
+                    </label>
+                    <!-- FIXED: Added file input with capture attribute -->
+                    <input type="file" id="fake-photo-upload" class="fake-upload" accept="image/*" capture="user">
+                </div>
+
+                <div class="upload-section">
+                    <label for="fake-aadhaar-upload" class="upload-label" id="label-aadhaar">
+                        <div>
+                             <i class="fas fa-id-card"></i>
+                            <span>Upload Aadhaar Photo</span>
+                        </div>
+                        <span class="upload-status" id="status-aadhaar">Pending...</span>
+                    </label>
+                    <input type="file" id="fake-aadhaar-upload" class="fake-upload" accept="image/*">
+                </div>
+
+                <button id="shield-verify-btn" class="shield-btn" disabled>Verify Identity</button>
+            </div>
+
+            <!-- === Step 3: Loading/Success === -->
+            <div id="step-3" class="shield-step">
+                <div class="loader"></div>
+                <h2>Verification in Progress</h2>
+                <p>Your documents have been submitted to our backend. This process can take up to 30 minutes.</p>
+                <p style="font-size: 0.9em; color: #777;">(This is a simulation. Access will be granted in a few seconds.)</p>
+            </div>
+
+        </div>
+    </div>
+    <!-- === END Entry Shield === -->
+
+    <nav aria-label="Main Navigation">
+        <a href="index.html" class="nav-title" aria-label="Home">
+            <img id="website_logo" src="Photoes/logo.png" alt="SafeReturn Logo"
+                onerror="this.src='https://placehold.co/40x40/ffffff/E63939?text=SR'; this.onerror=null;">
+            SafeReturn
+        </a>
+        <a href="index.html" class="nav-back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </nav>
+
+    <header class="page-header">
+        <h1><i class="fas fa-shield-alt"></i> Women Shield</h1>
+        <p>Your Safety, Our Priority. Dedicated features and tips for women travelers.</p>
+    </header>
+
+    <main class="content">
+        <p>The "Women Shield" is our dedicated initiative to enhance road safety and security for women. This includes
+            special in-app features and essential knowledge to help you travel with confidence.</p>
+
+        <h2>Core Safety Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-share-alt"></i>
+                <h3>Share My Ride</h3>
+                <p>Easily share your live trip status, vehicle details, and ETA with family or trusted contacts in a
+                    single tap.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Emergency SOS</h3>
+                <p>An accessible SOS button to discreetly alert our 24/7 response team and local authorities if you feel
+                    unsafe.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-user-check"></i>
+                <h3>Vetted Drivers</h3>
+                <p>Ride with confidence. Our "Women Shield" program ensures drivers pass enhanced background checks and
+                    training.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users"></i>
+                <h3>Trusted Contacts</h3>
+                <p>Set up your emergency contacts in the app. They will be automatically notified when you trigger an SOS
+                    alert.</p>
+            </div>
+        </div>
+
+        <h2>Proactive Safety Tips</h2>
+        <article class="tips" id="tips">
+            <div class="tip" tabindex="0">
+                <div class="tip-title"><i class="fas fa-parking"></i> Awareness in Car Parks</div>
+                <i class="fas fa-chevron-right tip-chevron"></i>
+            </div>
+            <div class="tip-details">
+                <p>Always park in well-lit areas, preferably close to entrances or security cameras. Before getting out
+                    or returning to your car, be aware of your surroundings. Have your keys in hand, and check the
+                    backseat before entering your vehicle. Avoid being distracted by your phone.</p>
+            </div>
+
+            <div class="tip" tabindex="0">
+                <div class="tip-title"><i class="fas fa-tools"></i> Vehicle Maintenance</div>
+                <i class="fas fa-chevron-right tip-chevron"></i>
+            </div>
+            <div class="tip-details">
+                <p>A breakdown in an unsafe or remote area can be a significant risk. Regularly check your vehicle's
+                    fuel, tire pressure, and oil. Ensure your phone is fully charged before any long trip, and consider
+                    keeping a portable power bank in your car.</p>
+            </div>
+
+            <div class="tip" tabindex="0">
+                <div class="tip-title"><i class="fas fa-map-marked-alt"></i> Share Your Plans</div>
+                <i class="fas fa-chevron-right tip-chevron"></i>
+            </div>
+            <div class="tip-details">
+                <p>Whether you're driving or taking a ride-share, let a trusted person know your route, destination, and
+                    expected arrival time (ETA). Use the "Share My Ride" feature whenever possible, especially when
+                    traveling at night or in unfamiliar areas.</p>
+            </div>
+
+            <div class="tip" tabindex="0">
+                <div class="tip-title"><i class="fas fa-user-secret"></i> Trust Your Instincts</div>
+                <i class="fas fa-chevron-right tip-chevron"></i>
+            </div>
+            <div class="tip-details">
+                <p>If a person or situation feels unsafe, it probably is. If you feel you are being followed, drive to a
+                    public, well-lit place like a police station or a 24-hour gas station. Do not drive straight home.
+                    If you're in a ride-share and feel uncomfortable, ask the driver to stop in a safe, public area and
+                    end the ride.</p>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SafeReturn. All rights reserved. | Women Shield Initiative</p>
+    </footer>
+
+    <script>
+        // --- Accordion Logic for Tips ---
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- NEW: Blink logic on load ---
+            // This checks if the user just completed verification
+            try {
+                const verificationStatus = sessionStorage.getItem('shieldVerification');
+                if (verificationStatus === 'verified') {
+                    const shieldIcon = document.querySelector('.page-header h1 i.fa-shield-alt');
+                    if (shieldIcon) {
+                        // Add the blink-me class to start the animation
+                        shieldIcon.classList.add('blink-me');
+                    }
+                    // Clear the flag so it doesn't blink on every page refresh
+                    sessionStorage.removeItem('shieldVerification');
+                }
+            } catch (e) {
+                console.error("Session storage is not available:", e);
+            }
+            // --- END NEW ---
+            
+            // --- NEW: Shield Modal Logic ---
+            const shieldOverlay = document.getElementById('shield-overlay');
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+            const step3 = document.getElementById('step-3');
+
+            const affirmBtn = document.getElementById('shield-affirm-btn');
+            const verifyBtn = document.getElementById('shield-verify-btn');
+            
+            // FIXED: Re-defined photoInput
+            const photoInput = document.getElementById('fake-photo-upload');
+            const aadhaarInput = document.getElementById('fake-aadhaar-upload');
+            const photoLabel = document.getElementById('label-photo');
+            const aadhaarLabel = document.getElementById('label-aadhaar');
+            const photoStatus = document.getElementById('status-photo');
+            const aadhaarStatus = document.getElementById('status-aadhaar');
+
+            let photoAdded = false;
+            let aadhaarAdded = false;
+
+            const checkUploads = () => {
+                if (photoAdded && aadhaarAdded) {
+                    verifyBtn.disabled = false;
+                }
+            };
+
+            // FIXED: Changed back to event listener on photoInput
+            photoInput.addEventListener('change', () => {
+                photoAdded = true;
+                photoLabel.classList.add('file-added');
+                photoStatus.textContent = 'Photo Captured!';
+                checkUploads();
+            });
+
+            aadhaarInput.addEventListener('change', () => {
+                aadhaarAdded = true;
+                aadhaarLabel.classList.add('file-added');
+                aadhaarStatus.textContent = 'ID Added!';
+                checkUploads();
+            });
+
+            if (affirmBtn) {
+                affirmBtn.addEventListener('click', () => {
+                    step1.classList.remove('active');
+                    step2.classList.add('active');
+                });
+            }
+
+            if (verifyBtn) {
+                verifyBtn.addEventListener('click', () => {
+                    step2.classList.remove('active');
+                    step3.classList.add('active');
+
+                    // Simulate verification
+                    setTimeout(() => {
+                        // Set a flag that verification is pending
+                        // Using sessionStorage so it's temporary
+                        // CHANGED: Set to 'verified' on success
+                        try {
+                            sessionStorage.setItem('shieldVerification', 'verified');
+                        } catch (e) {
+                            console.error("Session storage is not available:", e);
+                        }
+
+
+                        shieldOverlay.style.opacity = '0';
+                        // Hide the modal after the fade-out transition, then redirect
+                        setTimeout(() => {
+                            // Redirect to the dashboard page (as per your nav link)
+                            shieldOverlay.style.display = 'none';
+                            window.location.href = 'index.html';
+                        }, 400); // Wait for fade out
+                    }, 3500); // Wait 3.5 seconds
+                });
+            }
+            // --- END Shield Modal Logic ---
+
+            const accordions = document.querySelectorAll('.tips');
+
+            accordions.forEach(accordion => {
+                const items = accordion.querySelectorAll('.tip');
+                items.forEach(item => {
+                    const details = item.nextElementSibling; // Get the .tip-details
+
+                    if (details) {
+                        const toggleItem = () => {
+                            const isOpen = item.classList.contains('active');
+
+                            // Close all items in this section
+                            items.forEach(i => {
+                                i.classList.remove('active');
+                                const d = i.nextElementSibling;
+                                if (d) {
+                                    d.classList.remove('open');
+                                    d.style.maxHeight = null;
+                                }
+                            });
+
+                            // Open the clicked item if it wasn't already open
+                            if (!isOpen) {
+                                item.classList.add('active');
+                                details.classList.add('open');
+                                details.style.maxHeight = details.scrollHeight + 'px';
+                            }
+                        };
+
+                        item.addEventListener('click', toggleItem);
+                        item.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggleItem();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+
+
+

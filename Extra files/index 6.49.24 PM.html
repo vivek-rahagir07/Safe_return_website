@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road Safety Awareness – Safe Return</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d4d;
+            --secondary-color: #222;
+            --light-bg: #f4f4f4;
+            --card-bg: white;
+            --text-color: #333;
+            --hover-color: #e63939;
+            --dark-red-outline: #cc0000;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            scroll-behavior: smooth;
+            background-image: url('index.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        a:focus,
+        button:focus,
+        [role="button"]:focus,
+        .tip:focus,
+        .edu-item:focus {
+            outline: 3px solid var(--dark-red-outline);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            color: var(--card-bg);
+            padding: 1em 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-title:hover {
+            color: var(--primary-color);
+            cursor: default;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5em;
+        }
+
+        .nav-links a {
+            color: var(--card-bg);
+            text-decoration: none;
+            font-size: 1em;
+            padding: 0.5em 0;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        header {
+            background: rgba(255, 77, 77, 0.9);
+            color: var(--card-bg);
+            padding: 2em 1em 1.5em;
+            /* Smaller red section */
+            text-align: center;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2em, 4vw, 2.4em);
+            /* Smaller font */
+            margin-bottom: 0.5em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        header blockquote {
+            font-style: italic;
+            font-size: 1.1em;
+            margin-top: 1em;
+            color: #ffe6e6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.8em;
+            border-left: 5px solid white;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 2.5em auto;
+            padding: 0 1.5em;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .flex-cards {
+            display: flex;
+            gap: 2em;
+            flex-wrap: wrap;
+            margin-bottom: 2.5em;
+            padding: 2.5em 0;
+        }
+
+        .flex-cards>article {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .education,
+        .tips {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow var(--transition-speed);
+            margin-bottom: 0;
+        }
+
+        .education:hover,
+        .tips:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--light-bg);
+            padding-bottom: 0.5em;
+            margin-bottom: 1.5em;
+            font-weight: 600;
+        }
+
+        .tip,
+        .edu-item {
+            margin-bottom: 15px;
+            padding: 1.2em 1.5em;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid transparent;
+        }
+
+        .tip.active,
+        .edu-item.active {
+            background: #ffecec;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip:hover:not(.active),
+        .edu-item:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .tip-title,
+        .edu-title {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+            max-width: 85%;
+        }
+
+        .tip-title i,
+        .edu-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .tip-chevron,
+        .edu-chevron {
+            flex-shrink: 0;
+            transition: transform var(--transition-speed) ease, color var(--transition-speed);
+            color: #777;
+        }
+
+        .tip.active .tip-chevron,
+        .edu-item.active .edu-chevron {
+            transform: rotate(90deg);
+            color: var(--primary-color);
+        }
+
+        .tip-details,
+        .edu-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in-out 0.2s, padding 0.5s ease;
+            padding: 0 1.5em;
+            color: #555;
+            font-weight: normal;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .tip-details.open,
+        .edu-details.open {
+            opacity: 1;
+            padding: 0 1.5em 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0.8em;
+                padding-top: 0.8em;
+                width: 100%;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 0 1em;
+            }
+
+            .flex-cards {
+                padding: 1.5em 0;
+            }
+
+            .flex-cards>article {
+                min-width: 100%;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2em 1em;
+            background-color: rgba(34, 34, 34, 0.9);
+            color: var(--light-bg);
+            margin-top: 3em;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <nav aria-label="Main Navigation">
+        <span class="nav-title" id="site-title"><i class="fas fa-car" aria-hidden="true"></i> SafeReturn</span>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="Road Safety.html">Road Safety Tips</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+            <li><a href="#about-us">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header id="home">
+        <main>
+            <h1>Drive Smart. Stay Safe.</h1>
+            <p>Your journey is precious. Awareness is your best defense.</p>
+            <figure>
+                <blockquote>"The only thing We need from your trip is Your safe return."</blockquote>
+            </figure>
+        </main>
+    </header>
+
+    <div class="content">
+        <div class="flex-cards" id="safety-accordion">
+
+            <article id="road-safety" class="education">
+                <h2><i class="fas fa-book-open" aria-hidden="true"></i> Essential Road Education</h2>
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-1"
+                    id="edu-header-1">
+                    <span class="edu-title"><i class="fas fa-shield-alt" aria-hidden="true"></i> What is Defensive
+                        Driving?</span>
+                    <i class="fas fa-chevron-right edu-chevron" aria-hidden="true"></i>
+                </div>
+                <div class="edu-details" role="region" aria-labelledby="edu-header-1" aria-hidden="true"
+                    id="edu-details-1">
+                    Using safe driving strategies to anticipate hazards, look beyond the vehicle in front, and avoid
+                    crashes by constantly scanning the environment.
+                </div>
+
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-2"
+                    id="edu-header-2">
+                    <span class="edu-title"><i class="fas fa-eye" aria-hidden="true"></i> Recognising Road
+                        Hazards</span>
+                    <i class="fas fa-chevron-right edu-chevron" aria-hidden="true"></i>
+                </div>
+                <div class="edu-details" role="region" aria-labelledby="edu-header-2" aria-hidden="true"
+                    id="edu-details-2">
+                    Be vigilant for poor visibility (fog, rain), unexpected pedestrians, aggressive or distracted
+                    drivers, and road surface changes (potholes, ice).
+                </div>
+            </article>
+
+            <article class="tips">
+                <h2><i class="fas fa-lightbulb" aria-hidden="true"></i> Quick Safety Tips</h2>
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-1"
+                    id="tip-header-1">
+                    <span class="tip-title"><i class="fas fa-seat-belt" aria-hidden="true"></i> Always wear your
+                        seatbelt</span>
+                    <i class="fas fa-chevron-right tip-chevron" aria-hidden="true"></i>
+                </div>
+                <div class="tip-details" role="region" aria-labelledby="tip-header-1" aria-hidden="true"
+                    id="tip-details-1">
+                    The single most effective safety feature. It reduces serious injury and death in accidents by over
+                    50%.
+                </div>
+
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-2"
+                    id="tip-header-2">
+                    <span class="tip-title"><i class="fas fa-mobile-alt" aria-hidden="true"></i> Don’t text and
+                        drive</span>
+                    <i class="fas fa-chevron-right tip-chevron" aria-hidden="true"></i>
+                </div>
+                <div class="tip-details" role="region" aria-labelledby="tip-header-2" aria-hidden="true"
+                    id="tip-details-2">
+                    Distracted driving is a major cause of crashes. If you must use your phone, pull over safely or use
+                    a hands-free system.
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <footer style="background-color: var(--dark-bg); color: var(--light-text); padding: 50px 0; font-family: 'Poppins', sans-serif;">
+  <div style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding: 0 20px;">
+    
+    <div class="footer-section">
+      <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em; display: flex; align-items: center;">
+        <span style="margin-right: 10px;">🚦</span> Road Safety Club
+      </h3>
+      <p style="line-height: 1.6;">
+        Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making roads safer for all!
+      </p>
+      
+      <button onclick="window.scrollTo({top:0, behavior:'smooth'});" 
+              class="back-to-top-btn"
+              style="margin-top: 25px; padding: 12px 25px; background-color: var(--accent-color); border: none; color: var(--dark-bg); font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        ↑ Zoom Back Up!
+      </button>
+    </div>
+    
+    <div class="footer-section">
+      <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">📞 Connect With Us</h3>
+      <ul style="list-style: none; padding: 0; line-height: 2;">
+        <li><a href="mailto:info@roadsafetyclub.com" class="footer-link email-link">info@roadsafetyclub.com</a></li>
+      </ul>
+      
+      <h4 style="color: var(--light-text); margin-top: 15px; margin-bottom: 5px; font-weight: 600;">Team Contacts:</h4>
+      <ul style="list-style: none; padding: 0; line-height: 1.8;">
+        <li><a href="tel:9996445592" class="footer-link contact-list-link"><strong>Vivek Yadav:</strong> 9996445592</a></li>
+        <li><a href="tel:9251399133" class="footer-link contact-list-link"><strong>Shri ji Aggarwal:</strong> 9251399133</a></li>
+        <li><a href="tel:9389864319" class="footer-link contact-list-link"><strong>Shreya Chaudhary:</strong> 9389864319</a></li>
+        <li><a href="tel:7056123205" class="footer-link contact-list-link"><strong>Ekta Pannu:</strong> 7056123205</a></li>
+        <li><a href="tel:9457057473" class="footer-link contact-list-link"><strong>Khush Raghav:</strong> 9457057473</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">🔗 Quick Resources</h3>
+      <ul style="list-style: none; padding: 0; line-height: 2;">
+        <li><a href="/rules" class="footer-link">Traffic Rules Handbook</a></li>
+        <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+        <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+        <li><a href="/join" class="footer-link">Join Our Volunteer Team</a></li>
+      </ul>
+      
+      <div style="margin-top: 20px;">
+        <a href="#" class="social-icon" aria-label="Follow us on World Wide Web">🌐</a>
+        <a href="#" class="social-icon" aria-label="Follow us on Facebook">📘</a>
+        <a href="#" class="social-icon" aria-label="Follow us on Twitter">🐦</a>
+        <a href="#" class="social-icon" aria-label="Follow us on Instagram">📸</a>
+      </div>
+    </div>
+  </div>
+  
+  <div style="text-align: center; padding-top: 25px; border-top: 1px solid var(--border-color); margin-top: 50px;">
+    <p>&copy; 2025 Road Safety Club. Drive Smart, Live Safe.</p>
+  </div>
+  
+  <style>
+    /* CSS Variables for easy color changes */
+    :root {
+      --dark-bg: #1a1a1a;
+      --light-text: #fff;
+      --accent-color: #ffcc00; /* Yellow */
+      --accent-hover: #e6b800;
+      --border-color: #444;
+    }
+
+    footer {
+        /* This ensures the font-family from the inline style is the starting point */
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .footer-section {
+        flex: 1; 
+        min-width: 280px; 
+        margin-bottom: 20px;
+    }
+    
+    /* General Link Styling */
+    .footer-link {
+      color: var(--light-text);
+      text-decoration: none;
+      transition: color 0.3s, transform 0.3s;
+      display: inline-block;
+    }
+    .footer-link:hover {
+      color: var(--accent-color);
+      transform: translateX(5px); /* Subtle shift */
+    }
+
+    /* Team Contact List specific styling - removes the phone icon for this block */
+    .contact-list-link {
+        padding-left: 20px; /* Indent slightly for visual hierarchy */
+    }
+    
+    /* Social Icon Animation */
+    .social-icon {
+      color: var(--light-text);
+      font-size: 24px;
+      margin-right: 15px; /* Use margin-right for spacing */
+      display: inline-block;
+      transition: transform 0.3s, color 0.3s;
+      text-decoration: none;
+    }
+    .social-icon:hover {
+      color: var(--accent-color);
+      transform: translateY(-5px) scale(1.1); /* Lift and enlarge */
+    }
+    
+    /* Back to Top Button hover */
+    .back-to-top-btn:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-3px) scale(1.02); /* Lift and slightly enlarge */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Clear focus state for accessibility */
+    .footer-link:focus, .social-icon:focus, .back-to-top-btn:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 3px;
+    }
+    
+    /* Specific Link Icons (A friendlier touch) - Applied only to General/Email links */
+    .phone-link::before {
+        content: '📞 ';
+        color: var(--accent-color);
+    }
+    .email-link::before {
+        content: '📧 ';
+        color: var(--accent-color);
+    }
+  </style>
+</footer>
+
+    <script>
+        const accordions = document.querySelectorAll('.tip, .edu-item');
+
+        accordions.forEach(item => {
+            const details = item.nextElementSibling;
+            item.addEventListener('click', () => toggleItem(item, details));
+            item.addEventListener('keydown', e => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleItem(item, details);
+                }
+            });
+        });
+
+        function toggleItem(el, details) {
+            const parent = el.closest('article');
+            const isActive = el.classList.contains('active');
+
+            parent.querySelectorAll('.tip.active, .edu-item.active').forEach(item => {
+                if (item !== el) {
+                    const otherDetails = item.nextElementSibling;
+                    item.classList.remove('active');
+                    item.setAttribute('aria-expanded', 'false');
+                    otherDetails.style.maxHeight = null;
+                    otherDetails.classList.remove('open');
+                    otherDetails.style.opacity = 0;
+                    otherDetails.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            if (!isActive) {
+                el.classList.add('active');
+                el.setAttribute('aria-expanded', 'true');
+                details.classList.add('open');
+                details.setAttribute('aria-hidden', 'false');
+                window.requestAnimationFrame(() => {
+                    details.style.maxHeight = details.scrollHeight + "px";
+                    details.style.opacity = 1;
+                });
+            } else {
+                el.classList.remove('active');
+                el.setAttribute('aria-expanded', 'false');
+                details.style.maxHeight = details.scrollHeight + "px";
+                void details.offsetWidth;
+                details.style.opacity = 0;
+                setTimeout(() => {
+                    details.classList.remove('open');
+                    details.setAttribute('aria-hidden', 'true');
+                    details.style.maxHeight = null;
+                }, 100);
+            }
+        }
+    </script>
+</body>
+
+</html>

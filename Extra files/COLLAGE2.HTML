@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Safety Project Collage</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary-blue: #0077b6;
+    --light-blue: #00b4d8;
+    --dark-blue: #0d47a1;
+    --highlight-coral: #ff5a5f;
+    --bg-gradient: linear-gradient(135deg, #e3f2fd, #ffffff);
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    --radius: 18px;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    margin: 0;
+    color: #333;
+    overflow-x: hidden;
+  }
+  header {
+    text-align: center;
+    background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
+    color: white;
+    padding: 30px 0;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  }
+  section {
+    padding: 60px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h2 {
+    color: var(--dark-blue);
+    font-size: 2rem;
+    margin-bottom: 35px;
+    font-weight: 800;
+    border-bottom: 3px solid var(--light-blue);
+    display: inline-block;
+    padding-bottom: 8px;
+  }
+  .slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 80px;
+  }
+  .slide-track {
+    display: flex;
+    padding: 10px 0;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+  .slide-track::-webkit-scrollbar { display: none; }
+  .slide {
+    min-width: calc((100% - 40px)/3);
+    height: 320px;
+    flex-shrink: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    margin: 0 10px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  .slide:hover { transform: translateY(-5px) scale(1.01); }
+  .slide img, .slide video, .slide iframe { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .arrow:hover {
+    background-color: var(--highlight-coral);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 15px rgba(255,90,95,0.6);
+  }
+  .arrow.prev { left: -15px; }
+  .arrow.next { right: -15px; }
+  .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .slide:hover .caption { opacity: 1; transform: translateY(0); }
+  footer {
+    background: var(--dark-blue);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.95rem;
+    margin-top: 50px;
+  }
+  @media (max-width:1024px) {
+    .slide { min-width: calc((100% - 30px)/2); margin: 0 7.5px; height: 280px; }
+    .arrow.prev { left: 5px; } 
+    .arrow.next { right: 5px; }
+  }
+  @media (max-width:768px) {
+    .slide { min-width: 100%; margin: 0; height: 250px; }
+    section { padding: 40px 5%; }
+    h2 { font-size: 1.6rem; }
+    header { font-size: 1.8rem; padding: 20px 0; }
+    .arrow.prev { left: 0px; }
+    .arrow.next { right: 0px; }
+  }
+</style>
+</head>
+<body>
+<header>ROAD SAFETY GALLARY</header>
+
+<!-- REPEAT THIS SECTION 10 TIMES WITH DIFFERENT IDS -->
+<section>
+  <h2>📸Photos📸</h2>
+  <div class="slider" id="slider1">
+    <button class="arrow prev" onclick="moveSlide('slider1', -1)">❮</button>
+    <div class="slide-track">
+      <div class="slide"><img src="Photoes/photo 10.jpeg" alt="Photo1"><div class="caption">Our Mission</div></div>
+      <div class="slide"><img src="Photoes/photo 1.jpeg" alt="Photo2"><div class="caption">Knowing People Views</div></div>
+      <div class="slide"><img src="Photoes/photo 7.jpeg" alt="Photo3"><div class="caption">Knowing People Views</div></div>
+      <div class="slide"><img src="Photoes/photo 2.jpeg" alt="Photo4"><div class="caption">Knowing People Views</div></div>
+      <div class="slide"><img src="Photoes/photo 6.jpeg" alt="Photo5"><div class="caption">Knowing People Views</div></div>
+      <div class="slide"><img src="Photoes/photo 5.jpeg" alt="Photo1"><div class="caption">Knowing People Views</div></div>
+      <div class="slide"><img src="Photoes/photo 8.jpeg" alt="Photo3"><div class="caption">Understading Root Cause of Problem</div></div>
+      <div class="slide"><img src="Photoes/photo 4.jpeg" alt="Photo2"><div class="caption">Understading Root Cause of Problem</div></div>
+      <div class="slide"><img src="Photoes/photo 9.jpeg" alt="Photo1"><div class="caption">Understading Root Cause of Problem</div></div>
+      <div class="slide"><img src="Photoes/photo 3.jpeg" alt="Photo2"><div class="caption">Understading Root Cause of Croblem</div></div>
+      <div class="slide"><img src="https://placehold.co/500x320/ff4500/ffffff?text=Photo3" alt="Photo3"><div class="caption">Caption 3</div></div>
+    </div>
+    <button class="arrow next" onclick="moveSlide('slider1', 1)">❯</button>
+  </div>
+</section>
+
+<section>
+  <h2>🎥Videos🎥</h2>
+  <div class="slider" id="slider2">
+    <button class="arrow prev" onclick="moveSlide('slider2', -1)">❮</button>
+    <div class="slide-track">
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio.1.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 1</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio3.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 2</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio2.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 3</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio4.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 1</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio5.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 2</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio6.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 3</div></div>
+    <div class="slide"><iframe width="100%" height="100%" src="Vedios/vedio7.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 1</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="Vedios/Vedio9.mp4" frameborder="0" allowfullscreen></iframe><div class="caption">Video 2</div></div>
+      <div class="slide"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/9bZkp7q19f0?rel=0" frameborder="0" allowfullscreen></iframe><div class="caption">Video 3</div></div>
+    </div>
+    </div>
+    <button class="arrow next" onclick="moveSlide('slider2', 1)">❯</button>
+  </div>
+</section>
+
+
+
+<script>
+const currentSlideIndex = {};
+
+function moveSlide(sliderId, direction) {
+  const slider = document.getElementById(sliderId);
+  const track = slider.querySelector('.slide-track');
+  const slides = slider.querySelectorAll('.slide');
+  if (!slides.length) return;
+
+  if (!(sliderId in currentSlideIndex)) currentSlideIndex[sliderId] = 0;
+
+  let visibleSlides = 3;
+  if (window.innerWidth <= 1024 && window.innerWidth > 768) visibleSlides = 2;
+  if (window.innerWidth <= 768) visibleSlides = 1;
+
+  const maxPages = Math.ceil(slides.length / visibleSlides);
+  currentSlideIndex[sliderId] += direction;
+  if (currentSlideIndex[sliderId] < 0) currentSlideIndex[sliderId] = maxPages - 1;
+  if (currentSlideIndex[sliderId] >= maxPages) currentSlideIndex[sliderId] = 0;
+
+  const slideStyle = window.getComputedStyle(slides[0]);
+  const slideMargin = parseInt(slideStyle.marginLeft) + parseInt(slideStyle.marginRight);
+  const slideWidthWithMargin = slides[0].offsetWidth + slideMargin;
+
+  const targetScrollLeft = currentSlideIndex[sliderId] * slideWidthWithMargin * visibleSlides;
+  track.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+}
+
+function handleResize() {
+  document.querySelectorAll('.slider').forEach(slider => {
+    const sliderId = slider.id;
+    const slides = slider.querySelectorAll('.slide');
+    if (!slides.length) return;
+    if (!(sliderId in currentSlideIndex)) currentSlideIndex[sliderId] = 0;
+    currentSlideIndex[sliderId] = Math.round(
+      slider.querySelector('.slide-track').scrollLeft /
+      (slides[0].offsetWidth + parseInt(window.getComputedStyle(slides[0]).marginLeft) + parseInt(window.getComputedStyle(slides[0]).marginRight))
+    );
+    moveSlide(sliderId, 0);
+  });
+}
+
+window.addEventListener('resize', () => { setTimeout(handleResize, 200); });
+window.onload = handleResize;
+</script>
+
+
+
+
+
+<!-- footer -->
+    <footer
+        style="background-color: var(--dark-bg); color: var(--light-text); padding: 50px 0; font-family: 'Poppins', sans-serif;">
+        <div
+            style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding: 0 20px;">
+
+            <div class="footer-section">
+                <h3
+                    style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em; display: flex; align-items: center;">
+                    <span style="margin-right: 10px;">🚦</span> Road Safety Club
+                </h3>
+                <p style="line-height: 1.6;">
+                    Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                    roads safer
+                    for all!
+                </p>
+
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'});" class="back-to-top-btn"
+                    style="margin-top: 25px; padding: 12px 25px; background-color: var(--accent-color); border: none; color: var(--dark-bg); font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    ↑ Zoom Back Up!
+                </button>
+            </div>
+
+            <div class="footer-section">
+                <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">📞 Connect With Us</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><a href="mailto:info@roadsafetyclub.com"
+                            class="footer-link email-link">info@roadsafetyclub.com</a></li>
+                </ul>
+
+                <h4 style="color: var(--light-text); margin-top: 15px; margin-bottom: 5px; font-weight: 600;">Team
+                    Contacts:</h4>
+                <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                    <li><a href="tel:9996445592" class="footer-link contact-list-link"><strong>Vivek Yadav:</strong>
+                            9996445592</a>
+                    </li>
+                    <li><a href="tel:9251399133" class="footer-link contact-list-link"><strong>Shri ji
+                                Aggarwal:</strong>
+                            9251399133</a></li>
+                    <li><a href="tel:9389864319" class="footer-link contact-list-link"><strong>Shreya
+                                Chaudhary:</strong>
+                            9389864319</a></li>
+                    <li><a href="tel:7056123205" class="footer-link contact-list-link"><strong>Ekta Pannu:</strong>
+                            7056123205</a>
+                    </li>
+                    <li><a href="tel:9457057473" class="footer-link contact-list-link"><strong>Khush Raghav:</strong>
+                            9457057473</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">🔗 Quick Resources</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><a href="/rules" class="footer-link">Traffic Rules Handbook</a></li>
+                    <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                    <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                    <li><a href="/join" class="footer-link">Join Our Volunteer Team</a></li>
+                </ul>
+
+                <div style="margin-top: 20px;">
+                    <a href="#" class="social-icon" aria-label="Follow us on World Wide Web">🌐</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Facebook">📘</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Twitter">🐦</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Instagram">📸</a>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="text-align: center; padding-top: 25px; border-top: 1px solid var(--border-color); margin-top: 50px;">
+            <p>&copy; 2025 Road Safety Club. Drive Smart, Live Safe.</p>
+        </div>
+
+        <style>
+            /* CSS Variables for easy color changes */
+            :root {
+                --dark-bg: #1a1a1a;
+                --light-text: #fff;
+                --accent-color: #ffcc00;
+                /* Yellow */
+                --accent-hover: #e6b800;
+                --border-color: #444;
+            }
+
+            footer {
+                /* This ensures the font-family from the inline style is the starting point */
+                font-family: 'Poppins', Arial, sans-serif !important;
+            }
+
+            .footer-section {
+                flex: 1;
+                min-width: 280px;
+                margin-bottom: 20px;
+            }
+
+            /* General Link Styling */
+            .footer-link {
+                color: var(--light-text);
+                text-decoration: none;
+                transition: color 0.3s, transform 0.3s;
+                display: inline-block;
+            }
+
+            .footer-link:hover {
+                color: var(--accent-color);
+                transform: translateX(5px);
+                /* Subtle shift */
+            }
+
+            /* Team Contact List specific styling - removes the phone icon for this block */
+            .contact-list-link {
+                padding-left: 20px;
+                /* Indent slightly for visual hierarchy */
+            }
+
+            /* Social Icon Animation */
+            .social-icon {
+                color: var(--light-text);
+                font-size: 24px;
+                margin-right: 15px;
+                /* Use margin-right for spacing */
+                display: inline-block;
+                transition: transform 0.3s, color 0.3s;
+                text-decoration: none;
+            }
+
+            .social-icon:hover {
+                color: var(--accent-color);
+                transform: translateY(-5px) scale(1.1);
+                /* Lift and enlarge */
+            }
+
+            /* Back to Top Button hover */
+            .back-to-top-btn:hover {
+                background-color: var(--accent-hover);
+                transform: translateY(-3px) scale(1.02);
+                /* Lift and slightly enlarge */
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Clear focus state for accessibility */
+            .footer-link:focus,
+            .social-icon:focus,
+            .back-to-top-btn:focus {
+                outline: 2px solid var(--accent-color);
+                outline-offset: 3px;
+            }
+
+            /* Specific Link Icons (A friendlier touch) - Applied only to General/Email links */
+            .phone-link::before {
+                content: '📞 ';
+                color: var(--accent-color);
+            }
+
+            .email-link::before {
+                content: '📧 ';
+                color: var(--accent-color);
+            }
+        </style>
+    </footer>
+</body>
+</html>

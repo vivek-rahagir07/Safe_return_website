@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road Safety Awareness – Safe Return</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d4d;
+            --secondary-color: #222;
+            --light-bg: #f4f4f4;
+            --card-bg: #fff;
+            --text-color: #333;
+            --hover-color: #e63939;
+            --dark-red-outline: #cc0000;
+            --transition-speed: 0.3s;
+
+            /* Footer Variables */
+            --footer-bg: #1a1a1a;
+            --footer-text: #fff;
+            --footer-accent: #ffcc00;
+            --footer-hover: #e6b800;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            scroll-behavior: smooth;
+            /* Note: 'index.jpg' must be in the same folder or provide a valid path */
+            background-image: url('index.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        /* Professional Fixed Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 3em;
+            background: rgba(34, 34, 34, 0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: background 0.3s ease;
+        }
+
+        nav:hover {
+            background: rgba(34, 34, 34, 0.95);
+        }
+
+        .nav-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            display: flex; /* Ensure logo and text align vertically */
+            align-items: center; 
+            text-decoration: none;
+        }
+
+        .nav-title:hover {
+            color: var(--primary-color);
+        }
+
+        /* Logo Image Style */
+        #website_logo {
+           height: 40px; /* Set a specific height */
+           width: auto;
+           vertical-align: middle;
+           margin-right: 10px;
+           transition: transform 0.3s ease;
+        }
+        
+        .nav-title:hover #website_logo {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2em;
+            list-style: none;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            padding: 0.5em 0;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+            margin-top: 5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* --- New Dropdown/Sub-Nav Styles --- */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            /* Position right below the parent link */
+            left: 0;
+            background: rgba(34, 34, 34, 0.95);
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            list-style: none;
+            padding: 10px 0;
+            border-radius: 0 0 5px 5px;
+            z-index: 2000;
+        }
+
+        .dropdown-menu li {
+            padding: 0;
+            width: 100%;
+        }
+
+        .dropdown-menu a {
+            padding: 10px 20px;
+            display: block;
+            white-space: nowrap;
+            font-weight: 400;
+            /* Lighter font for sub-links */
+            color: #ccc;
+        }
+
+        /* Remove the bottom line animation for sub-links */
+        .dropdown-menu a::after {
+            display: none;
+        }
+
+        .dropdown-menu a:hover {
+            color: var(--footer-accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Show menu on hover of parent li */
+        .nav-links li:hover .dropdown-menu {
+            display: block;
+        }
+
+
+
+        /* --- End Dropdown Styles --- */
+
+
+        header {
+            margin-top: 70px; /* FIXED: Give space for fixed navbar */
+            background: rgba(255, 77, 77, 0.9);
+            color: var(--card-bg);
+            padding: 2em 1em 2.5em;
+            text-align: center;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2em, 4vw, 2.6em);
+            margin-bottom: 0.5em;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        header blockquote {
+            font-style: italic;
+            font-size: 1.1em;
+            margin: 1em auto 0;
+            color: #ffe6e6;
+            max-width: 600px;
+            padding: 0.8em 1em;
+            border-left: 5px solid white;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 2.5em auto;
+            padding: 2em 1.5em;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* The destination section for the link is retained with minimal content */
+        .content h2#why-ai-traffic-lights {
+            font-size: 2em;
+            text-align: center;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 1.5em;
+        }
+
+        .flex-cards {
+            display: flex;
+            gap: 2em;
+            flex-wrap: wrap;
+            margin-bottom: 2.5em;
+        }
+
+        .flex-cards>article {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .education,
+        .tips {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow var(--transition-speed);
+        }
+
+        .education:hover,
+        .tips:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2:not(#why-ai-traffic-lights) {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5em;
+        }
+
+        .tip,
+        .edu-item {
+            margin-bottom: 15px;
+            padding: 1.2em 1.5em;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .tip.active,
+        .edu-item.active {
+            background: #ffecec;
+            border-color: var(--primary-color);
+        }
+
+        .tip-title,
+        .edu-title {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+        }
+
+        .tip-title i,
+        .edu-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .tip-chevron,
+        .edu-chevron {
+            flex-shrink: 0;
+            transition: transform var(--transition-speed) ease, color var(--transition-speed);
+            color: #777;
+        }
+
+        .tip.active .tip-chevron,
+        .edu-item.active .edu-chevron {
+            transform: rotate(90deg);
+            color: var(--primary-color);
+        }
+
+        .tip-details,
+        .edu-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in-out 0.2s, padding 0.5s ease;
+            padding: 0 1.5em;
+            color: #555;
+            font-weight: normal;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .tip-details.open,
+        .edu-details.open {
+            opacity: 1;
+            padding: 0 1.5em 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            .flex-cards>article {
+                min-width: 100%;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 1em 2em;
+            }
+
+            /* Hide dropdown on mobile for simplicity unless you add mobile toggle logic */
+            .nav-links li:hover .dropdown-menu {
+                display: none;
+            }
+            
+            /* ADJUSTED: More space needed on mobile as nav wraps */
+            header {
+                margin-top: 150px; 
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.8em;
+                margin-top: 0.8em;
+            }
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 60px 20px 30px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            color: var(--footer-accent);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            line-height: 1.8;
+        }
+
+        .footer-section a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--footer-accent);
+            transform: translateX(5px);
+        }
+
+        .social-icons a {
+            font-size: 24px;
+            margin-right: 15px;
+            display: inline-block;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--footer-accent);
+            transform: translateY(-5px) scale(1.2);
+        }
+
+        .back-to-top-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: var(--footer-accent);
+            border: none;
+            color: var(--footer-bg);
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top-btn:hover {
+            background-color: var(--footer-hover);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #444;
+            margin-top: 50px;
+            padding-top: 20px;
+            font-size: 0.9em;
+        }
+
+        footer a:focus,
+        .back-to-top-btn:focus {
+            outline: 2px solid var(--footer-accent);
+            outline-offset: 3px;
+        
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+   <nav aria-label="Main Navigation">
+       <a href="#home" class="nav-title" aria-label="Home">
+           <img id="website_logo" src="Photoes/logo.png" alt="SafeReturn Logo">
+           SafeReturn
+       </a>
+
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="Road Safety.html">Road Safety Tips</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+            <li class="dropdown">
+                <a href="#why-ai-traffic-lights" aria-expanded="false" aria-haspopup="true">AI Based Traffic Lights <i
+                        class="fas fa-caret-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="Ai based traffic lights image.html">Why AI Traffic Lights</a></li>
+                    <li><a href="#how-it-works">How it Works</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#challenges">Challenges</a></li>
+                </ul>
+            </li>
+            <li><a href="#about-us">About Us</a></li>
+            <li><a href="footer.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header id="home">
+        <main>
+            <h1>Drive Smart. Stay Safe.</h1>
+            <p>Your journey is precious. Awareness is your best defense.</p>
+            <figure>
+                <blockquote>"The only thing we need from your trip is your safe return."</blockquote>
+            </figure>
+        </main>
+    </header>
+
+    <div class="content">
+
+
+
+        <div id="how-it-works" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div id="benefits" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div id="challenges" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div class="flex-cards" id="safety-accordion">
+            <article id="road-safety" class="education">
+                <h2><i class="fas fa-book-open"></i> Essential Road Education</h2>
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-1">
+                    <span class="edu-title"><i class="fas fa-shield-alt"></i> Defensive Driving</span>
+                    <i class="fas fa-chevron-right edu-chevron"></i>
+                </div>
+                <div class="edu-details" id="edu-details-1" aria-hidden="true">
+                    Use safe driving strategies, anticipate hazards, and avoid crashes by scanning the road constantly.
+                </div>
+
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-2">
+                    <span class="edu-title"><i class="fas fa-eye"></i> Recognising Road Hazards</span>
+                    <i class="fas fa-chevron-right edu-chevron"></i>
+                </div>
+                <div class="edu-details" id="edu-details-2" aria-hidden="true">
+                    Be vigilant for poor visibility, pedestrians, distracted drivers, and road surface changes.
+                </div>
+            </article>
+
+            <article class="tips">
+                <h2><i class="fas fa-lightbulb"></i> Quick Safety Tips</h2>
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-1">
+                    <span class="tip-title"><i class="fas fa-seat-belt"></i> Always wear your seatbelt</span>
+                    <i class="fas fa-chevron-right tip-chevron"></i>
+                </div>
+                <div class="tip-details" id="tip-details-1" aria-hidden="true">
+                    Reduces serious injury and death in accidents by over 50%.
+                </div>
+
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-2">
+                    <span class="tip-title"><i class="fas fa-mobile-alt"></i> Don’t text and drive</span>
+                    <i class="fas fa-chevron-right tip-chevron"></i>
+                </div>
+                <div class="tip-details" id="tip-details-2" aria-hidden="true">
+                    Distracted driving is a major cause of crashes. Use hands-free or stop safely.
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🚦 Road Safety Club</h3>
+                <p>Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                    roads safer!</p>
+                <button class="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'});">↑ Back to
+                    Top</button>
+            </div>
+
+            <div class="footer-section">
+                <h3>📞 Connect With Us</h3>
+                <ul>
+                    <li><a href="mailto:info@roadsafetyclub.com" class="footer-link">📧 info@roadsafetyclub.com</a></li>
+                    <li><a href="tel:9996445592" class="footer-link">📞 Vivek Yadav: 9996445592</a></li>
+                    <li><a href="tel:9251399133" class="footer-link">📞 Shri ji Aggarwal: 9251399133</a></li>
+                    <li><a href="tel:9389864319" class="footer-link">📞 Shreya Chaudhary: 9389864319</a></li>
+                    <li><a href="tel:7056123205" class="footer-link">📞 Ekta Pannu: 7056123205</a></li>
+                    <li><a href="tel:9457057473" class="footer-link">📞 Khush Raghav: 9457057473</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>🔗 Quick Resources</h3>
+                <ul>
+                    <li><a href="/rules" class="footer-link">Traffic Rules Handbook</a></li>
+                    <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                    <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                    <li><a href="/join" class="footer-link">Join Our Volunteer Team</a></li>
+                </ul>
+                <div class="social-icons" style="margin-top:15px;">
+                    <a href="#" aria-label="Website">🌐</a>
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="Instagram">📸</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2025 Road Safety Club. Drive Smart, Live Safe.
+        </div>
+    </footer>
+
+    <script>
+        const accordions = document.querySelectorAll('.tip, .edu-item');
+
+        accordions.forEach(item => {
+            const details = item.nextElementSibling;
+            item.addEventListener('click', () => toggleItem(item, details));
+            item.addEventListener('keydown', e => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleItem(item, details);
+                }
+            });
+        });
+
+        function toggleItem(el, details) {
+            const parent = el.closest('article');
+            const isActive = el.classList.contains('active');
+
+            // Close all other active accordions in the same article
+            parent.querySelectorAll('.tip.active, .edu-item.active').forEach(item => {
+                if (item !== el) {
+                    const otherDetails = item.nextElementSibling;
+                    item.classList.remove('active');
+                    item.setAttribute('aria-expanded', 'false');
+                    otherDetails.style.maxHeight = null;
+                    otherDetails.classList.remove('open');
+                    otherDetails.style.opacity = 0;
+                    otherDetails.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            if (!isActive) {
+                // Open the clicked item
+                el.classList.add('active');
+                el.setAttribute('aria-expanded', 'true');
+                details.classList.add('open');
+                details.setAttribute('aria-hidden', 'false');
+                window.requestAnimationFrame(() => {
+                    details.style.maxHeight = details.scrollHeight + "px";
+                    details.style.opacity = 1;
+                });
+            } else {
+                // Close the clicked item
+                el.classList.remove('active');
+                el.setAttribute('aria-expanded', 'false');
+                details.style.maxHeight = details.scrollHeight + "px";
+                void details.offsetWidth;
+                details.style.opacity = 0;
+                setTimeout(() => {
+                    details.classList.remove('open');
+                    details.setAttribute('aria-hidden', 'true');
+                    details.style.maxHeight = null;
+                }, 100);
+            }
+        }
+    </script>
+</body>
+
+</html>

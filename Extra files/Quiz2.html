@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🚦 Road Safety Quiz 🚗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5563DE;
+            --secondary-color: #74ABE2;
+            --bg-gradient: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --text-color-light: #f0f0f0;
+            --text-color-dark: #333;
+            --button-bg: #fff;
+            --button-hover: #d6e0ff;
+            --correct-color: #00c853;
+            --wrong-color: #d32f2f;
+            --toggle-bg: #ffb703;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: var(--bg-gradient);
+            color: var(--text-color-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 60px 0 20px;
+            position: relative;
+            /* ----------------------------------------------- */
+            /* --- OPTION FOR BACKGROUND IMAGE ADDING HERE --- */
+            /* ----------------------------------------------- */
+            background-image: url('photoes/image.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+            width: 90%;
+            animation: fadeIn 0.8s ease-in-out;
+            text-align: left;
+            margin-top: 20px;
+            color: var(--text-color-dark);
+        }
+
+        /* Override h2, h3, etc. inside container to use dark text color */
+        .container h2,
+        .container h3,
+        .container p {
+            color: var(--text-color-dark);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- INSTRUCTION STYLES --- */
+        #instruction-section h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            border-bottom: 2px solid rgba(51, 51, 51, 0.2);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .instruction-grid {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .instruction-card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            color: var(--text-color-dark);
+        }
+
+        .instruction-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .instruction-list li {
+            padding: 10px 0;
+            font-size: 1rem;
+            border-bottom: 1px dashed rgba(51, 51, 51, 0.2);
+        }
+
+        .instruction-list li:last-child {
+            border-bottom: none;
+        }
+
+        .instruction-list strong {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .instruction-start-btn {
+            width: 100%;
+            margin-top: 30px !important;
+            font-size: 1.2rem;
+            padding: 15px !important;
+            font-weight: 700 !important;
+            background-color: var(--toggle-bg) !important;
+            color: var(--text-color-dark) !important;
+        }
+
+        .instruction-start-btn:hover {
+            background-color: #ffc43d !important;
+        }
+
+        /* --- QUIZ & RESULT STYLES --- */
+        #quiz-section,
+        #result-section {
+            color: var(--text-color-dark);
+        }
+
+        .option,
+        button {
+            background: var(--button-bg);
+            color: var(--text-color-dark);
+            border: none;
+            padding: 12px;
+            margin: 8px auto;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 600px;
+            font-weight: 600;
+            transition: 0.3s;
+            display: block;
+        }
+
+        .option:hover:not(:disabled),
+        button:hover:not(:disabled) {
+            background: var(--button-hover);
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .correct {
+            background-color: var(--correct-color) !important;
+            color: #fff;
+            box-shadow: 0 0 10px var(--correct-color);
+        }
+
+        .wrong {
+            background-color: var(--wrong-color) !important;
+            color: #fff;
+            box-shadow: 0 0 10px var(--wrong-color);
+        }
+
+        #emojiFeedback {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            font-weight: 700;
+            color: var(--text-color-dark);
+        }
+
+        /* Language Toggle Positioning (Fixed for image issue) */
+        #langToggle {
+            position: fixed;
+            top: 15px;
+            /* Moved down slightly to clear the header text */
+            right: 15px;
+            /* Moved right slightly */
+            z-index: 100;
+            background: var(--toggle-bg);
+            padding: 4px 6px;
+            /* Reduced padding further */
+            border-radius: 10px;
+            font-size: 0.8rem;
+            /* Slightly increased for readability at minimal size */
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            color: var(--text-color-dark);
+            line-height: 1.2;
+            /* Crucial fix: ensure it only takes up the space it needs */
+            width: auto;
+            max-width: fit-content;
+        }
+
+        #timer-clock {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 8px 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            min-width: 80px;
+            color: #fff;
+        }
+
+        #lives,
+        #scoreDisplaySmall {
+            font-weight: 600;
+            margin: 5px 0;
+            color: var(--text-color-dark);
+        }
+
+        #scoreDisplaySmall {
+            float: right;
+        }
+
+        #quiz-section h3 {
+            margin-top: 10px;
+            font-size: 1.3rem;
+            min-height: 50px;
+        }
+
+        #skipBtn {
+            background: #4a4e69;
+            color: #fff;
+            width: auto;
+            padding: 8px 20px;
+            margin-top: 20px;
+        }
+
+        #skipBtn:hover {
+            background: #5c6285;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+
+            header {
+                padding: 5px 0;
+            }
+
+            #langToggle {
+                top: 10px;
+                /* Adjusted mobile top position */
+                right: 10px;
+                /* Adjusted mobile right position */
+                padding: 3px 5px;
+                /* Reduced mobile padding */
+                font-size: 0.7rem;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .instruction-grid {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🚦 Road Safety Quiz 🚗</h1>
+    </header>
+
+    <button id="langToggle" data-lang="en">हिन्दी 🇮🇳</button>
+
+    <section id="instruction-section" class="container">
+        <h2 id="instruction-title">🧭 Instructions Before You Start</h2>
+
+        <div class="instruction-grid">
+            <div id="en-instructions" class="instruction-card instruction-content">
+                <ul class="instruction-list">
+                    <li>⏱️ <strong>Time Limit:</strong> Each question must be answered within <strong>30
+                            seconds</strong>.</li>
+                    <li>❤️ <strong>Lives:</strong> You start with <strong>2 lives</strong> — a wrong answer reduces one
+                        life.</li>
+                    <li>⭐ <strong>Scoring:</strong> Earn points based on difficulty and speed! Answer quickly for bonus
+                        points.</li>
+                    <li>⏭️ <strong>Skipping:</strong> You can <strong>skip</strong> a question, but there is a
+                        <strong>−1 point penalty</strong>.
+                    </li>
+                    <li>🌐 <strong>Language:</strong> You can switch between <strong>English 🇺🇸 / Hindi 🇮🇳</strong>
+                        anytime using the toggle button.</li>
+                </ul>
+                <p style="font-size:1rem; font-weight:600; text-align:center; margin-top:15px;">Good luck and stay safe!
+                    🚗</p>
+            </div>
+
+            <div id="hi-instructions" class="instruction-card instruction-content hidden">
+                <ul class="instruction-list">
+                    <li>⏱️ <strong>समय सीमा:</strong> प्रत्येक प्रश्न का उत्तर <strong>30 सेकंड</strong> में दें।</li>
+                    <li>❤️ <strong>जीवन:</strong> आपके पास <strong>2 जीवन</strong> हैं — गलत उत्तर से एक जीवन कम होगा।
+                    </li>
+                    <li>⭐ <strong>स्कोरिंग:</strong> कठिनाई के आधार पर अंक प्राप्त करें! बोनस अंकों के लिए तेज़ी से
+                        उत्तर दें।</li>
+                    <li>⏭️ <strong>छोड़ना:</strong> आप किसी प्रश्न को <strong>छोड़</strong> सकते हैं, लेकिन <strong>−1
+                            अंक का दंड</strong> है।</li>
+                    <li>🌐 <strong>भाषा:</strong> आप टॉगल बटन का उपयोग करके कभी भी <strong>अंग्रेज़ी 🇺🇸 / हिन्दी
+                            🇮🇳</strong> बदल सकते हैं।</li>
+                </ul>
+                <p style="font-size:1rem; font-weight:600; text-align:center; margin-top:15px;">शुभकामनाएँ और सड़क पर
+                    सुरक्षित रहें! 🚗</p>
+            </div>
+        </div>
+
+        <button onclick="startQuiz()" class="instruction-start-btn" id="startBtnText">Start Quiz ▶</button>
+    </section>
+
+    <section id="quiz-section" class="container hidden">
+        <div id="scoreDisplaySmall">Score: 0</div>
+        <div id="lives">❤️ Lives: 2</div>
+        <div id="timer-clock"><span class="time-value">30s</span></div>
+
+        <h3 id="question">Question text</h3>
+        <div id="options"></div>
+        <p id="emojiFeedback"></p>
+        <button id="skipBtn">Skip ❌ (-1 point)</button>
+    </section>
+
+    <section id="result-section" class="container hidden">
+        <h2 id="scoreDisplay">Your Score</h2>
+        <button onclick="restartQuiz()">Restart 🔁</button>
+    </section>
+
+    <footer>© 2025 Road Safety Awareness Club</footer>
+
+    <script>
+        const questionBank = [
+            /* --- Original 20 Easy Questions --- */
+            { difficulty: "Easy", en: { q: "Red traffic light means?", options: ["Stop", "Go", "Caution"], answer: "Stop" }, hi: { q: "लाल ट्रैफिक लाइट का मतलब?", options: ["रुकें", "जाओ", "सावधान"], answer: "रुकें" } },
+            { difficulty: "Easy", en: { q: "Green light indicates?", options: ["Go", "Stop", "Wait"], answer: "Go" }, hi: { q: "हरा लाइट क्या दर्शाता?", options: ["जाओ", "रुको", "प्रतीक्षा करें"], answer: "जाओ" } },
+            { difficulty: "Easy", en: { q: "Wear while riding two-wheeler?", options: ["Slippers", "Helmet", "Cap"], answer: "Helmet" }, hi: { q: "दो-पहिए वाहन चलाते समय क्या पहनें?", options: ["चप्पल", "हेलमेट", "टोपी"], answer: "हेलमेट" } },
+            { difficulty: "Easy", en: { q: "Overtake from which side?", options: ["Right", "Left", "Either"], answer: "Right" }, hi: { q: "ओवरटेक सामान्यतः किस तरफ?", options: ["दाईं", "बाईं", "कोई भी"], answer: "दाईं" } },
+            { difficulty: "Easy", en: { q: "Purpose of zebra crossing?", options: ["Parking", "Pedestrian crossing", "Bus stop"], answer: "Pedestrian crossing" }, hi: { q: "ज़ेब्रा क्रॉसिंग का उद्देश्य?", options: ["पार्किंग", "पैदल पारगमन", "बस स्टॉप"], answer: "पैदल पारगमन" } },
+            { difficulty: "Easy", en: { q: "Who has priority at crossing?", options: ["Pedestrian", "Driver", "Cyclist"], answer: "Pedestrian" }, hi: { q: "पैदल मार्ग पर किसे प्राथमिकता?", options: ["पैदल यात्री", "ड्राइवर", "साइकिल चालक"], answer: "पैदल यात्री" } },
+            { difficulty: "Easy", en: { q: "Warning road sign color?", options: ["Red", "Yellow/Orange", "Blue"], answer: "Yellow/Orange" }, hi: { q: "चेतावनी सड़क संकेत का रंग?", options: ["लाल", "पीला/नारंगी", "नीला"], answer: "पीला/नारंगी" } },
+            { difficulty: "Easy", en: { q: "Solid white line meaning?", options: ["Lane change allowed", "No lane change allowed", "Parking zone"], answer: "No lane change allowed" }, hi: { q: "सफेद लाइन का अर्थ?", options: ["लेन परिवर्तन की अनुमति", "लेन परिवर्तन निषेध", "पार्किंग क्षेत्र"], answer: "लेन परिवर्तन निषेध" } },
+            { difficulty: "Easy", en: { q: "Hand signal left turn?", options: ["Left arm straight", "Right arm bent up", "Right arm bent down"], answer: "Left arm straight" }, hi: { q: "बाएं मुड़ने का हाथ संकेत?", options: ["बायाँ हाथ सीधा", "दायाँ हाथ ऊपर", "दायाँ हाथ नीचे"], answer: "बायाँ हाथ सीधा" } },
+            { difficulty: "Easy", en: { q: "Safe to overtake?", options: ["When road clear", "On curve", "Pedestrian crossing"], answer: "When road clear" }, hi: { q: "कब ओवरटेक सुरक्षित?", options: ["सड़क साफ़ होने पर", "मोड़ पर", "पैदल क्रॉसिंग पर"], answer: "सड़क साफ़ होने पर" } },
+            { difficulty: "Easy", en: { q: "Stop sign color?", options: ["Red", "Blue", "Green"], answer: "Red" }, hi: { q: "स्टॉप साइन का रंग?", options: ["लाल", "नीला", "हरा"], answer: "लाल" } },
+            { difficulty: "Easy", en: { q: "Pedestrian crossing action?", options: ["Cross without looking", "Wait for vehicles", "Run"], answer: "Wait for vehicles" }, hi: { q: "पैदल यात्रियों को क्रॉसिंग पर क्या करें?", options: ["देखे बिना पार", "वाहन के रुकने का इंतजार", "दौड़ें"], answer: "वाहन के रुकने का इंतजार" } },
+            { difficulty: "Easy", en: { q: "Yellow traffic light?", options: ["Stop if safe", "Speed up", "Ignore"], answer: "Stop if safe" }, hi: { q: "पीली लाइट पर क्या करें?", options: ["यदि सुरक्षित हो तो रुकें", "तेज़ चलाएं", "नज़रअंदाज करें"], answer: "यदि सुरक्षित हो तो रुकें" } },
+            { difficulty: "Easy", en: { q: "Blue road sign indicates?", options: ["Information", "Warning", "Stop"], answer: "Information" }, hi: { q: "नीला सड़क संकेत?", options: ["सूचना", "चेतावनी", "रुकें"], answer: "सूचना" } },
+            { difficulty: "Easy", en: { q: "Horn usage?", options: ["Warn danger", "Continuous", "Residential only"], answer: "Warn danger" }, hi: { q: "हॉर्न कब बजाएँ?", options: ["खतरे की चेतावनी", "लगातार", "केवल आवासीय"], answer: "खतरे की चेतावनी" } },
+            { difficulty: "Easy", en: { q: "Roundabout priority?", options: ["Inside", "Entering", "Pedestrians"], answer: "Entering" }, hi: { q: "राउंडअबाउट पर किसे रास्ता दें?", options: ["अंदर", "प्रवेश करने वाले", "पैदल"], answer: "प्रवेश करने वाले" } },
+            { difficulty: "Easy", en: { q: "Railway crossing without barrier?", options: ["Stop/look/listen", "Speed up", "Honk"], answer: "Stop/look/listen" }, hi: { q: "रेलवे क्रॉसिंग पर बिना बैरियर?", options: ["रुको/देखो/सुनो", "तेज़ चलाओ", "हॉर्न बजाओ"], answer: "रुको/देखो/सुनो" } },
+            { difficulty: "Easy", en: { q: "Footpath use?", options: ["Walk", "Drive", "Park"], answer: "Walk" }, hi: { q: "फुटपाथ का उपयोग?", options: ["चलना", "ड्राइव", "पार्क"], answer: "चलना" } },
+            { difficulty: "Easy", en: { q: "Seatbelt importance?", options: ["Safety", "Fashion", "Comfort"], answer: "Safety" }, hi: { q: "सीटबेल्ट का महत्व?", options: ["सुरक्षा", "फैशन", "आराम"], answer: "सुरक्षा" } },
+
+            /* --- NEW 10 Easy Questions --- */
+            { difficulty: "Easy", en: { q: "When should you use your headlights during the day?", options: ["In rain/fog/low light", "Never", "Only on highways"], answer: "In rain/fog/low light" }, hi: { q: "दिन के दौरान हेडलाइट्स का उपयोग कब करना चाहिए?", options: ["बारिश/धुंध/कम रोशनी में", "कभी नहीं", "केवल हाईवे पर"], answer: "बारिश/धुंध/कम रोशनी में" } },
+            { difficulty: "Easy", en: { q: "What does a 'Give Way' sign mean?", options: ["Stop completely", "Speed up", "Slow down and yield to traffic"], answer: "Slow down and yield to traffic" }, hi: { q: "रास्ता दें' संकेत का क्या मतलब है?", options: ["पूरी तरह रुकें", "गति बढ़ाएँ", "धीमा करें और ट्रैफिक को रास्ता दें"], answer: "धीमा करें और ट्रैफिक को रास्ता दें" } },
+            { difficulty: "Easy", en: { q: "What color is the light for reversing a car?", options: ["Red", "White", "Yellow"], answer: "White" }, hi: { q: "कार को रिवर्स करने के लिए लाइट का रंग क्या है?", options: ["लाल", "सफ़ेद", "पीला"], answer: "सफ़ेद" } },
+            { difficulty: "Easy", en: { q: "What is the main cause of tyre bursts in summer?", options: ["Over-inflation", "Under-inflation", "Wet roads"], answer: "Under-inflation" }, hi: { q: "गर्मियों में टायर फटने का मुख्य कारण क्या है?", options: ["अधिक हवा", "कम हवा", "गीली सड़कें"], answer: "कम हवा" } },
+            { difficulty: "Easy", en: { q: "Who must wear a seatbelt in a moving car?", options: ["The driver only", "Everyone", "Front passengers only"], answer: "Everyone" }, hi: { q: "चलती कार में सीटबेल्ट किसे पहनना चाहिए?", options: ["केवल ड्राइवर", "सभी को", "केवल सामने के यात्रियों को"], answer: "सभी को" } },
+            { difficulty: "Easy", en: { q: "What does a flashing red light at a junction indicate?", options: ["Stop and proceed when clear", "Slow down", "Proceed with caution"], answer: "Stop and proceed when clear" }, hi: { q: "जंक्शन पर चमकती लाल बत्ती क्या दर्शाती है?", options: ["रुकें और साफ़ होने पर आगे बढ़ें", "धीमा करें", "सावधानी से आगे बढ़ें"], answer: "रुकें और साफ़ होने पर आगे बढ़ें" } },
+            { difficulty: "Easy", en: { q: "Which license is needed for a two-wheeler with gear?", options: ["Light Motor Vehicle", "Transport Vehicle", "Motorcycle with Gear"], answer: "Motorcycle with Gear" }, hi: { q: "गियर वाले दोपहिया वाहन के लिए कौन सा लाइसेंस चाहिए?", options: ["हल्का मोटर वाहन", "परिवहन वाहन", "गियर के साथ मोटरसाइकिल"], answer: "गियर के साथ मोटरसाइकिल" } },
+            { difficulty: "Easy", en: { q: "Minimum age for driving a vehicle without gear (e.g., moped) in India?", options: ["18", "16", "14"], answer: "16" }, hi: { q: "भारत में बिना गियर वाले वाहन (जैसे मोपेड) चलाने की न्यूनतम आयु?", options: ["18", "16", "14"], answer: "16" } },
+            { difficulty: "Easy", en: { q: "When should you NOT change lanes?", options: ["Before a junction", "On a straight road", "When traffic is light"], answer: "Before a junction" }, hi: { q: "आपको लेन कब नहीं बदलनी चाहिए?", options: ["जंक्शन से पहले", "सीधी सड़क पर", "जब ट्रैफिक हल्का हो"], answer: "जंक्शन से पहले" } },
+            { difficulty: "Easy", en: { q: "What should you carry with you while driving?", options: ["Driving License", "Photo ID", "Cash"], answer: "Driving License" }, hi: { q: "गाड़ी चलाते समय आपको अपने पास क्या रखना चाहिए?", options: ["ड्राइविंग लाइसेंस", "फोटो पहचान पत्र", "नकद"], answer: "ड्राइविंग लाइसेंस" } },
+
+
+            /* --- Original 20 Medium Questions --- */
+            { difficulty: "Medium", en: { q: "Maximum speed in city?", options: ["30km/h", "50km/h", "70km/h"], answer: "50km/h" }, hi: { q: "शहर में अधिकतम गति?", options: ["30km/h", "50km/h", "70km/h"], answer: "50km/h" } },
+            { difficulty: "Medium", en: { q: "Drunk driving limit?", options: ["0.03%", "0.08%", "0.2%"], answer: "0.03%" }, hi: { q: "शराब पीकर वाहन चलाने की सीमा?", options: ["0.03%", "0.08%", "0.2%"], answer: "0.03%" } },
+            { difficulty: "Medium", en: { q: "Helmets for pillion rider?", options: ["Mandatory", "Optional", "Not needed"], answer: "Mandatory" }, hi: { q: "पिलियन सवारी के लिए हेलमेट?", options: ["अनिवार्य", "वैकल्पिक", "ज़रूरत नहीं"], answer: "अनिवार्य" } },
+            { difficulty: "Medium", en: { q: "Use of indicators?", options: ["Turn signal", "Decorative", "Horn"], answer: "Turn signal" }, hi: { q: "इंडिकेटर का प्रयोग?", options: ["मोड़ संकेत", "सजावट", "हॉर्न"], answer: "मोड़ संकेत" } },
+            { difficulty: "Medium", en: { q: "Lane discipline importance?", options: ["Safety", "Speed", "None"], answer: "Safety" }, hi: { q: "लेन अनुशासन का महत्व?", options: ["सुरक्षा", "गति", "कोई नहीं"], answer: "सुरक्षा" } },
+            { difficulty: "Medium", en: { q: "Double yellow line means?", options: ["No crossing", "Cross allowed", "Parking"], answer: "No crossing" }, hi: { q: "डबल येलो लाइन का मतलब?", options: ["पार करना मना", "पार करने की अनुमति", "पार्किंग"], answer: "पार करना मना" } },
+            { difficulty: "Medium", en: { q: "When to use high beam?", options: ["Open road", "City", "Fog"], answer: "Open road" }, hi: { q: "हाई बीम कब उपयोग करें?", options: ["खुली सड़क", "शहर", "धुंध"], answer: "खुली सड़क" } },
+            { difficulty: "Medium", en: { q: "Traffic signs shape warning?", options: ["Triangle", "Circle", "Square"], answer: "Triangle" }, hi: { q: "चेतावनी संकेत का आकार?", options: ["त्रिभुज", "वृत्त", "वर्ग"], answer: "त्रिभुज" } },
+            { difficulty: "Medium", en: { q: "Children crossing sign color?", options: ["Yellow", "Red", "Blue"], answer: "Yellow" }, hi: { q: "बच्चों के क्रॉसिंग का रंग?", options: ["पीला", "लाल", "नीला"], answer: "पीला" } },
+            { difficulty: "Medium", en: { q: "Right of way at junction?", options: ["Vehicle from right", "Left", "Pedestrian"], answer: "Vehicle from right" }, hi: { q: "संघमण पर किसे रास्ता?", options: ["दाएँ वाहन", "बाएँ", "पैदल"], answer: "दाएँ वाहन" } },
+            { difficulty: "Medium", en: { q: "Safe following distance?", options: ["2 sec", "5 sec", "10 sec"], answer: "2 sec" }, hi: { q: "सुरक्षित दूरी?", options: ["2 सेकंड", "5 सेकंड", "10 सेकंड"], answer: "2 सेकंड" } },
+            { difficulty: "Medium", en: { q: "What is a blind spot?", options: ["Hidden area", "Headlight", "Mirror"], answer: "Hidden area" }, hi: { q: "ब्लाइंड स्पॉट क्या है?", options: ["छिपा हुआ क्षेत्र", "हैडलाइट", "दर्पण"], answer: "छिपा हुआ क्षेत्र" } },
+            { difficulty: "Medium", en: { q: "Fog lights used when?", options: ["Low visibility", "Night", "Day"], answer: "Low visibility" }, hi: { q: "धुंध लाइट कब?", options: ["कम दृश्यता", "रात", "दिन"], answer: "कम दृश्यता" } },
+            { difficulty: "Medium", en: { q: "Helmet certification?", options: ["ISI", "FIFA", "BIS"], answer: "ISI" }, hi: { q: "हेलमेट प्रमाणन?", options: ["ISI", "FIFA", "BIS"], answer: "ISI" } },
+            { difficulty: "Medium", en: { q: "Pedestrian signal color?", options: ["Green", "Red", "Yellow"], answer: "Green" }, hi: { q: "पैदल यात्री का संकेत?", options: ["हरा", "लाल", "पीला"], answer: "हरा" } },
+            { difficulty: "Medium", en: { q: "What is defensive driving?", options: ["Avoid accidents", "Speeding", "Overtaking"], answer: "Avoid accidents" }, hi: { q: "डिफेंसिव ड्राइविंग क्या है?", options: ["दुर्घटना से बचना", "स्पीड", "ओवरटेक"], answer: "दुर्घटना से बचना" } },
+            { difficulty: "Medium", en: { q: "Roundabout entry rule?", options: ["Yield", "Go first", "Honk"], answer: "Yield" }, hi: { q: "राउंडअबाउट में प्रवेश नियम?", options: ["रास्ता दें", "पहले जाएँ", "हॉर्न"], answer: "रास्ता दें" } },
+            { difficulty: "Medium", en: { q: "Overtaking on hill?", options: ["No", "Yes", "Depends"], answer: "No" }, hi: { q: "पहाड़ी पर ओवरटेक?", options: ["नहीं", "हाँ", "निर्भर करता है"], answer: "नहीं" } },
+            { difficulty: "Medium", en: { q: "Rainy road caution?", options: ["Slow down", "Speed up", "No change"], answer: "Slow down" }, hi: { q: "बारिश में सड़क सावधानी?", options: ["धीरे चलें", "तेज़ चलाएं", "कोई बदलाव नहीं"], answer: "धीरे चलें" } },
+            { difficulty: "Medium", en: { q: "Horn limit in city?", options: ["Short beeps", "Continuous", "None"], answer: "Short beeps" }, hi: { q: "शहर में हॉर्न की सीमा?", options: ["छोटे बीप", "लगातार", "कोई नहीं"], answer: "छोटे बीप" } },
+
+            /* --- NEW 10 Medium Questions --- */
+            { difficulty: "Medium", en: { q: "What is hydroplaning?", options: ["Skidding due to oil", "Tires riding on a film of water", "Engine overheating"], answer: "Tires riding on a film of water" }, hi: { q: "हाइड्रोप्लानिंग क्या है?", options: ["तेल के कारण फिसलना", "टायरों का पानी की पतली परत पर चलना", "इंजन का गर्म होना"], answer: "टायरों का पानी की पतली परत पर चलना" } },
+            { difficulty: "Medium", en: { q: "What is the ideal distance to maintain from a braking vehicle?", options: ["1 car length", "2 second rule", "5 meter rule"], answer: "2 second rule" }, hi: { q: "ब्रेक लगाने वाले वाहन से कितनी आदर्श दूरी बनाए रखनी चाहिए?", options: ["1 कार की लंबाई", "2 सेकंड का नियम", "5 मीटर का नियम"], answer: "2 सेकंड का नियम" } },
+            { difficulty: "Medium", en: { q: "You see an injured animal on the road. What is the first priority?", options: ["Get help", "Ignore it", "Move the animal immediately"], answer: "Get help" }, hi: { q: "आपने सड़क पर एक घायल जानवर देखा। पहली प्राथमिकता क्या है?", options: ["मदद के लिए बुलाओ", "अनदेखा करो", "जानवर को तुरंत हटाओ"], answer: "मदद के लिए बुलाओ" } },
+            { difficulty: "Medium", en: { q: "What is the purpose of reflective road studs (cat eyes)?", options: ["Mark center line", "Mark lane edges", "All of the above"], answer: "All of the above" }, hi: { q: "चिंतनशील सड़क स्टड (कैट आई) का उद्देश्य क्या है?", options: ["केंद्र रेखा चिह्नित करें", "लेन किनारे चिह्नित करें", "उपरोक्त सभी"], answer: "उपरोक्त सभी" } },
+            { difficulty: "Medium", en: { q: "Maximum speed limit near schools or hospitals in most cities?", options: ["60 km/h", "25 km/h", "40 km/h"], answer: "25 km/h" }, hi: { q: "अधिकांश शहरों में स्कूलों या अस्पतालों के पास अधिकतम गति सीमा?", options: ["60 किमी/घंटा", "25 किमी/घंटा", "40 किमी/घंटा"], answer: "25 किमी/घंटा" } },
+            { difficulty: "Medium", en: { q: "What is the correct hand signal for 'Slowing Down'?", options: ["Right arm straight out", "Right arm bent down", "Left arm bent up"], answer: "Right arm bent down" }, hi: { q: "धीमा करने' के लिए सही हाथ का संकेत क्या है?", options: ["दाहिनी भुजा सीधी", "दाहिनी भुजा नीचे झुकी हुई", "बायीं भुजा ऊपर झुकी हुई"], answer: "दाहिनी भुजा नीचे झुकी हुई" } },
+            { difficulty: "Medium", en: { q: "A dashed yellow line next to a solid white line means?", options: ["Overtaking allowed from solid side", "Overtaking allowed from dashed side", "No overtaking"], answer: "Overtaking allowed from dashed side" }, hi: { q: "एक ठोस सफेद रेखा के बगल में एक टूटी हुई पीली रेखा का क्या मतलब है?", options: ["ठोस तरफ से ओवरटेक की अनुमति", "टूटी हुई तरफ से ओवरटेक की अनुमति", "ओवरटेक नहीं"], answer: "टूटी हुई तरफ से ओवरटेक की अनुमति" } },
+            { difficulty: "Medium", en: { q: "When must you stop for an ambulance with flashing lights?", options: ["Only if it’s on your side", "When lights are red", "Always, regardless of traffic light"], answer: "Always, regardless of traffic light" }, hi: { q: "चमकती लाइट वाली एम्बुलेंस के लिए आपको कब रुकना होगा?", options: ["केवल अगर यह आपकी तरफ हो", "जब लाइट लाल हो", "हमेशा, ट्रैफिक लाइट की परवाह किए बिना"], answer: "हमेशा, ट्रैफिक लाइट की परवाह किए बिना" } },
+            { difficulty: "Medium", en: { q: "What does the term 'Pinch Point' usually refer to in traffic?", options: ["Where two lanes merge", "A sharp bend", "A police checkpoint"], answer: "Where two lanes merge" }, hi: { q: "ट्रैफिक में 'पिंच पॉइंट' शब्द का तात्पर्य आमतौर पर किससे है?", options: ["जहां दो लेन विलीन होती हैं", "एक तीखा मोड़", "एक पुलिस चौकी"], answer: "जहां दो लेन विलीन होती हैं" } },
+            { difficulty: "Medium", en: { q: "What is the risk associated with driving with worn-out tires?", options: ["Reduced fuel economy", "Increased puncture risk", "Reduced grip and poor braking"], answer: "Reduced grip and poor braking" }, hi: { q: "घिसे हुए टायरों के साथ गाड़ी चलाने का जोखिम क्या है?", options: ["कम ईंधन दक्षता", "बढ़ा हुआ पंचर जोखिम", "कम पकड़ और ख़राब ब्रेकिंग"], answer: "कम पकड़ और ख़राब ब्रेकिंग" } },
+
+
+            /* --- Original 20 Hard Questions --- */
+            { difficulty: "Hard", en: { q: "Safe distance formula?", options: ["Speed x 2", "Speed/2", "Speed+2"], answer: "Speed x 2" }, hi: { q: "सुरक्षित दूरी का सूत्र?", options: ["Speed x 2", "Speed/2", "Speed+2"], answer: "Speed x 2" } },
+            { difficulty: "Hard", en: { q: "Alcohol effect threshold?", options: ["0.03%", "0.05%", "0.08%"], answer: "0.03%" }, hi: { q: "शराब का प्रभाव सीमा?", options: ["0.03%", "0.05%", "0.08%"], answer: "0.03%" } },
+            { difficulty: "Hard", en: { q: "ABS function?", options: ["Prevent skidding", "Stop car", "Increase speed"], answer: "Prevent skidding" }, hi: { q: "ABS का कार्य?", options: ["स्किडिंग रोकना", "कार रोकना", "गति बढ़ाना"], answer: "स्किडिंग रोकना" } },
+            { difficulty: "Hard", en: { q: "Vehicle fitness certificate validity?", options: ["1 yr", "6 months", "3 yrs"], answer: "1 yr" }, hi: { q: "वाहन फिटनेस प्रमाणपत्र मान्यता?", options: ["1 साल", "6 महीने", "3 साल"], answer: "1 साल" } },
+            { difficulty: "Hard", en: { q: "Night driving safety tips?", options: ["Use low beam", "High beam always", "No lights"], answer: "Use low beam" }, hi: { q: "रात में ड्राइविंग टिप्स?", options: ["लो बीम का उपयोग", "हमेशा हाई बीम", "बिना लाइट"], answer: "लो बीम का उपयोग" } },
+            { difficulty: "Hard", en: { q: "Blind spot awareness?", options: ["Check mirrors & head", "Only mirrors", "No check"], answer: "Check mirrors & head" }, hi: { q: "ब्लाइंड स्पॉट जागरूकता?", options: ["दर्पण और सिर देखें", "केवल दर्पण", "नहीं"], answer: "दर्पण और सिर देखें" } },
+            { difficulty: "Hard", en: { q: "Traffic violation penalty?", options: ["Fine", "Community service", "Warning"], answer: "Fine" }, hi: { q: "ट्रैफिक उल्लंघन जुर्माना?", options: ["जुर्माना", "सामुदायिक सेवा", "चेतावनी"], answer: "जुर्माना" } },
+            { difficulty: "Hard", en: { q: "Seatbelt law for all?", options: ["Yes", "No", "Depends"], answer: "Yes" }, hi: { q: "सबके लिए सीटबेल्ट कानून?", options: ["हाँ", "नहीं", "निर्भर करता है"], answer: "हाँ" } },
+            { difficulty: "Hard", en: { q: "Helmet misuse penalty?", options: ["Fine", "Warning", "None"], answer: "Fine" }, hi: { q: "हेलमेट गलत उपयोग जुर्माना?", options: ["जुर्माना", "चेतावनी", "कोई नहीं"], answer: "जुर्माना" } },
+            { difficulty: "Hard", en: { q: "Accident reporting time?", options: ["24 hrs", "48 hrs", "72 hrs"], answer: "24 hrs" }, hi: { q: "दुर्घटना रिपोर्टिंग समय?", options: ["24 घंटे", "48 घंटे", "72 घंटे"], answer: "24 घंटे" } },
+            { difficulty: "Hard", en: { q: "Traffic density monitoring?", options: ["AI sensors", "Manual", "None"], answer: "AI sensors" }, hi: { q: "ट्रैफिक डेंसिटी निगरानी?", options: ["AI सेंसर", "मैनुअल", "कोई नहीं"], answer: "AI सेंसर" } },
+            { difficulty: "Hard", en: { q: "Emergency lane use?", options: ["Only emergencies", "All vehicles", "Never"], answer: "Only emergencies" }, hi: { q: "इमरजेंसी लेन उपयोग?", options: ["केवल आपातकालीन", "सभी वाहन", "कभी नहीं"], answer: "केवल आपातकालीन" } },
+            { difficulty: "Hard", en: { q: "Safe overtaking on curve?", options: ["No", "Yes", "Depends"], answer: "No" }, hi: { q: "मोड़ पर सुरक्षित ओवरटेक?", options: ["नहीं", "हाँ", "निर्भर करता है"], answer: "नहीं" } },
+            { difficulty: "Hard", en: { q: "Pedestrian safety measures?", options: ["Footpaths & signals", "None", "Speed only"], answer: "Footpaths & signals" }, hi: { q: "पैदल यात्री सुरक्षा उपाय?", options: ["फुटपाथ और सिग्नल", "कोई नहीं", "केवल गति"], answer: "फुटपाथ और सिग्नल" } },
+            { difficulty: "Hard", en: { q: "Traffic light sequence?", options: ["Red->Yellow->Green", "Green->Red->Yellow", "Yellow->Green->Red"], answer: "Red->Yellow->Green" }, hi: { q: "ट्रैफिक लाइट अनुक्रम?", options: ["लाल->पीला->हरा", "हरा->लाल->पीला", "पीला->हरा->लाल"], answer: "लाल->पीला->हरा" } },
+            { difficulty: "Hard", en: { q: "Use of seatbelt reduces?", options: ["Injury", "Speed", "Fuel"], answer: "Injury" }, hi: { q: "सीटबेल्ट उपयोग कम करता है?", options: ["चोट", "गति", "ईंधन"], answer: "चोट" } },
+            { difficulty: "Hard", en: { q: "Road rage prevention?", options: ["Stay calm", "Honk continuously", "Overtake"], answer: "Stay calm" }, hi: { q: "रोड रेज़ रोकथाम?", options: ["शांत रहें", "लगातार हॉर्न", "ओवरटेक"], answer: "शांत रहें" } },
+            { difficulty: "Hard", en: { q: "Rainy road accident prevention?", options: ["Slow & careful", "Fast", "Ignore"], answer: "Slow & careful" }, hi: { q: "बारिश में दुर्घटना रोकथाम?", options: ["धीरे और सावधानीपूर्वक", "तेज़", "अनदेखा करें"], answer: "धीरे और सावधानीपूर्वक" } },
+            { difficulty: "Hard", en: { q: "AI traffic system benefits?", options: ["Optimize flow", "Ignore", "Confuse"], answer: "Optimize flow" }, hi: { q: "AI ट्रैफिक सिस्टम लाभ?", options: ["प्रवाह अनुकूलन", "अनदेखा", "भ्रमित"], answer: "प्रवाह अनुकूलन" } },
+
+            /* --- NEW 10 Hard Questions (Completed) --- */
+            { difficulty: "Hard", en: { q: "According to the Motor Vehicles Act, which document is essential for insurance claim processing?", options: ["PUC Certificate", "First Aid Box", "FIR Report"], answer: "FIR Report" }, hi: { q: "मोटर वाहन अधिनियम के अनुसार, बीमा दावा प्रसंस्करण के लिए कौन सा दस्तावेज़ आवश्यक है?", options: ["पीयूसी प्रमाणपत्र", "प्राथमिक चिकित्सा बॉक्स", "एफआईआर रिपोर्ट"], answer: "एफआईआर रिपोर्ट" } },
+            { difficulty: "Hard", en: { q: "The primary reason for not using hazard lights while driving in heavy rain is:", options: ["Confuses other drivers", "Drains the battery", "It is illegal everywhere"], answer: "Confuses other drivers" }, hi: { q: "भारी बारिश में गाड़ी चलाते समय खतरे की लाइट का उपयोग न करने का प्राथमिक कारण है:", options: ["अन्य ड्राइवरों को भ्रमित करता है", "बैटरी खत्म करता है", "यह हर जगह अवैध है"], answer: "अन्य ड्राइवरों को भ्रमित करता है" } },
+            { difficulty: "Hard", en: { q: "What is the purpose of the 'PUC' (Pollution Under Control) certificate?", options: ["Check fuel type", "Check vehicle speed", "Check exhaust emissions"], answer: "Check exhaust emissions" }, hi: { q: "पीयूसी' (प्रदूषण नियंत्रण में) प्रमाणपत्र का उद्देश्य क्या है?", options: ["ईंधन का प्रकार जांचना", "वाहन की गति जांचना", "निकास उत्सर्जन जांचना"], answer: "निकास उत्सर्जन जांचना" } },
+            { difficulty: "Hard", en: { q: "What is 'tailgating'?", options: ["Driving too close behind another vehicle", "Following a large truck", "Using the tailgate for storage"], answer: "Driving too close behind another vehicle" }, hi: { q: "टेलगेटिंग क्या है?", options: ["दूसरे वाहन के बहुत करीब चलाना", "एक बड़े ट्रक का पीछा करना", "भंडारण के लिए टेलगेट का उपयोग करना"], answer: "दूसरे वाहन के बहुत करीब चलाना" } },
+            { difficulty: "Hard", en: { q: "What is the maximum penalty for not stopping after an accident?", options: ["License suspension for 6 months", "License cancellation and jail time", "A heavy fine only"], answer: "License cancellation and jail time" }, hi: { q: "दुर्घटना के बाद न रुकने पर अधिकतम दंड क्या है?", options: ["6 महीने के लिए लाइसेंस निलंबन", "लाइसेंस रद्द और जेल की सज़ा", "केवल भारी जुर्माना"], answer: "लाइसेंस रद्द और जेल की सज़ा" } },
+        ];
+
+        const QUIZ_LENGTH = 10, TIME_LIMIT = 30;
+        let quizQuestions = [], currentQuestionIndex = 0, score = 0, lives = 2, language = 'en', timerInterval, currentTime = TIME_LIMIT;
+
+        const el = {
+            instruction: document.getElementById('instruction-section'),
+            quiz: document.getElementById('quiz-section'),
+            result: document.getElementById('result-section'),
+            q: document.getElementById('question'),
+            opt: document.getElementById('options'),
+            lives: document.getElementById('lives'),
+            timer: document.querySelector('#timer-clock .time-value'),
+            smallScore: document.getElementById('scoreDisplaySmall'),
+            bigScore: document.getElementById('scoreDisplay'),
+            skip: document.getElementById('skipBtn'),
+            feedback: document.getElementById('emojiFeedback'),
+            lang: document.getElementById('langToggle'),
+            head: document.querySelector('header h1'),
+            enInst: document.getElementById('en-instructions'),
+            hiInst: document.getElementById('hi-instructions'),
+            instTitle: document.getElementById('instruction-title'),
+            startBtn: document.getElementById('startBtnText')
+        };
+
+        const difficultyPoints = { Easy: 1, Medium: 2, Hard: 3 };
+
+        const langContent = {
+            en: {
+                toggle: 'हिन्दी 🇮🇳',
+                title: '🧭 Instructions Before You Start',
+                start: 'Start Quiz ▶',
+                skipBtn: 'Skip ❌ (-1 point)',
+                livesPrefix: '❤️ Lives:',
+                scorePrefix: 'Score:',
+                timeout: '⌛ Time Out!',
+                correct: '✅ Correct!',
+                wrong: '❌ Wrong!',
+                skipped: '⏭️ Skipped!',
+                finalScore: 'Final Score:',
+                restart: 'Restart 🔁'
+            },
+            hi: {
+                toggle: 'English 🇺🇸',
+                title: '🧭 शुरू करने से पहले निर्देश',
+                start: 'क्विज़ शुरू करें ▶',
+                skipBtn: 'छोड़ें ❌ (-1 अंक दंड)',
+                livesPrefix: '❤️ जीवन:',
+                scorePrefix: 'स्कोर:',
+                timeout: '⌛ समय समाप्त!',
+                correct: '✅ सही!',
+                wrong: '❌ गलत!',
+                skipped: '⏭️ छोड़ा गया!',
+                finalScore: 'अंतिम स्कोर:',
+                restart: 'पुनरारंभ करें 🔁'
+            }
+        };
+
+        function updateLanguageContent() {
+            const content = langContent[language];
+            el.lang.textContent = content.toggle;
+            el.lang.setAttribute('data-lang', language);
+            el.instTitle.textContent = content.title;
+            el.startBtn.textContent = content.start;
+
+            if (language === 'en') {
+                el.enInst.classList.remove('hidden');
+                el.hiInst.classList.add('hidden');
+            } else {
+                el.enInst.classList.add('hidden');
+                el.hiInst.classList.remove('hidden');
+            }
+
+            el.skip.textContent = content.skipBtn;
+            el.lives.textContent = `${content.livesPrefix} ${lives}`;
+            el.smallScore.textContent = `${content.scorePrefix} ${score}`;
+
+            if (!el.result.classList.contains('hidden')) {
+                el.bigScore.textContent = `${content.finalScore} ${score}`;
+                el.result.querySelector('button').textContent = content.restart;
+            }
+
+            if (!el.quiz.classList.contains('hidden') && currentQuestionIndex < quizQuestions.length) {
+                const qD = quizQuestions[currentQuestionIndex], q = qD[language];
+                el.q.textContent = q.q;
+                const oldBtns = [...el.opt.querySelectorAll('.option')];
+                el.opt.innerHTML = '';
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option'; btn.textContent = opt;
+                    btn.disabled = oldBtns[i]?.disabled || false;
+                    if (oldBtns[i]?.classList.contains('correct')) btn.classList.add('correct');
+                    if (oldBtns[i]?.classList.contains('wrong')) btn.classList.add('wrong');
+                    btn.onclick = () => checkAnswer(opt, qD);
+                    el.opt.appendChild(btn);
+                });
+                const prevLang = language === 'en' ? 'hi' : 'en';
+                if (el.feedback.textContent === langContent[prevLang].correct) {
+                    el.feedback.textContent = content.correct;
+                } else if (el.feedback.textContent === langContent[prevLang].wrong) {
+                    el.feedback.textContent = content.wrong;
+                } else if (el.feedback.textContent === langContent[prevLang].timeout) {
+                    el.feedback.textContent = content.timeout;
+                } else if (el.feedback.textContent === langContent[prevLang].skipped) {
+                    el.feedback.textContent = content.skipped;
+                }
+            }
+        }
+
+        updateLanguageContent();
+
+        function startQuiz() {
+            score = 0; lives = 2; currentQuestionIndex = 0;
+            quizQuestions = questionBank.slice(0, QUIZ_LENGTH);
+            el.instruction.classList.add('hidden');
+            el.result.classList.add('hidden');
+            el.quiz.classList.remove('hidden');
+            updateUI(); loadQuestion();
+        }
+
+        function updateUI() {
+            const content = langContent[language];
+            el.lives.textContent = `${content.livesPrefix} ${lives}`;
+            el.smallScore.textContent = `${content.scorePrefix} ${score}`;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval); currentTime = TIME_LIMIT;
+            el.timer.textContent = `${currentTime}s`;
+            timerInterval = setInterval(() => {
+                currentTime--; el.timer.textContent = `${currentTime}s`;
+                if (currentTime <= 0) { clearInterval(timerInterval); handleTimeout(); }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) return endGame();
+            el.feedback.textContent = '';
+            const q = quizQuestions[currentQuestionIndex][language];
+            el.q.textContent = q.q;
+            el.opt.innerHTML = '';
+            q.options.forEach(o => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.textContent = o;
+                btn.onclick = () => checkAnswer(o, quizQuestions[currentQuestionIndex]);
+                el.opt.appendChild(btn);
+            });
+            el.skip.disabled = false; startTimer();
+        }
+
+        function checkAnswer(sel, qData) {
+            clearInterval(timerInterval); el.skip.disabled = true;
+            const ans = qData[language].answer;
+            el.opt.querySelectorAll('.option').forEach(o => {
+                o.disabled = true;
+                if (o.textContent === ans) o.classList.add('correct');
+                else if (o.textContent === sel) o.classList.add('wrong');
+            });
+            const content = langContent[language];
+            if (sel === ans) {
+                score += difficultyPoints[qData.difficulty] + Math.floor((currentTime / TIME_LIMIT) * 10);
+                el.feedback.textContent = content.correct;
+            }
+            else {
+                lives--;
+                el.feedback.textContent = content.wrong;
+            }
+            updateUI(); setTimeout(() => lives <= 0 ? endGame() : nextQ(), 1500);
+        }
+
+        function handleTimeout() {
+            lives--;
+            el.feedback.textContent = langContent[language].timeout;
+            updateUI();
+            setTimeout(() => lives <= 0 ? endGame() : nextQ(), 1500);
+        }
+
+        function nextQ() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        el.skip.onclick = () => {
+            clearInterval(timerInterval);
+            score = Math.max(0, score - 1);
+            el.feedback.textContent = langContent[language].skipped;
+            updateUI();
+            nextQ();
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            el.quiz.classList.add('hidden');
+            el.result.classList.remove('hidden');
+            const content = langContent[language];
+            el.bigScore.textContent = `${content.finalScore} ${score}`;
+            el.result.querySelector('button').textContent = content.restart;
+        }
+
+        function restartQuiz() {
+            el.result.classList.add('hidden');
+            el.instruction.classList.remove('hidden');
+            updateLanguageContent();
+        }
+
+        el.lang.onclick = () => {
+            language = language === 'en' ? 'hi' : 'en';
+            updateLanguageContent();
+        };
+    </script>
+
+
+    <!-- footer -->
+    <footer
+        style="background-color: var(--dark-bg); color: var(--light-text); padding: 50px 0; font-family: 'Poppins', sans-serif;">
+        <div
+            style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding: 0 20px;">
+
+            <div class="footer-section">
+                <h3
+                    style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em; display: flex; align-items: center;">
+                    <span style="margin-right: 10px;">🚦</span> Road Safety Club
+                </h3>
+                <p style="line-height: 1.6;">
+                    Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                    roads safer
+                    for all!
+                </p>
+
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'});" class="back-to-top-btn"
+                    style="margin-top: 25px; padding: 12px 25px; background-color: var(--accent-color); border: none; color: var(--dark-bg); font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    ↑ Zoom Back Up!
+                </button>
+            </div>
+
+            <div class="footer-section">
+                <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">📞 Connect With Us</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><a href="mailto:info@roadsafetyclub.com"
+                            class="footer-link email-link">info@roadsafetyclub.com</a></li>
+                </ul>
+
+                <h4 style="color: var(--light-text); margin-top: 15px; margin-bottom: 5px; font-weight: 600;">Team
+                    Contacts:</h4>
+                <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                    <li><a href="tel:9996445592" class="footer-link contact-list-link"><strong>Vivek Yadav:</strong>
+                            9996445592</a>
+                    </li>
+                    <li><a href="tel:9251399133" class="footer-link contact-list-link"><strong>Shri ji
+                                Aggarwal:</strong>
+                            9251399133</a></li>
+                    <li><a href="tel:9389864319" class="footer-link contact-list-link"><strong>Shreya
+                                Chaudhary:</strong>
+                            9389864319</a></li>
+                    <li><a href="tel:7056123205" class="footer-link contact-list-link"><strong>Ekta Pannu:</strong>
+                            7056123205</a>
+                    </li>
+                    <li><a href="tel:9457057473" class="footer-link contact-list-link"><strong>Khush Raghav:</strong>
+                            9457057473</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">🔗 Quick Resources</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><a href="/rules" class="footer-link">Traffic Rules Handbook</a></li>
+                    <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                    <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                    <li><a href="/join" class="footer-link">Join Our Volunteer Team</a></li>
+                </ul>
+
+                <div style="margin-top: 20px;">
+                    <a href="#" class="social-icon" aria-label="Follow us on World Wide Web">🌐</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Facebook">📘</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Twitter">🐦</a>
+                    <a href="#" class="social-icon" aria-label="Follow us on Instagram">📸</a>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="text-align: center; padding-top: 25px; border-top: 1px solid var(--border-color); margin-top: 50px;">
+            <p>&copy; 2025 Road Safety Club. Drive Smart, Live Safe.</p>
+        </div>
+
+        <style>
+            /* CSS Variables for easy color changes */
+            :root {
+                --dark-bg: #1a1a1a;
+                --light-text: #fff;
+                --accent-color: #ffcc00;
+                /* Yellow */
+                --accent-hover: #e6b800;
+                --border-color: #444;
+            }
+
+            footer {
+                /* This ensures the font-family from the inline style is the starting point */
+                font-family: 'Poppins', Arial, sans-serif !important;
+            }
+
+            .footer-section {
+                flex: 1;
+                min-width: 280px;
+                margin-bottom: 20px;
+            }
+
+            /* General Link Styling */
+            .footer-link {
+                color: var(--light-text);
+                text-decoration: none;
+                transition: color 0.3s, transform 0.3s;
+                display: inline-block;
+            }
+
+            .footer-link:hover {
+                color: var(--accent-color);
+                transform: translateX(5px);
+                /* Subtle shift */
+            }
+
+            /* Team Contact List specific styling - removes the phone icon for this block */
+            .contact-list-link {
+                padding-left: 20px;
+                /* Indent slightly for visual hierarchy */
+            }
+
+            /* Social Icon Animation */
+            .social-icon {
+                color: var(--light-text);
+                font-size: 24px;
+                margin-right: 15px;
+                /* Use margin-right for spacing */
+                display: inline-block;
+                transition: transform 0.3s, color 0.3s;
+                text-decoration: none;
+            }
+
+            .social-icon:hover {
+                color: var(--accent-color);
+                transform: translateY(-5px) scale(1.1);
+                /* Lift and enlarge */
+            }
+
+            /* Back to Top Button hover */
+            .back-to-top-btn:hover {
+                background-color: var(--accent-hover);
+                transform: translateY(-3px) scale(1.02);
+                /* Lift and slightly enlarge */
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Clear focus state for accessibility */
+            .footer-link:focus,
+            .social-icon:focus,
+            .back-to-top-btn:focus {
+                outline: 2px solid var(--accent-color);
+                outline-offset: 3px;
+            }
+
+            /* Specific Link Icons (A friendlier touch) - Applied only to General/Email links */
+            .phone-link::before {
+                content: '📞 ';
+                color: var(--accent-color);
+            }
+
+            .email-link::before {
+                content: '📧 ';
+                color: var(--accent-color);
+            }
+        </style>
+    </footer>
+</body>
+
+</html>

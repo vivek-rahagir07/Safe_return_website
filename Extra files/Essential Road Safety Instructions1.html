@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Road Safety Guide | सड़क सुरक्षा मार्गदर्शिका</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            /* Background Image Properties */
+            background-image: url('photoes/index.jpg'); 
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center center;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+        }
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .rule-list li {
+            margin-bottom: 10px;
+        }
+        .sign-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .sign-table th, .sign-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .sign-table th {
+            background-color: #e9e9e9;
+        }
+        .tip {
+            background-color: #e6f7ff;
+            border-left: 5px solid #0056b3;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        /* Style for the Language Toggle Button */
+        .lang-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            font-weight: bold;
+            color: #0056b3;
+            border: 1px solid #0056b3;
+        }
+        .lang-toggle-container:hover {
+            background: #f0f0f0;
+        }
+        /* Class for hiding elements */
+        .hidden {
+            display: none;
+        }
+        /* Specific styling for Hindi text to ensure readability */
+        .hindi {
+            font-family: 'Arial', 'Noto Sans Devanagari', sans-serif;
+        }
+
+         /* ===== BACK BUTTON ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 50px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #000000;
+            background-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body onload="setInitialLanguage()">
+
+<div class="lang-toggle-container" id="languageToggle" onclick="toggleLanguage()">
+    Switch to Hindi
+</div>
+
+<div class="container">
+    
+    <div id="englishContent">
+        <h1>🚦 Essential Road Safety Instructions</h1>
+        <p class="tip">Basic information for drivers and pedestrians to ensure safety and prevent accidents. Always follow local laws and traffic regulations.</p>
+
+        <h2>1. Four-Wheeler (Car) Specific Rules</h2>
+        <ul class="rule-list">
+            <li><strong>Vehicle Maintenance:</strong> Regularly check your tires, brakes, fluid levels, and lights. A well-maintained vehicle is critical for safe driving.</li>
+            <li><strong>Adjust and Position:</strong> Before starting, adjust your seat, mirrors (rear and side), and head restraints for optimal visibility and comfort.</li>
+            <li><strong>Child Safety Seats:</strong> Ensure all children are secured in appropriate child safety seats or booster seats in the back seat, as required by law.</li>
+            <li><strong>Secure Loose Items:</strong> Keep heavy or loose items in the trunk or secured in the cabin, as they can become dangerous projectiles in a sudden stop or collision.</li>
+        </ul>
+
+        <hr>
+
+        <h2>2. General Driving Rules (For Motorists)</h2>
+        <ul class="rule-list">
+            <li><strong>Obey Speed Limits:</strong> Never exceed the posted speed limit. Reduce speed in bad weather (rain, fog, snow) or high-traffic areas.</li>
+            <li><strong>Always Wear Your Seat Belt:</strong> Ensure all occupants of the vehicle (front and back) are buckled up. It is the most effective safety device.</li>
+            <li><strong>Avoid Distracted Driving:</strong> Do not use a mobile phone for texting, calling, or browsing while the vehicle is in motion. Keep your focus entirely on the road.</li>
+            <li><strong>Maintain Following Distance:</strong> Use the <strong>3-second rule</strong> to ensure a safe gap between your vehicle and the one ahead. Increase to 4 or more seconds in poor conditions.</li>
+            <li><strong>Never Drive Impaired:</strong> Driving under the influence of alcohol or drugs is illegal and life-threatening. Plan for a designated driver or use a ride-share service.</li>
+            <li><strong>Use Turn Signals:</strong> Signal your intentions (turning or changing lanes) well in advance so other drivers and pedestrians know your plan.</li>
+        </ul>
+
+        <hr>
+
+        <h2>3. Pedestrian and Cyclist Safety</h2>
+        <ul class="rule-list">
+            <li><strong>Use Crosswalks:</strong> Only cross the road at designated crosswalks (zebra crossings) or intersections.</li>
+            <li><strong>Stop, Look, and Listen:</strong> Before crossing, <strong>Stop</strong> at the curb, <strong>Look left, right, and left again</strong>, and <strong>Listen</strong> for approaching vehicles.</li>
+            <li><strong>Walk on Sidewalks:</strong> Always use the sidewalk. If there is no sidewalk, walk on the side of the road <strong>facing</strong> oncoming traffic.</li>
+            <li><strong>Be Visible at Night:</strong> Wear light-colored clothing or use reflective gear and flashlights when walking after dark.</li>
+            <li><strong>No Distractions:</strong> Do not use headphones at a high volume or look at your phone while crossing streets. You need to be aware of your surroundings.</li>
+        </ul>
+
+        <hr>
+
+        <h2>4. Traffic Signals and Their Meaning</h2>
+        <ol class="rule-list">
+            <li><strong>Red Light:</strong> You <strong>must stop</strong> completely behind the white stop line.</li>
+            <li><strong>Yellow Light (Amber):</strong> Indicates the light is about to turn red. You <strong>must prepare to stop</strong> unless you are so close to the intersection that stopping safely would cause a risk.</li>
+            <li><strong>Green Light:</strong> You may <strong>proceed</strong> through the intersection, but only if the way is clear and safe.</li>
+            <li><strong>Flashing Red Light:</strong> Treat it as a <strong>Stop Sign</strong>. Stop completely, then proceed only when safe.</li>
+        </ol>
+
+        <hr>
+
+        <h2>5. Common Road Signs and Symbols</h2>
+        <table class="sign-table">
+            <thead>
+                <tr>
+                    <th>Sign Type (Shape/Color)</th>
+                    <th>Purpose (What it means)</th>
+                    <th>Example Symbol/Instruction</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Regulatory Signs</strong> (Circles / Red & White)</td>
+                    <td>Convey laws and regulations. You <strong>must obey</strong> these signs.</td>
+                    <td><strong>STOP</strong> (Octagon), <strong>Yield</strong> (Triangle), <strong>No U-Turn</strong> (Red circle with a line through it)</td>
+                </tr>
+                <tr>
+                    <td><strong>Warning Signs</strong> (Triangles or Diamonds / Yellow/Orange)</td>
+                    <td>Alert drivers to potential hazards or unusual conditions ahead.</td>
+                    <td><strong>Winding Road</strong>, <strong>Sharp Curve</strong>, <strong>School Zone</strong> (Often a pentagon), <strong>Pedestrian Crossing</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Information Signs</strong> (Rectangles / Blue, Green, or White)</td>
+                    <td>Provide guidance, directions, and essential information.</td>
+                    <td><strong>Exit Sign</strong>, <strong>Highway Route Marker</strong>, <strong>Parking Area</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="tip">
+            <p><strong>Reminder:</strong> Road safety is a shared responsibility. Be patient, be visible, and be predictable!</p>
+        </div>
+    </div> 
+    <div id="hindiContent" class="hidden hindi">
+        <h1>🚦 आवश्यक सड़क सुरक्षा निर्देश</h1>
+        <p class="tip">यह मार्गदर्शिका चालकों और पैदल यात्रियों के लिए सुरक्षा सुनिश्चित करने और दुर्घटनाओं को रोकने के लिए बुनियादी जानकारी प्रदान करती है। हमेशा स्थानीय कानूनों और यातायात नियमों का पालन करें।</p>
+
+        <h2>1. चार पहिया वाहन (कार) के लिए विशिष्ट नियम</h2>
+        <ul class="rule-list">
+            <li><strong>वाहन का रखरखाव:</strong> अपने टायर, ब्रेक, द्रव स्तर और लाइटों की नियमित रूप से जाँच करें। सुरक्षित ड्राइविंग के लिए एक अच्छी तरह से रखा गया वाहन महत्वपूर्ण है।</li>
+            <li><strong>समायोजन और स्थिति:</strong> शुरू करने से पहले, इष्टतम दृश्यता और आराम के लिए अपनी सीट, दर्पण (पीछे और बगल के), और सिर के अवरोधों (हेड रेस्ट) को समायोजित करें।</li>
+            <li><strong>बाल सुरक्षा सीटें:</strong> सुनिश्चित करें कि सभी बच्चे कानून के अनुसार पिछली सीट पर उपयुक्त बाल सुरक्षा सीटों या बूस्टर सीटों में सुरक्षित हैं।</li>
+            <li><strong>ढीले सामान को सुरक्षित करें:</strong> भारी या ढीले सामान को डिक्की में रखें या केबिन में सुरक्षित करें, क्योंकि अचानक रुकने या टक्कर में वे खतरनाक प्रक्षेप्य (objects) बन सकते हैं।</li>
+        </ul>
+
+        <hr>
+
+        <h2>2. सामान्य ड्राइविंग नियम (मोटर चालकों के लिए)</h2>
+        <ul class="rule-list">
+            <li><strong>गति सीमा का पालन करें:</strong> निर्धारित गति सीमा से कभी अधिक न चलाएं। खराब मौसम (बारिश, कोहरा, बर्फ) या अधिक यातायात वाले क्षेत्रों में गति कम करें।</li>
+            <li><strong>हमेशा अपनी सीट बेल्ट पहनें:</strong> सुनिश्चित करें कि वाहन के सभी यात्री (आगे और पीछे) सीट बेल्ट लगाए हुए हैं। यह सबसे प्रभावी सुरक्षा उपकरण है।</li>
+            <li><strong>विचलित ड्राइविंग से बचें:</strong> जब वाहन चल रहा हो तो टेक्स्टिंग, कॉल करने या ब्राउज़िंग के लिए मोबाइल फोन का उपयोग न करें। अपना ध्यान पूरी तरह से सड़क पर रखें।</li>
+            <li><strong>दूरी बनाए रखें:</strong> अपने वाहन और आगे वाले वाहन के बीच एक सुरक्षित अंतर सुनिश्चित करने के लिए <strong>3 सेकंड के नियम</strong> का उपयोग करें। खराब परिस्थितियों में इसे 4 या अधिक सेकंड तक बढ़ा दें।</li>
+            <li><strong>कभी भी नशे में गाड़ी न चलाएं:</strong> शराब या नशीली दवाओं के प्रभाव में गाड़ी चलाना अवैध और जानलेवा है। नामित ड्राइवर (designated driver) की योजना बनाएं या राइड-शेयर सेवा का उपयोग करें।</li>
+            <li><strong>टर्न सिग्नल का उपयोग करें:</strong> मोड़ने या लेन बदलने से पहले अपने इरादे को संकेत दें ताकि अन्य चालकों और पैदल यात्रियों को आपकी योजना पता चले।</li>
+        </ul>
+
+        <hr>
+
+        <h2>3. पैदल यात्री और साइकिल चालक सुरक्षा</h2>
+        <ul class="rule-list">
+            <li><strong>क्रॉसिंग का उपयोग करें:</strong> सड़क को केवल निर्दिष्ट क्रॉसिंग (ज़ेबरा क्रॉसिंग) या चौराहों पर ही पार करें।</li>
+            <li><strong>रुकें, देखें और सुनें:</strong> पार करने से पहले, किनारे पर <strong>रुकें</strong>, <strong>बाएँ, दाएँ और फिर से बाएँ देखें</strong>, और आने वाले वाहनों को <strong>सुनें</strong>।</li>
+            <li><strong>फुटपाथ पर चलें:</strong> हमेशा फुटपाथ का उपयोग करें। यदि कोई फुटपाथ नहीं है, तो सड़क के किनारे आने वाले यातायात की ओर <strong>मुँह करके</strong> चलें।</li>
+            <li><strong>रात में दृश्यमान रहें:</strong> अंधेरा होने के बाद चलते समय हल्के रंग के कपड़े पहनें या चिंतनशील गियर और टॉर्च का उपयोग करें।</li>
+            <li><strong>कोई विचलन नहीं:</strong> सड़कों को पार करते समय हेडफ़ोन का उपयोग तेज़ आवाज़ में न करें या अपने फ़ोन को न देखें। आपको अपने परिवेश के बारे में जागरूक होने की आवश्यकता है।</li>
+        </ul>
+
+        <hr>
+
+        <h2>4. यातायात सिग्नल और उनका अर्थ</h2>
+        <ol class="rule-list">
+            <li><strong>लाल बत्ती:</strong> आपको सफेद स्टॉप लाइन के पीछे पूरी तरह से <strong>रुकना चाहिए</strong>।</li>
+            <li><strong>पीली बत्ती (एम्बर):</strong> इंगित करती है कि बत्ती जल्द ही लाल होने वाली है। आपको <strong>रुकने की तैयारी करनी चाहिए</strong> जब तक कि आप चौराहे के इतने करीब न हों कि सुरक्षित रूप से रुकने से जोखिम उत्पन्न हो।</li>
+            <li><strong>हरी बत्ती:</strong> आप चौराहे से <strong>आगे बढ़ सकते हैं</strong>, लेकिन तभी जब रास्ता साफ और सुरक्षित हो।</li>
+            <li><strong>चमकती लाल बत्ती:</strong> इसे <strong>रुकने के संकेत (Stop Sign)</strong> के रूप में मानें। पूरी तरह से रुकें, फिर तभी आगे बढ़ें जब सुरक्षित हो।</li>
+        </ol>
+
+        <hr>
+
+        <h2>5. सामान्य सड़क संकेत और प्रतीक</h2>
+        <table class="sign-table">
+            <thead>
+                <tr>
+                    <th>संकेत प्रकार (आकार/रंग)</th>
+                    <th>उद्देश्य (इसका क्या मतलब है)</th>
+                    <th>उदाहरण प्रतीक/निर्देश</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>नियामक संकेत</strong> (Regulatory Signs) (वृत्त / लाल और सफेद)</td>
+                    <td>कानूनों और विनियमों को व्यक्त करते हैं। आपको इन संकेतों का <strong>पालन करना चाहिए</strong>।</td>
+                    <td><strong>रुकें</strong> (STOP) (अष्टकोणीय), <strong>रास्ता दें</strong> (Yield) (त्रिभुज), <strong>यू-टर्न नहीं</strong> (No U-Turn) (बीच में एक रेखा वाला लाल वृत्त)</td>
+                </tr>
+                <tr>
+                    <td><strong>चेतावनी संकेत</strong> (Warning Signs) (त्रिभुज या हीरे / पीला/नारंगी)</td>
+                    <td>आगे संभावित खतरों या असामान्य परिस्थितियों के बारे में चालकों को सचेत करते हैं।</td>
+                    <td><strong>घुमावदार सड़क</strong>, <strong>तेज मोड़</strong>, <strong>स्कूल क्षेत्र</strong> (अक्सर एक पंचकोण), <strong>पैदल यात्री क्रॉसिंग</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>सूचना संकेत</strong> (Information Signs) (आयत / नीला, हरा, या सफेद)</td>
+                    <td>मार्गदर्शन, दिशाएं और आवश्यक जानकारी प्रदान करते हैं।</td>
+                    <td><strong>निकास संकेत</strong> (Exit Sign), <strong>राजमार्ग मार्ग मार्कर</strong> (Highway Route Marker), <strong>पार्किंग क्षेत्र</strong> (Parking Area)</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="tip">
+            <p><strong>याद रखें:</strong> सड़क सुरक्षा एक साझा जिम्मेदारी है। धैर्य रखें, दृश्यमान रहें और अनुमानित रहें!</p>
+        </div>
+
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i>← Back to Main
+            Menu</a>
+        </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+    // Initial state: English is shown, Hindi is hidden
+    let isEnglish = true; 
+
+    // Function to set the initial language state on load
+    function setInitialLanguage() {
+        document.getElementById('englishContent').classList.remove('hidden');
+        document.getElementById('hindiContent').classList.add('hidden');
+        document.getElementById('languageToggle').textContent = 'Switch to Hindi';
+    }
+
+    // Function to toggle between English and Hindi
+    function toggleLanguage() {
+        const english = document.getElementById('englishContent');
+        const hindi = document.getElementById('hindiContent');
+        const toggleButton = document.getElementById('languageToggle');
+
+        if (isEnglish) {
+            // Switch to Hindi
+            english.classList.add('hidden');
+            hindi.classList.remove('hidden');
+            toggleButton.textContent = 'Switch to English';
+            isEnglish = false;
+        } else {
+            // Switch to English
+            hindi.classList.add('hidden');
+            english.classList.remove('hidden');
+            toggleButton.textContent = 'Switch to Hindi';
+            isEnglish = true;
+        }
+    }
+</script>
+
+</body>
+</html>

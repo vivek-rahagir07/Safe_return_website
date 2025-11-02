@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road Safety Awareness – Safe Return</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- NEW FONTS FOR CERTIFICATE -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- SCRIPTS FOR NEW CERTIFICATE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #ff4d4d;
+            --secondary-color: #222;
+            --light-bg: #f4f4f4;
+            --card-bg: #fff;
+            --text-color: #333;
+            --hover-color: #e63939;
+            --dark-red-outline: #cc0000;
+            --transition-speed: 0.3s;
+
+            /* Footer Variables */
+            --footer-bg: #1a1a1a;
+            --footer-text: #fff;
+            --footer-accent: #ffcc00;
+            --footer-hover: #e6b800;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            scroll-behavior: smooth;
+
+            background-image: url('photoes/index.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        /* Professional Fixed Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1em 3em;
+            background: rgba(34, 34, 34, 0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: background 0.3s ease;
+        }
+
+        nav:hover {
+            background: rgba(34, 34, 34, 0.95);
+        }
+
+        .nav-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            /*text align vertically */
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-title:hover {
+            color: var(--primary-color);
+        }
+
+        /* Logo Image Style */
+        #website_logo {
+            height: 40px;
+            /* Set a specific height */
+            width: auto;
+            vertical-align: middle;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        .nav-title:hover #website_logo {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2em;
+            list-style: none;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            padding: 0.5em 0;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+            margin-top: 5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* --- New Dropdown/Sub-Nav Styles --- */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            /* Position right below the parent link */
+            left: 0;
+            background: rgba(34, 34, 34, 0.95);
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            list-style: none;
+            padding: 10px 0;
+            border-radius: 0 0 5px 5px;
+            z-index: 2000;
+        }
+
+        .dropdown-menu li {
+            padding: 0;
+            width: 100%;
+        }
+
+        .dropdown-menu a {
+            padding: 10px 20px;
+            display: block;
+            white-space: nowrap;
+            font-weight: 400;
+            /* Lighter font for sub-links */
+            color: #ccc;
+        }
+
+        /* Remove the bottom line animation for sub-links */
+        .dropdown-menu a::after {
+            display: none;
+        }
+
+        .dropdown-menu a:hover {
+            color: var(--footer-accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Show menu on hover of parent li */
+        .nav-links li:hover .dropdown-menu {
+            display: block;
+        }
+
+
+
+        /* --- End Dropdown Styles --- */
+
+
+        header {
+            margin-top: 70px;
+            /* FIXED: Give space for fixed navbar */
+            background: rgba(255, 77, 77, 0.9);
+            color: var(--card-bg);
+            padding: 2em 1em 2.5em;
+            text-align: center;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2em, 4vw, 2.6em);
+            margin-bottom: 0.5em;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        header blockquote {
+            font-style: italic;
+            font-size: 1.1em;
+            margin: 1em auto 0;
+            color: #ffffff;
+            max-width: 600px;
+            padding: 0.8em 1em;
+            border-left: 5px solid rgb(255, 255, 255);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 2.5em auto;
+            padding: 2em 1.5em;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* The destination section for the link is retained with minimal content */
+        .content h2#why-ai-traffic-lights {
+            font-size: 2em;
+            text-align: center;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 1.5em;
+        }
+
+        .flex-cards {
+            display: flex;
+            gap: 2em;
+            flex-wrap: wrap;
+            margin-bottom: 2.5em;
+        }
+
+        .flex-cards>article {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .education,
+        .tips {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: box-shadow var(--transition-speed);
+        }
+
+        .education:hover,
+        .tips:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2:not(#why-ai-traffic-lights) {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5em;
+        }
+
+        .tip,
+        .edu-item {
+            margin-bottom: 15px;
+            padding: 1.2em 1.5em;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .tip.active,
+        .edu-item.active {
+            background: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        .tip-title,
+        .edu-title {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+        }
+
+        .tip-title i,
+        .edu-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .tip-chevron,
+        .edu-chevron {
+            flex-shrink: 0;
+            transition: transform var(--transition-speed) ease, color var(--transition-speed);
+            color: #ffffff;
+        }
+
+        .tip.active .tip-chevron,
+        .edu-item.active .edu-chevron {
+            transform: rotate(90deg);
+            color: var(--primary-color);
+        }
+
+        .tip-details,
+        .edu-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in-out 0.2s, padding 0.5s ease;
+            padding: 0 1.5em;
+            color: #555;
+            font-weight: normal;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .tip-details.open,
+        .edu-details.open {
+            opacity: 1;
+            padding: 0 1.5em 1.5em;
+        }
+
+        /* --- PLEDGE BOX STYLES (Restored) --- */
+        .pledge-box {
+            margin-top: 3em;
+            padding: 2.5em;
+            background: var(--card-bg);
+            /* White background within the content wrapper */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid var(--primary-color);
+        }
+
+        .pledge-box h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5em;
+            margin-bottom: 0.8em;
+            font-size: 2em;
+        }
+
+        .pledge-box p {
+            margin-bottom: 1.5em;
+            color: var(--text-color);
+        }
+
+        .pledge-form-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 2em;
+        }
+
+        .pledge-form-group label {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .pledge-form-group input[type="text"] {
+            padding: 10px 15px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            flex-grow: 1;
+            max-width: 300px;
+            transition: border-color 0.3s;
+        }
+
+        .pledge-form-group input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+        }
+
+        #generate-pledge-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        #generate-pledge-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        #generate-pledge-btn:active {
+            transform: scale(0.98);
+        }
+
+        .pledge-output {
+            margin-top: 1.5em;
+            padding: 1.5em;
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            background: #ffecec;
+            font-style: italic;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pledge-output strong {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+        }
+
+        /* --- END PLEDGE BOX STYLES --- */
+
+        /* --- NEW CERTIFICATE MODAL (from selection) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            overflow: auto;
+            display: none;
+        }
+
+        .certificate-container {
+            width: 750px;
+            max-width: 95%;
+            background: #fff8e7;
+            border: 12px solid #d4af37;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+            font-family: 'Montserrat', sans-serif;
+            /* Added from old style */
+        }
+
+        .cert-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            color: #d4af37;
+            cursor: pointer;
+        }
+
+        .certificate-logo {
+            height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .certificate-header h2 {
+            color: #b8860b;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+
+        .certificate-header p {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .certificate-body blockquote {
+            font-style: italic;
+            margin: 20px auto;
+            padding: 15px;
+            border-left: 5px solid #d4af37;
+            background: #fff3c2;
+            border-radius: 5px;
+            max-width: 600px;
+            color: #555;
+            font-size: 1em;
+        }
+
+        /* Added .cert-name styling from old golden cert */
+        .cert-name {
+            display: block;
+            font-size: 1.6em;
+            font-weight: 700;
+            margin: 10px 0;
+            color: #b8860b;
+            text-transform: uppercase;
+        }
+
+        .certificate-footer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .signature-img {
+            height: 60px;
+        }
+
+        /* Added date/signature styles from old golden cert */
+        .certificate-date p,
+        .certificate-signature p {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cert-btn {
+            background: #d4af37;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            /* Added from old style */
+        }
+
+        .cert-btn:hover {
+            background: #b8860b;
+        }
+
+        .cert-button-group {
+            margin-top: 25px;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+        }
+
+        /* --- UPDATED Hero Modal Styles --- */
+        .hero-modal-content {
+            background: linear-gradient(to bottom, #ffffff 0%, #fdfdfd 100%);
+            /* Softer background */
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            /* Softer shadow */
+            width: 600px;
+            max-width: 90%;
+            border-top: 10px solid var(--footer-accent);
+            /* Gold top border */
+            border-bottom: 10px solid var(--footer-accent);
+            /* Gold bottom border */
+        }
+
+        #hero-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 32px;
+            /* A bit larger */
+            color: #bbb;
+            /* Lighter */
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        #hero-close-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+            /* Add rotation */
+        }
+
+        .hero-modal-content h1 {
+            font-family: 'Playfair Display', serif;
+            /* More elegant font */
+            font-size: 2.8em;
+            /* Larger */
+            color: #b8860b;
+            /* Dark gold */
+            margin: 10px 0 15px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .hero-modal-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            /* Bolder */
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            /* More space */
+        }
+
+        .hero-modal-content p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.1em;
+            color: #444;
+            /* Slightly darker text */
+            margin: 10px auto;
+            /* Centered */
+            line-height: 1.7;
+            /* More readable */
+            max-width: 85%;
+            /* Readability */
+        }
+
+        .hero-modal-content p.emphasis {
+            font-family: 'Dancing Script', cursive;
+            /* Special font */
+            font-weight: 700;
+            font-size: 1.8em;
+            /* Much larger */
+            color: var(--primary-color);
+            /* Red color */
+            margin-top: 20px;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+        /* Style the last emphasis line specifically */
+        .hero-modal-content p.emphasis:last-of-type {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: var(--primary-color);
+            /* Red */
+        }
+
+
+        @media (max-width: 768px) {
+            .flex-cards>article {
+                min-width: 100%;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 1em 2em;
+            }
+
+            /* Hide dropdown on mobile for simplicity unless you add mobile toggle logic */
+            .nav-links li:hover .dropdown-menu {
+                display: none;
+            }
+
+            /* ADJUSTED: More space needed on mobile as nav wraps */
+            header {
+                margin-top: 150px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.8em;
+                margin-top: 0.8em;
+            }
+
+            /* Responsive adjustment for pledge form */
+            .pledge-form-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .pledge-form-group input[type="text"] {
+                width: 100%;
+                max-width: none;
+            }
+
+            /* NEW Responsive styles for certificate */
+            .certificate-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .certificate-container {
+                padding: 30px 20px;
+                min-height: 400px;
+                width: 95%;
+            }
+
+            .certificate-header h2 {
+                font-size: 1.8em;
+            }
+
+            .certificate-header p {
+                font-size: 1em;
+            }
+
+            .cert-name {
+                font-size: 1.5em;
+            }
+
+            .certificate-body p {
+                font-size: 1em;
+            }
+
+            .certificate-body blockquote {
+                max-width: 95%;
+                font-size: 0.9em;
+                padding-left: 10px;
+            }
+
+            /* Hero Modal Responsive */
+            .hero-modal-content h1 {
+                font-size: 2em;
+                /* Adjusted */
+            }
+
+            .hero-modal-content h2 {
+                font-size: 1.3em;
+                /* Adjusted */
+            }
+
+            .hero-modal-content p {
+                font-size: 1em;
+                max-width: 100%;
+                /* Full width on mobile */
+            }
+
+            .hero-modal-content p.emphasis {
+                font-size: 1.5em;
+                /* Adjusted */
+            }
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 60px 20px 30px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: space-between;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            color: var(--footer-accent);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            line-height: 1.8;
+        }
+
+        .footer-section a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--footer-accent);
+            transform: translateX(5px);
+        }
+
+        .social-icons a {
+            font-size: 24px;
+            margin-right: 15px;
+            display: inline-block;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--footer-accent);
+            transform: translateY(-5px) scale(1.2);
+        }
+
+        .back-to-top-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: var(--footer-accent);
+            border: none;
+            color: var(--footer-bg);
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top-btn:hover {
+            background-color: var(--footer-hover);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #444;
+            margin-top: 50px;
+            padding-top: 20px;
+            font-size: 0.9em;
+        }
+
+        footer a:focus,
+        .back-to-top-btn:focus {
+            outline: 2px solid var(--footer-accent);
+            outline-offset: 3px;
+
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <nav aria-label="Main Navigation">
+        <a href="#home" class="nav-title" aria-label="Home">
+            <!-- UPDATED: Replaced broken local path with a placeholder and added onerror fallback --><img
+                id="website_logo" src="Photoes/logo.png" alt="SafeReturn Logo"
+                onerror="this.src='https://placehold.co/40x40/ffffff/E63939?text=SR'; this.onerror=null;">
+            SafeReturn
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+
+            <li class="dropdown">
+                <a href="#road-safety" aria-expanded="false" aria-haspopup="true">Road Safety Tips <i
+                        class="fas fa-caret-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="Road Safety.html">Fundamentals</a></li>
+                    <li><a href="vehicles Mechanics.html">Vehicles Mechanics</a></li>
+                    <li><a href="Essential Road Safety Instructions.html">Essential Road Safety Instructions</a></li>
+                </ul>
+            </li>
+            <li><a href="Quiz.html">Quiz</a></li>
+            <li class="dropdown">
+                <a href="#why-ai-traffic-lights" aria-expanded="false" aria-haspopup="true">AI Based Traffic Lights <i
+                        class="fas fa-caret-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="Ai based traffic lights image.html">Why AI Traffic Lights</a></li>
+                    <li><a href="#how-it-works">How it Works</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#challenges">Challenges</a></li>
+                </ul>
+            </li>
+        
+            
+            <li><a href="Collage.html">Collage</a></li>
+            <li><a href="footer.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header id="home"> <!-- Changed ID to match nav link -->
+        <main>
+            <h1>Drive Smart. Stay Safe.</h1>
+            <p>Your journey is precious. Awareness is your best defense.</p>
+            <figure>
+                <blockquote>"The only thing we need from your trip is your safe return."</blockquote>
+            </figure>
+        </main>
+    </header>
+
+    <div class="content">
+
+
+
+        <div id="how-it-works" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div id="benefits" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div id="challenges" style="padding-top: 50px; margin-top: -50px;"></div>
+        <div class="flex-cards" id="safety-accordion">
+            <article id="road-safety" class="education">
+                <h2><i class="fas fa-book-open"></i> Essential Road Education</h2>
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-1">
+                    <span class="edu-title"><i class="fas fa-shield-alt"></i> Defensive Driving</span>
+                    <i class="fas fa-chevron-right edu-chevron"></i>
+                </div>
+                <div class="edu-details" id="edu-details-1" aria-hidden="true">
+                    Use safe driving strategies, anticipate hazards, and avoid crashes by scanning the road constantly.
+                </div>
+
+                <div class="edu-item" tabindex="0" role="button" aria-expanded="false" aria-controls="edu-details-2">
+                    <span class="edu-title"><i class="fas fa-eye"></i> Recognising Road Hazards</span>
+                    <i class="fas fa-chevron-right edu-chevron"></i>
+                </div>
+                <div class="edu-details" id="edu-details-2" aria-hidden="true">
+                    Be vigilant for poor visibility, pedestrians, distracted drivers, and road surface changes.
+                </div>
+            </article>
+
+            <article class="tips">
+                <h2><i class="fas fa-lightbulb"></i> Quick Safety Tips</h2>
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-1">
+                    <span class="tip-title"><i class="fas fa-seat-belt"></i> Always wear your seatbelt</span>
+                    <i class="fas fa-chevron-right tip-chevron"></i>
+                </div>
+                <div class="tip-details" id="tip-details-1" aria-hidden="true">
+                    Reduces serious injury and death in accidents by over 50%.
+                </div>
+
+                <div class="tip" tabindex="0" role="button" aria-expanded="false" aria-controls="tip-details-2">
+                    <span class="tip-title"><i class="fas fa-mobile-alt"></i> Don’t text and drive</span>
+                    <i class="fas fa-chevron-right tip-chevron"></i>
+                </div>
+                <div class="tip-details" id="tip-details-2" aria-hidden="true">
+                    Distracted driving is a major cause of crashes. Use hands-free or stop safely.
+                </div>
+            </article>
+        </div>
+
+        <!-- PLEDGE BOX (Restored) -->
+        <section class="pledge-box">
+            <h2><i class="fas fa-hands-helping"></i> Take the Road Safety Pledge</h2>
+            <p>Enter your name below and commit to safer roads for everyone. Let's drive responsibly!</p>
+            <div class="pledge-form-group">
+                <label for="pledge-name">Your Name:</label>
+                <input type="text" id="pledge-name" placeholder="Eg : vivek yadav "
+                    aria-label="Enter your name for the pledge">
+                <button id="generate-pledge-btn" aria-label="Generate my road safety pledge">Generate Pledge</button>
+            </div>
+            <div id="pledge-output" class="pledge-output">
+                <p>
+                    <strong>This pledge is not just a promise,</strong>
+                    It is a movement</em> —<br>
+                    a movement that begins with one responsible citizen…<br>
+                    <strong>And Today</strong>, that responsible citizen is <strong><em>YOU</em>.</strong><br>
+                    <strong>Your decision</strong> can influence others,<br>
+                    <em>Your voice</em> can inspire change,<br>
+                    and <strong><em>Your action</em> can save lives.</strong>
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- NEW Certificate Modal (from selection) -->
+    <div id="certificate-modal" class="modal-overlay">
+        <div class="certificate-container">
+            <span id="cert-close-btn" class="cert-close-btn">&times;</span>
+            <div class="certificate-header">
+                <img src="Photoes/logo.png" class="certificate-logo" alt="SafeReturn Logo"
+                    onerror="this.src='https://placehold.co/80x80/ffffff/E63939?text=SR'; this.onerror=null;">
+                <h2 id="certificate-title">Certificate of Road Safety</h2>
+                <p>For a steadfast commitment to responsible driving</p>
+            </div>
+            <div class="certificate-body">
+                <p>This certificate is proudly presented to:</p>
+                <span id="cert-name" class="cert-name">[Your Name Here]</span>
+                <p>for pledging to be a responsible road user:</p>
+                <blockquote>
+                    <!-- NOTE: This pledge text is from the *new* modal, not the *new* form. Keeping as-is from your code. -->
+                    "I commit to never drive distracted, to always follow traffic laws, and to prioritize the safety of
+                    myself and others."
+                </blockquote>
+            </div>
+            <div class="certificate-footer">
+                <div class="certificate-signature">
+                    <img src="Photoes/signature.png" class="signature-img" alt="Signature"
+                        onerror="this.src='https://placehold.co/150x60/333333/ffffff?text=Signature'; this.onerror=null;">
+                    <p>The SafeReturn Team</p>
+                </div>
+                <div class="certificate-date">
+                    <p>Date: <span id="current-date"></span></p>
+                </div>
+            </div>
+            <div class="cert-button-group">
+                <button id="cert-print-btn" class="cert-btn"><i class="fas fa-print"></i> Print</button>
+                <button id="cert-pdf-btn" class="cert-btn"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                <a id="cert-whatsapp" target="_blank" class="cert-btn"><i class="fab fa-whatsapp"></i> Share
+                    WhatsApp</a>
+            </div>
+        </div>
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <!-- NEW HERO MODAL -->
+    <div id="hero-modal" class="modal-overlay">
+        <div class="hero-modal-content">
+            <span id="hero-close-btn">&times;</span>
+            <h2>We are proud to call you a:</h2>
+            <h1>ROAD SAFETY HERO</h1>
+            <p>A defender of lives.</p>
+            <p>A protector of families.</p>
+            <p>A champion of safe roads. 🚦</p>
+            <p>Thank you for leading the change.</p>
+            <p>Thank you for choosing safety.</p>
+            <p>Thank you for making our roads better for everyone.</p>
+            <p class="emphasis">✨ Your pledge matters.</p>
+            <p class="emphasis">✨ You matter.</p>
+            <p class="emphasis">✨ Every life matters. ❤️</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🚦 Road Safety Club</h3>
+                <p>Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                    roads safer!</p>
+                <button class="back-to-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'});">↑ Back to
+                    Top</button>
+            </div>
+
+            <div class="footer-section">
+                <h3>📞 Connect With Us</h3>
+                <ul>
+                    <li><a href="mailto:info@roadsafetyclub.com" class="footer-link">📧 info@roadsafetyclub.com</a></li>
+                    <li><a href="tel:9996445592" class="footer-link">📞 Vivek Yadav: 9996445592</a></li>
+                    <li><a href="tel:9251399133" class="footer-link">📞 Shri ji Aggarwal: 9251399133</a></li>
+                    <li><a href="tel:9389864319" class="footer-link">📞 Shreya Chaudhary: 9389864319</a></li>
+                    <li><a href="tel:7056123205" class="footer-link">📞 Ekta Pannu: 7056123205</a></li>
+                    <li><a href="tel:9457057473" class="footer-link">📞 Khush Raghav: 9457057473</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>🔗 Quick Resources</h3>
+                <ul>
+                    <li><a href="Road-safety-handbook.pdf" class="footer-link">Traffic Rules Handbook</a></li>
+                    <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                    <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                    <li><a href="/join" class="footer-link">Join Our Volunteer Team</a></li>
+                </ul>
+                <div class="social-icons" style="margin-top:15px;">
+                    <a href="#" aria-label="Website">🌐</a>
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="Instagram">📸</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2025 Road Safety Club. Drive Smart, Live Safe.
+        </div>
+    </footer>
+
+    <script>
+        // --- Accordion Script ---
+        const accordions = document.querySelectorAll('.tip, .edu-item');
+
+        accordions.forEach(item => {
+            const details = item.nextElementSibling;
+            item.addEventListener('click', () => toggleItem(item, details));
+            item.addEventListener('keydown', e => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleItem(item, details);
+                }
+            });
+        });
+
+        function toggleItem(el, details) {
+            const parent = el.closest('article');
+            const isActive = el.classList.contains('active');
+
+            // Close all other active accordions in the same article
+            parent.querySelectorAll('.tip.active, .edu-item.active').forEach(item => {
+                if (item !== el) {
+                    const otherDetails = item.nextElementSibling;
+                    item.classList.remove('active');
+                    item.setAttribute('aria-expanded', 'false');
+                    otherDetails.style.maxHeight = null;
+                    otherDetails.classList.remove('open');
+                    otherDetails.style.opacity = 0;
+                    otherDetails.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            if (!isActive) {
+                // Open the clicked item
+                el.classList.add('active');
+                el.setAttribute('aria-expanded', 'true');
+                details.classList.add('open');
+                details.setAttribute('aria-hidden', 'false');
+                window.requestAnimationFrame(() => {
+                    details.style.maxHeight = details.scrollHeight + "px";
+                    details.style.opacity = 1;
+                });
+            } else {
+                // Close the clicked item
+                el.classList.remove('active');
+                el.setAttribute('aria-expanded', 'false');
+                details.style.maxHeight = details.scrollHeight + "px";
+                void details.offsetWidth;
+                details.style.opacity = 0;
+                setTimeout(() => {
+                    details.classList.remove('open');
+                    details.setAttribute('aria-hidden', 'true');
+                    details.style.maxHeight = null;
+                }, 100);
+            }
+        }
+    </script>
+
+    <!-- NEW SCRIPT MODULE (from selection) -->
+    <script type="module">
+        // --- NEW Pledge Form Logic (Restored) ---
+        const pledgeBtn = document.getElementById('generate-pledge-btn');
+        const nameInput = document.getElementById('pledge-name');
+
+        pledgeBtn.addEventListener('click', () => {
+            let name = nameInput.value.trim();
+
+            if (name === "") {
+                // Show an error without an alert
+                nameInput.style.borderColor = 'red';
+                nameInput.placeholder = 'Please enter your name first!';
+                nameInput.focus();
+                return;
+            }
+
+            // Capitalize the first letter of each word in the name
+            name = name.split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+
+            showCertificate(name);
+        });
+
+        // Reset error state on input
+        nameInput.addEventListener('input', () => {
+            if (nameInput.value.trim() !== "") {
+                nameInput.style.borderColor = '#ccc'; // This matches the restored CSS
+                nameInput.placeholder = 'Eg : vivek yadav ';
+            }
+        });
+
+        // --- Certificate Logic (Kept from current) ---
+        const modal = document.getElementById('certificate-modal');
+        const closeBtn = document.getElementById('cert-close-btn');
+        const certName = document.getElementById('cert-name');
+        const certDate = document.getElementById('current-date');
+
+        // --- NEW Hero Modal Logic ---
+        const heroModal = document.getElementById('hero-modal');
+        const heroCloseBtn = document.getElementById('hero-close-btn');
+
+
+        function showCertificate(name) {
+            certName.textContent = name;
+            certDate.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); // Formatted date
+            modal.style.display = 'flex';
+
+            // Check if confetti function exists before calling
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            }
+
+            const text = `I just pledged for road safety! ${window.location.href}`;
+            document.getElementById('cert-whatsapp').href = `https_wa.me_text=${encodeURIComponent(text)}`;
+        }
+
+        // --- MODIFIED Close Logic ---
+
+        // Function to close certificate and show hero modal
+        function closeCertificateShowHero() {
+            modal.style.display = 'none';
+            heroModal.style.display = 'flex';
+        }
+
+        // Function to close hero modal
+        function closeHeroModal() {
+            heroModal.style.display = 'none';
+        }
+
+        // Certificate close button
+        closeBtn.addEventListener('click', closeCertificateShowHero);
+
+        // Hero modal close button
+        heroCloseBtn.addEventListener('click', closeHeroModal);
+
+        // Print certificate
+        document.getElementById('cert-print-btn').addEventListener('click', () => { window.print(); });
+
+        // PDF Download Logic
+        document.getElementById('cert-pdf-btn').addEventListener('click', () => {
+            // Check if html2canvas and jspdf are loaded
+            if (typeof html2canvas === 'function' && typeof jspdf !== 'undefined') {
+                html2canvas(document.querySelector('.certificate-container')).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF('l', 'pt', 'a4');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    pdf.addImage(imgData, 'PNG', 0, 40, pdfWidth, pdfHeight);
+                    pdf.save('RoadSafetyCertificate.pdf');
+                });
+            } else {
+                console.error('jsPDF or html2canvas not loaded');
+                // You could show a user-friendly error message here
+            }
+        });
+
+        // Close modal on outside click
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                closeCertificateShowHero(); // Show hero modal after clicking off certificate
+            }
+            if (event.target == heroModal) {
+                closeHeroModal(); // Close hero modal
+            }
+        }
+    </script>
+
+
+    <script>
+        fetch('cursor.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('beforeend', data);
+            })
+            .catch(err => console.error('Failed to load cursor:', err));
+        
+    </script>
+
+
+</body>
+
+</html>
