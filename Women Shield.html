@@ -9,6 +9,9 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- --- REMOVED: Firebase SDKs and Auth Logic --- -->
+
     <style>
         :root {
             --primary-color: #ff4d4d;
@@ -39,7 +42,7 @@
             flex-direction: column;
         }
 
-        /* --- Simple Nav Bar --- */
+        /* --- Nav Bar --- */
         nav {
             display: flex;
             justify-content: space-between;
@@ -60,11 +63,9 @@
             align-items: center;
             gap: 10px;
         }
-
-        .nav-title img {
-            height: 40px;
-            background-color: #fff;
-            border-radius: 50%;
+        
+        .nav-title-icon {
+            color: var(--primary-color);
         }
 
         .nav-back-link {
@@ -130,6 +131,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             width: 95%;
+            flex-grow: 1;
         }
 
         h2 {
@@ -194,7 +196,7 @@
             line-height: 1.5;
         }
 
-        /* --- Accordion Tip Styles (Copied from index.html) --- */
+        /* --- Accordion Tip Styles (Safety Guidelines) --- */
         .tips {
             background: var(--card-bg);
             border-radius: 12px;
@@ -269,270 +271,51 @@
             padding: 0 1.5em 1.5em;
         }
 
-        /* --- NEW: Entry Shield Modal --- */
-        #shield-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(34, 34, 34, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1em;
-            transition: opacity 0.3s ease;
-        }
+        /* --- REMOVED: Entry Shield Modal Styles --- */
+        /* --- REMOVED: Upload Button Styles --- */
+        /* --- REMOVED: Modal Button Styles --- */
+        /* --- REMOVED: Loader Styles --- */
+        /* --- REMOVED: Blink Animation --- */
+        /* --- REMOVED: Toast Notification --- */
 
-        .shield-modal-content {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2.5em;
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-top: 5px solid var(--accent-color);
-            z-index: 9999;
-            animation: fadeInModal 0.5s ease-out;
-        }
-
-        @keyframes fadeInModal {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* NEW: Styles for verification steps */
-        .shield-step {
-            display: none; /* Hide steps by default */
-        }
-        .shield-step.active {
-            display: block; /* Show active step */
-            animation: fadeInModal 0.5s ease-out;
-        }
-
-        .shield-modal-content i {
-            font-size: 3.5em;
-            color: var(--primary-color);
-            margin-bottom: 0.5em;
-        }
-
-        .shield-modal-content h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--secondary-color);
-            margin-bottom: 0.75em;
-            border: none;
-            padding: 0;
-            font-size: 1.6em;
-        }
-
-        .shield-modal-content p {
-            font-size: 1.05em;
-            color: #555;
-            margin-bottom: 2em;
-            line-height: 1.6;
-        }
-
-        /* NEW: Styles for fake upload buttons */
-        .upload-section {
-            margin-bottom: 1.5em;
-        }
-        
-        .upload-label {
-            display: block;
-            background: var(--light-bg);
-            border: 2px dashed var(--primary-color);
-            border-radius: 8px;
-            padding: 1em;
-            cursor: pointer;
-            text-align: left;
-            transition: background 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .upload-label:hover {
-            background: #eee;
-        }
-
-        .upload-label span {
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-
-        .upload-label i {
-             font-size: 1.5em;
-             color: var(--primary-color);
-             margin-bottom: 0;
-             margin-right: 10px;
-        }
-
-        .upload-status {
-            font-size: 0.9em;
-            color: #888;
-            transition: color 0.3s ease;
-        }
-
-        .upload-label.file-added .upload-status {
-            color: #28a745;
-            font-weight: 600;
-        }
-
-        /* Hide actual file input */
-        .fake-upload {
-            display: none;
-        }
-        /* END: Styles for fake upload buttons */
-
-
-        .shield-btn {
-            background: var(--primary-color);
-            color: var(--card-bg);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.1em;
-            font-weight: 600;
-            padding: 0.8em 1.5em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
-        }
-
-        .shield-btn:hover:not(:disabled) {
-            background: var(--hover-color);
-            transform: translateY(-2px);
-        }
-
-        .shield-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* NEW: Loading spinner */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 1em auto 1.5em;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* --- NEW: Blink Animation --- */
-        .blink-me {
-            /* Blinks the icon after verification */
-            animation: blinker 1.5s linear infinite;
-        }
-
-        @keyframes blinker {
-            0%, 100% {
-                opacity: 1;
-                color: var(--accent-color);
-            }
-            50% {
-                opacity: 0.3;
-                color: #fff; /* Blink to header color */
-            }
-        }
-        /* --- END Blink Animation --- */
-
-        /* --- END Entry Shield --- */
-
-        /* --- Simple Footer --- */
+        /* --- Footer --- */
         footer {
-            background-color: var(--secondary-color);
-            color: var(--light-bg);
-            padding: 2em;
+            background: var(--secondary-color);
+            color: #aaa;
             text-align: center;
+            padding: 1.5em;
             margin-top: auto;
-            /* Pushes footer to bottom */
+        }
+
+        @media (max-width: 600px) {
+            .page-header h1 {
+                font-size: 2em;
+            }
+            .content {
+                padding: 1.5em 1em;
+            }
+             nav {
+                padding: 1em 1.5em;
+            }
+            .nav-title {
+                font-size: 1.5em;
+            }
+            .nav-back-link {
+                font-size: 0.9em;
+                padding: 0.4em 0.8em;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- === NEW: Entry Shield Modal === -->
-    <div id="shield-overlay">
-        <div class="shield-modal-content">
-
-            <!-- === Step 1: Affirmation === -->
-            <div id="step-1" class="shield-step active">
-                <i class="fas fa-shield-alt"></i>
-                <h2>A Dedicated Space</h2>
-                <p>This "Women Shield" area is dedicated to providing safety resources and features for women.
-                    <br><br>
-                    By entering, you affirm your support for this mission.
-                </p>
-                <button id="shield-affirm-btn" class="shield-btn">I Affirm and Continue</button>
-            </div>
-
-            <!-- === Step 2: Verification (Simulated) === -->
-            <div id="step-2" class="shield-step">
-                <i class="fas fa-user-check"></i>
-                <h2>Identity Verification</h2>
-                <p>To ensure this remains a dedicated space, please complete this one-time verification step.</p>
-                
-                <div class="upload-section">
-                    <!-- FIXED: Added 'for' attribute and corrected class typo -->
-                    <label class="upload-label" id="label-photo" for="fake-photo-upload">
-                        <div>
-                            <i class="fas fa-camera"></i>
-                            <span>Take Live Photo</span>
-                        </div>
-                        <span class="upload-status" id="status-photo">Pending...</span>
-                    </label>
-                    <!-- FIXED: Added file input with capture attribute -->
-                    <input type="file" id="fake-photo-upload" class="fake-upload" accept="image/*" capture="user">
-                </div>
-
-                <div class="upload-section">
-                    <label for="fake-aadhaar-upload" class="upload-label" id="label-aadhaar">
-                        <div>
-                             <i class="fas fa-id-card"></i>
-                            <span>Upload Aadhaar Photo</span>
-                        </div>
-                        <span class="upload-status" id="status-aadhaar">Pending...</span>
-                    </label>
-                    <input type="file" id="fake-aadhaar-upload" class="fake-upload" accept="image/*">
-                </div>
-
-                <button id="shield-verify-btn" class="shield-btn" disabled>Verify Identity</button>
-            </div>
-
-            <!-- === Step 3: Loading/Success === -->
-            <div id="step-3" class="shield-step">
-                <div class="loader"></div>
-                <h2>Verification in Progress</h2>
-                <p>Your documents have been submitted to our backend. This process can take up to 30 minutes.</p>
-                <p style="font-size: 0.9em; color: #777;">(This is a simulation. Access will be granted in a few seconds.)</p>
-            </div>
-
-        </div>
-    </div>
-    <!-- === END Entry Shield === -->
+    <!-- === REMOVED: Entry Shield Modal === -->
+    <!-- === REMOVED: Toast Notification HTML === -->
 
     <nav aria-label="Main Navigation">
         <a href="index.html" class="nav-title" aria-label="Home">
-            <img id="website_logo" src="Photoes/logo.png" alt="SafeReturn Logo"
-                onerror="this.src='https://placehold.co/40x40/ffffff/E63939?text=SR'; this.onerror=null;">
+            <i class="fas fa-shield-alt nav-title-icon"></i>
             SafeReturn
         </a>
         <a href="index.html" class="nav-back-link">
@@ -545,10 +328,12 @@
         <p>Your Safety, Our Priority. Dedicated features and tips for women travelers.</p>
     </header>
 
+    <!-- This main content is NOW ALWAYS VISIBLE -->
     <main class="content">
         <p>The "Women Shield" is our dedicated initiative to enhance road safety and security for women. This includes
             special in-app features and essential knowledge to help you travel with confidence.</p>
 
+        <!-- === "Features" requested by user === -->
         <h2>Core Safety Features</h2>
         <div class="feature-grid">
             <div class="feature-card">
@@ -577,6 +362,7 @@
             </div>
         </div>
 
+        <!-- === "Guidelines" requested by user === -->
         <h2>Proactive Safety Tips</h2>
         <article class="tips" id="tips">
             <div class="tip" tabindex="0">
@@ -627,104 +413,12 @@
     </footer>
 
     <script>
-        // --- Accordion Logic for Tips ---
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- NEW: Blink logic on load ---
-            // This checks if the user just completed verification
-            try {
-                const verificationStatus = sessionStorage.getItem('shieldVerification');
-                if (verificationStatus === 'verified') {
-                    const shieldIcon = document.querySelector('.page-header h1 i.fa-shield-alt');
-                    if (shieldIcon) {
-                        // Add the blink-me class to start the animation
-                        shieldIcon.classList.add('blink-me');
-                    }
-                    // Clear the flag so it doesn't blink on every page refresh
-                    sessionStorage.removeItem('shieldVerification');
-                }
-            } catch (e) {
-                console.error("Session storage is not available:", e);
-            }
-            // --- END NEW ---
-            
-            // --- NEW: Shield Modal Logic ---
-            const shieldOverlay = document.getElementById('shield-overlay');
-            const step1 = document.getElementById('step-1');
-            const step2 = document.getElementById('step-2');
-            const step3 = document.getElementById('step-3');
+            // --- REMOVED: Toast Notification Function ---
+            // --- REMOVED: Shield Modal Logic (File Uploads, etc.) ---
 
-            const affirmBtn = document.getElementById('shield-affirm-btn');
-            const verifyBtn = document.getElementById('shield-verify-btn');
-            
-            // FIXED: Re-defined photoInput
-            const photoInput = document.getElementById('fake-photo-upload');
-            const aadhaarInput = document.getElementById('fake-aadhaar-upload');
-            const photoLabel = document.getElementById('label-photo');
-            const aadhaarLabel = document.getElementById('label-aadhaar');
-            const photoStatus = document.getElementById('status-photo');
-            const aadhaarStatus = document.getElementById('status-aadhaar');
-
-            let photoAdded = false;
-            let aadhaarAdded = false;
-
-            const checkUploads = () => {
-                if (photoAdded && aadhaarAdded) {
-                    verifyBtn.disabled = false;
-                }
-            };
-
-            // FIXED: Changed back to event listener on photoInput
-            photoInput.addEventListener('change', () => {
-                photoAdded = true;
-                photoLabel.classList.add('file-added');
-                photoStatus.textContent = 'Photo Captured!';
-                checkUploads();
-            });
-
-            aadhaarInput.addEventListener('change', () => {
-                aadhaarAdded = true;
-                aadhaarLabel.classList.add('file-added');
-                aadhaarStatus.textContent = 'ID Added!';
-                checkUploads();
-            });
-
-            if (affirmBtn) {
-                affirmBtn.addEventListener('click', () => {
-                    step1.classList.remove('active');
-                    step2.classList.add('active');
-                });
-            }
-
-            if (verifyBtn) {
-                verifyBtn.addEventListener('click', () => {
-                    step2.classList.remove('active');
-                    step3.classList.add('active');
-
-                    // Simulate verification
-                    setTimeout(() => {
-                        // Set a flag that verification is pending
-                        // Using sessionStorage so it's temporary
-                        // CHANGED: Set to 'verified' on success
-                        try {
-                            sessionStorage.setItem('shieldVerification', 'verified');
-                        } catch (e) {
-                            console.error("Session storage is not available:", e);
-                        }
-
-
-                        shieldOverlay.style.opacity = '0';
-                        // Hide the modal after the fade-out transition, then redirect
-                        setTimeout(() => {
-                            // Redirect to the dashboard page (as per your nav link)
-                            shieldOverlay.style.display = 'none';
-                            window.location.href = 'index.html';
-                        }, 400); // Wait for fade out
-                    }, 3500); // Wait 3.5 seconds
-                });
-            }
-            // --- END Shield Modal Logic ---
-
+            // --- Accordion Logic for Tips ---
             const accordions = document.querySelectorAll('.tips');
 
             accordions.forEach(accordion => {
@@ -770,6 +464,4 @@
 </body>
 
 </html>
-
-
 
