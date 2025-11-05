@@ -81,8 +81,13 @@
         window.currentUserId = null;
         window.currentUserData = {};
         // --- NEW: Global listeners for real-time data ---
-        window.rideRequestsListener = null;
+        window.rideRequestsListener = null; // For driver's list of requests
         window.activeAlertsListener = null;
+        window.rideBidsListener = null; // NEW: For traveler's list of bids
+        window.tripStatusListener = null; // NEW: For traveler's live tracking
+        window.acceptedRideListener = null; // NEW: For driver's accepted ride
+        window.driverLocationInterval = null; // NEW: For driver's location sending
+        window.currentRideRequestId = null; // NEW: To track the active ride
 
         // --- FIX: Attach Firestore FUNCTIONS to window ---
         window.fs = {
@@ -206,6 +211,69 @@
             const referralCopyBtn = document.getElementById('referral-copy-btn');
             // --- END NEW ---
 
+            // --- NEW: Driver Ride Listener ---
+            // Attaches a listener for rides assigned to this driver
+            const attachAcceptedRideListener = () => {
+                if (window.acceptedRideListener) {
+                    window.acceptedRideListener(); // Detach old one
+                }
+                if (!window.db || !window.fs || !window.currentUserId) return;
+
+                console.log(`Attaching accepted ride listener for driver: ${window.currentUserId}`);
+
+                const q = window.fs.query(
+                    window.fs.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests'),
+                    window.fs.where('driverId', '==', window.currentUserId),
+                    window.fs.where('status', '==', 'accepted') // <-- Listen for 'accepted' status
+                );
+
+                window.acceptedRideListener = window.fs.onSnapshot(q, (snapshot) => {
+                    if (snapshot.empty) {
+                        console.log("No accepted rides found.");
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const ride = doc.data();
+                        console.log("Found accepted ride:", doc.id);
+
+                        // Check if we are already handling this ride
+                        if (window.currentRideRequestId === doc.id) return;
+
+                        // New ride assigned!
+                        window.currentRideRequestId = doc.id;
+
+                        // Close other modals
+                        document.getElementById('ride-requests-modal')?.classList.remove('active');
+
+                        // Show pickup modal
+                        const modal = document.getElementById('new-pickup-modal');
+                        if (modal) {
+                            modal.querySelector('#pickup-traveler-name').textContent = ride.travelerName || 'Traveler';
+                            modal.querySelector('#pickup-traveler-from').textContent = ride.from || 'Unknown';
+                            modal.querySelector('#pickup-traveler-to').textContent = ride.to || 'Unknown';
+                            modal.classList.add('active');
+                        }
+
+                        // Start sending location
+                        startSendingDriverLocation(doc.id);
+                    });
+
+                }, (error) => {
+                    console.error("Error listening for accepted rides:", error);
+                });
+            };
+
+            // Detaches the listener
+            const detachAcceptedRideListener = () => {
+                if (window.acceptedRideListener) {
+                    window.acceptedRideListener(); // Unsubscribe
+                    window.acceptedRideListener = null;
+                    console.log("Detached accepted ride listener.");
+                }
+            };
+            // --- END NEW Driver Ride Listener ---
+
 
             // --- NEW: Central UI Update Function ---
             const updateCommunityView = () => {
@@ -304,6 +372,17 @@
                                 const userDocRef = doc(db, 'artifacts', appId, 'users', window.currentUserId);
                                 await updateDoc(userDocRef, { onDuty: isChecked });
                                 window.currentUserData.onDuty = isChecked; // Update local state
+
+                                // --- NEW: Attach/detach ride listener for drivers ---
+                                if (window.currentUserData.role === 'driver') {
+                                    if (isChecked) {
+                                        attachAcceptedRideListener(); // <-- NEW
+                                    } else {
+                                        detachAcceptedRideListener(); // <-- NEW
+                                    }
+                                }
+                                // --- END NEW ---
+
                                 // Use the global showAlert
                                 window.showAlert('Status Updated', `You are now ${isChecked ? 'On Duty' : 'Off Duty'}.`, 'success');
                             } catch (error) {
@@ -491,6 +570,13 @@
                     if (window.populateRewards) window.populateRewards();
                     // --- END NEW ---
 
+                    // --- NEW: Attach driver listener if on duty ---
+                    if (window.currentUserData.role === 'driver' && window.currentUserData.onDuty) {
+                        attachAcceptedRideListener();
+                    }
+                    // --- END NEW ---
+
+
                     closeModal(); // Hide any open auth modals
 
                 } else {
@@ -540,6 +626,10 @@
                     if (window.populateWallet) window.populateWallet();
                     if (window.populateRides) window.populateRides();
                     if (window.populateRewards) window.populateRewards();
+                    // --- END NEW ---
+
+                    // --- NEW: Detach listeners ---
+                    detachAcceptedRideListener();
                     // --- END NEW ---
                 }
             });
@@ -1091,6 +1181,7 @@
         }); // --- End of DOMContentLoaded ---
     </script>
 
+    <!-- === STYLES === -->
     <style>
         :root {
             --primary-color: #ff4d4d;
@@ -1125,6 +1216,183 @@
             --emergency-bg: #fff0f0;
             /* --- END NEW --- */
         }
+
+        /* --- NEW: Bidding & Tracking Modal Styles --- */
+        .bids-list-container,
+        .tracking-map-container {
+            margin-top: 20px;
+        }
+
+        .bids-list {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .bid-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+        }
+
+        .bid-item .driver-info {
+            flex-grow: 1;
+        }
+
+        .bid-item .driver-info p {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .bid-item .driver-info span {
+            font-size: 0.9em;
+            color: #666;
+            display: block;
+        }
+
+        .bid-item .bid-amount {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--driver-color);
+            margin: 0 10px;
+        }
+
+        .bid-item .accept-bid-btn {
+            background: var(--traveler-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .bid-item .accept-bid-btn:hover {
+            background: var(--traveler-hover);
+        }
+
+        #tracking-map {
+            width: 100%;
+            height: 300px;
+            background: #eee;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #777;
+        }
+
+        #tracking-map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 8px;
+        }
+
+        #tracking-driver-info {
+            padding: 15px;
+            background: var(--driver-bg);
+            border: 1px solid var(--driver-color);
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #tracking-driver-info h4 {
+            margin: 0 0 5px;
+            color: var(--driver-color);
+            font-size: 1.2em;
+        }
+
+        #tracking-driver-info p {
+            margin: 0;
+            color: #333;
+        }
+
+        #new-pickup-modal .details-grid {
+            text-align: left;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        #new-pickup-modal .details-grid p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        #new-pickup-modal .details-grid strong {
+            color: var(--secondary-color);
+            display: inline-block;
+            width: 80px;
+        }
+
+        #new-pickup-modal .pickup-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        #new-pickup-modal .pickup-actions .submit-btn {
+            flex: 1;
+            margin: 0;
+        }
+
+        #end-ride-btn {
+            background: var(--driver-color);
+        }
+
+        #end-ride-btn:hover {
+            background: var(--driver-hover);
+        }
+
+        #cancel-ride-btn {
+            background: #777;
+        }
+
+        #cancel-ride-btn:hover {
+            background: #555;
+        }
+
+        #ride-complete-modal .ride-summary {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        #ride-complete-modal .ride-summary p {
+            font-size: 1.1em;
+            color: #555;
+            margin: 0;
+        }
+
+        #ride-complete-modal .ride-summary h3 {
+            font-size: 2.8em;
+            color: var(--driver-color);
+            margin: 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #rate-driver-btn {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* --- END NEW --- */
+
 
         /* --- NEW: Gender Button Styles --- */
         .gender-button-group {
@@ -1932,12 +2200,17 @@
         }
 
         /* --- NEW: Modal Role-Specific Header Colors --- */
-        #book-ride-modal .profile-modal-content h2 {
+        #book-ride-modal .profile-modal-content h2,
+        #bidding-modal .profile-modal-content h2,
+        #tracking-modal .profile-modal-content h2,
+        #ride-complete-modal .profile-modal-content h2 {
             color: var(--traveler-color) !important;
             border-bottom-color: var(--traveler-color) !important;
         }
 
-        #ride-requests-modal .profile-modal-content h2 {
+        #ride-requests-modal .profile-modal-content h2,
+        #make-offer-modal .profile-modal-content h2,
+        #new-pickup-modal .profile-modal-content h2 {
             color: var(--driver-color) !important;
             border-bottom-color: var(--driver-color) !important;
         }
@@ -2400,7 +2673,8 @@
             color: var(--traveler-color);
         }
 
-        .ride-request-item .accept-btn {
+        /* --- MODIFIED: Renamed to make-offer-btn --- */
+        .ride-request-item .make-offer-btn {
             background: var(--driver-color);
             color: white;
             border: none;
@@ -2412,7 +2686,7 @@
             align-self: center;
         }
 
-        .ride-request-item .accept-btn:hover {
+        .ride-request-item .make-offer-btn:hover {
             background: var(--driver-hover);
         }
 
@@ -4333,108 +4607,112 @@
             SafeReturn
         </a>
 
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li class="dropdown">
-                <a href="#road-safety" aria-expanded="false" aria-haspopup="true">Road Safety Tips <i
-                        class="fas fa-caret-down"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a href="Road Safety.html">Fundamentals</a></li>
-                    <li><a href="vehicles Mechanics.html">Vehicles Mechanics</a></li>
-                    <li><a href="Essential Road Safety Instructions.html">Essential Road Safety Instructions</a></li>
-                </ul>
-            </li>
-            <li><a href="Quiz.html">Quiz</a></li>
-            <!-- === NEW: Women Shield Link === -->
-            <li><a href="Women Shield.html" id="nav-women-shield-link" style="color: var(--accent-color);"><i
-                        class="fas fa-shield-alt"></i> Women Shield</a></li>
-            <!-- === END NEW === -->
-            <li class="dropdown">
-                <a href="#why-AI-traffic-lights" aria-expanded="false" aria-haspopup="true">Why AI Traffic Lights <i
-                        class="fas fa-caret-down"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a href="AI based traffic lights image.html">AI Based traffic lights</a></li>
-                    <li><a href="#how-it-works">How it Works</a></li>
-                    <li><a href="#benefits">Benefits</a></li>
-                    <li><a href="#challenges">Challenges</a></li>
-                </ul>
-            </li>
-            <li><a href="Collage.html">Collage</a></li>
-            <li><a href="footer.html">Contact</a></li>
+        <!-- === NEW: Menu Wrapper === -->
+        <div id="nav-menu-container">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li class="dropdown">
+                    <a href="#road-safety" aria-expanded="false" aria-haspopup="true">Road Safety Tips <i
+                            class="fas fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="Road Safety.html">Fundamentals</a></li>
+                        <li><a href="vehicles Mechanics.html">Vehicles Mechanics</a></li>
+                        <li><a href="Essential Road Safety Instructions.html">Essential Road Safety Instructions</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="Quiz.html">Quiz</a></li>
+                <!-- === NEW: Women Shield Link === -->
+                <li><a href="Women Shield.html" id="nav-women-shield-link" style="color: var(--accent-color);"><i
+                            class="fas fa-shield-alt"></i> Women Shield</a></li>
+                <!-- === END NEW === -->
+                <li class="dropdown">
+                    <a href="#why-AI-traffic-lights" aria-expanded="false" aria-haspopup="true">Why AI Traffic Lights <i
+                            class="fas fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="AI based traffic lights image.html">AI Based traffic lights</a></li>
+                        <li><a href="#how-it-works">How it Works</a></li>
+                        <li><a href="#benefits">Benefits</a></li>
+                        <li><a href="#challenges">Challenges</a></li>
+                    </ul>
+                </li>
+                <li><a href="Collage.html">Collage</a></li>
+                <li><a href="footer.html">Contact</a></li>
 
-            <!-- === NEW AUTH LINKS === -->
-            <!-- These show when logged OUT -->
-            <span id="nav-auth-links" style="display: flex; gap: 1.5em; align-items: center;">
-                <li><a href="#" id="nav-login-btn">Login</a></li>
-                <li><a href="#" id="nav-signup-btn">Sign Up</a></li>
-            </span>
+                <!-- === NEW AUTH LINKS === -->
+                <!-- These show when logged OUT -->
+                <span id="nav-auth-links" style="display: flex; gap: 1.5em; align-items: center;">
+                    <li><a href="#" id="nav-login-btn">Login</a></li>
+                    <li><a href="#" id="nav-signup-btn">Sign Up</a></li>
+                </span>
 
-            <!-- This shows when logged IN -->
-            <li id="nav-user-info" class="dropdown" style="display: none; align-items: center; gap: 15px;">
-                <!-- NEW: Profile Photo Circle -->
-                <img id="nav-user-photo" src="https://placehold.co/40x40/ccc/eee?text=G" alt="Profile"
-                    class="nav-user-photo-class">
-                <!-- <a href="#" id="nav-logout-btn" style="color: #fff; background: var(--primary-color); padding: 5px 10px; border-radius: 5px;">Logout</a> -->
-                <!-- OLD LOGOUT BTN - REMOVED -->
+                <!-- This shows when logged IN -->
+                <li id="nav-user-info" class="dropdown" style="display: none; align-items: center; gap: 15px;">
+                    <!-- NEW: Profile Photo Circle -->
+                    <img id="nav-user-photo" src="https://placehold.co/40x40/ccc/eee?text=G" alt="Profile"
+                        class="nav-user-photo-class">
+                    <!-- <a href="#" id="nav-logout-btn" style="color: #fff; background: var(--primary-color); padding: 5px 10px; border-radius: 5px;">Logout</a> -->
+                    <!-- OLD LOGOUT BTN - REMOVED -->
 
-                <!-- === NEW PROFILE DROPDOWN MENU === -->
-                <ul class="dropdown-menu" id="profile-dropdown-menu">
-                    <li class="profile-dropdown-header">
-                        <div class="icon"><i class="fas fa-user"></i></div>
-                        <div class="details">
-                            <h4 id="profile-dropdown-name">Guest</h4>
-                            <p id="profile-dropdown-contact">Please log in</p>
-                        </div>
-                    </li>
-                    <!-- NEW PHOTO UPLOAD OPTIONS -->
-                    <li class="profile-photo-options">
-                        <a href="#" id="photo-gallery-btn">
-                            <i class="fas fa-images"></i>
-                            <span>Add from Gallery</span>
-                        </a>
-                        <a href="#" id="photo-camera-btn">
-                            <i class="fas fa-camera"></i>
-                            <span>Click a Photo</span>
-                        </a>
-                    </li>
-                    <!-- END NEW PHOTO UPLOAD OPTIONS -->
-                    <li class="profile-menu-rating">
-                        <a href="#" data-modal-target="rating-modal">
-                            <i class="fas fa-star"></i>
-                            <span>My Rating</span>
-                            <i class="fas fa-chevron-right chevron"></i>
-                        </a>
-                    </li>
-                    <li><a href="#" data-modal-target="help-modal"><i
-                                class="fas fa-question-circle"></i><span>Help</span><i
-                                class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="payment-modal"><i
-                                class="fas fa-credit-card"></i><span>Wallet</span><i
-                                class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="rides-modal"><i class="fas fa-route"></i><span>My Rides</span><i
-                                class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="safety-modal"><i
-                                class="fas fa-shield-alt"></i><span>Safety</span><i
-                                class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="refer-modal"><i class="fas fa-gift"></i><span>Refer and
-                                Earn</span><i class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="rewards-modal"><i class="fas fa-trophy"></i><span>My
-                                Rewards</span><i class="fas fa-chevron-right chevron"></i></a></li>
-                    <li><a href="#" data-modal-target="pass-modal"><i class="fas fa-ticket-alt"></i><span>Power
-                                Pass</span><i class="fas fa-chevron-right chevron"></i></a></li>
-                    <li class="logout-item">
-                        <!-- Moved logout button here -->
-                        <a href="#" id="nav-logout-btn">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                </ul>
-                <!-- === END NEW MENU === -->
-            </li>
-        </ul>
-        <!-- === END NEW WRAPPER === -->
+                    <!-- === NEW PROFILE DROPDOWN MENU === -->
+                    <ul class="dropdown-menu" id="profile-dropdown-menu">
+                        <li class="profile-dropdown-header">
+                            <div class="icon"><i class="fas fa-user"></i></div>
+                            <div class="details">
+                                <h4 id="profile-dropdown-name">Guest</h4>
+                                <p id="profile-dropdown-contact">Please log in</p>
+                            </div>
+                        </li>
+                        <!-- NEW PHOTO UPLOAD OPTIONS -->
+                        <li class="profile-photo-options">
+                            <a href="#" id="photo-gallery-btn">
+                                <i class="fas fa-images"></i>
+                                <span>Add from Gallery</span>
+                            </a>
+                            <a href="#" id="photo-camera-btn">
+                                <i class="fas fa-camera"></i>
+                                <span>Click a Photo</span>
+                            </a>
+                        </li>
+                        <!-- END NEW PHOTO UPLOAD OPTIONS -->
+                        <li class="profile-menu-rating">
+                            <a href="#" data-modal-target="rating-modal">
+                                <i class="fas fa-star"></i>
+                                <span>My Rating</span>
+                                <i class="fas fa-chevron-right chevron"></i>
+                            </a>
+                        </li>
+                        <li><a href="#" data-modal-target="help-modal"><i
+                                    class="fas fa-question-circle"></i><span>Help</span><i
+                                    class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="payment-modal"><i
+                                    class="fas fa-credit-card"></i><span>Wallet</span><i
+                                    class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="rides-modal"><i class="fas fa-route"></i><span>My
+                                    Rides</span><i class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="safety-modal"><i
+                                    class="fas fa-shield-alt"></i><span>Safety</span><i
+                                    class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="refer-modal"><i class="fas fa-gift"></i><span>Refer and
+                                    Earn</span><i class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="rewards-modal"><i class="fas fa-trophy"></i><span>My
+                                    Rewards</span><i class="fas fa-chevron-right chevron"></i></a></li>
+                        <li><a href="#" data-modal-target="pass-modal"><i class="fas fa-ticket-alt"></i><span>Power
+                                    Pass</span><i class="fas fa-chevron-right chevron"></i></a></li>
+                        <li class="logout-item">
+                            <!-- Moved logout button here -->
+                            <a href="#" id="nav-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- === END NEW MENU === -->
+                </li>
+            </ul>
         </div>
+        <!-- === END NEW WRAPPER === -->
+
 
         <!-- === NEW: Mobile Menu Toggle Button === -->
         <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle navigation menu"
