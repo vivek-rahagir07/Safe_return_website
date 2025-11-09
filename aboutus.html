@@ -11,6 +11,12 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            /* Replaced local image with a reliable online one */
+            background-image: url('photoes/index.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #f9fafb; /* Fallback color */
         }
         /* Base styles for fade-in effect */
         .animate-on-scroll {
@@ -29,8 +35,8 @@
         }
     </style>
 </head>
-<!-- Added background image to the body -->
-<body class="text-gray-800" style="background-image: url('Photoes/index.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
+<!-- Removed the inline style from the body tag -->
+<body class="text-gray-800">
 
     <!-- Header --><header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
