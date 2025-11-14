@@ -4600,6 +4600,11 @@
                         <button id="book-my-ride-btn" class="profile-btn profile-btn-traveler">
                             <i class="fas fa-taxi"></i> Book My Ride
                         </button>
+                        <!-- === NEW: VIEW BIDS BUTTON === -->
+                        <button id="view-my-requests-btn" class="profile-btn profile-btn-traveler" style="background-color: #0056b3;">
+                            <i class="fas fa-gavel"></i> View Bids
+                        </button>
+                        <!-- === END NEW === -->
                     </div>
                     <!-- Driver Buttons -->
                     <div id="driver-actions" class="role-actions" style="display: none;">
@@ -5324,6 +5329,36 @@
                 <div id="priority-route-error" class="modal-form-error"></div>
                 <button type="submit" class="submit-btn emergency-btn">Generate Route</button>
             </form>
+        </div>
+    </div>
+
+    <!-- 3. Place Bid Modal (Driver) -->
+    <div id="bid-modal" class="profile-modal-overlay">
+        <div class="profile-modal-content" style="max-width: 450px;">
+            <span class="profile-modal-close">&times;</span>
+            <h2><i class="fas fa-gavel" style="color: var(--driver-color);"></i> Place Your Bid</h2>
+            <p>Enter the amount you are willing to charge for this ride.</p>
+            <form id="place-bid-form" style="margin-top: 20px;">
+                <div class="form-group">
+                    <label for="bid-amount"><i class="fas fa-rupee-sign"></i> Your Bid Amount (₹)</label>
+                    <input type="number" id="bid-amount" name="bid-amount" placeholder="e.g., 150.00" step="0.01" min="0" required>
+                </div>
+                <div id="place-bid-error" class="modal-form-error"></div>
+                <button type="submit" class="submit-btn driver-btn">Submit Bid</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. My Ride Requests Modal (Traveler) -->
+    <div id="my-requests-modal" class="profile-modal-overlay">
+        <div class="profile-modal-content">
+            <span class="profile-modal-close">&times;</span>
+            <h2><i class="fas fa-gavel" style="color: var(--traveler-color);"></i> View My Bids</h2>
+            <p>These are your active ride requests. Click "View Bids" to see offers from drivers.</p>
+            <ul id="my-requests-list" class="modal-list">
+                <!-- Populated by JS -->
+                <li><p>Loading your active requests...</p></li>
+            </ul>
         </div>
     </div>
 
@@ -6623,7 +6658,10 @@
                 bookRideForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     if (!window.db || !window.fs || !window.currentUserId) {
-                        if (bookRideError) bookRideError.textContent = 'Error: Not logged in.';
+                        if (bookRideError) {
+                            bookRideError.textContent = 'Error: Not logged in.';
+                            bookRideError.style.display = 'block';
+                        }
                         return;
                     }
 
@@ -6643,7 +6681,7 @@
                             from: from,
                             to: to,
                             vehicle: vehicle,
-                            status: 'pending', // pending, accepted, completed
+                            status: 'bidding', // bidding, confirmed, completed
                             createdAt: new Date().toISOString(),
                             locality: window.currentUserData.defaultLocation ? window.currentUserData.defaultLocation.split(',').pop().trim() : 'unknown' // <-- MODIFIED: Add locality for filtering
                         };
@@ -6652,10 +6690,11 @@
                         const rideRequestsColRef = window.fs.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests');
                         await window.fs.addDoc(rideRequestsColRef, rideRequestData);
 
-                        showAlert('Request Sent!', `Your ride request from ${from} to ${to} has been sent to nearby drivers.`, 'success'); // <-- MODIFIED: Updated alert
+                        showAlert('Ride Request Created!', `Your ride request from ${from} to ${to} has been posted. Drivers can now place bids.`, 'success');
 
                         if (bookRideModal) bookRideModal.classList.remove('active');
                         bookRideForm.reset();
+                        if (bookRideError) bookRideError.style.display = 'none';
 
                     } catch (error) {
                         console.error("Error booking ride:", error);
@@ -6749,6 +6788,22 @@
 
             // --- NEW: Add listeners for ride/alert population functions ---
 
+            // --- NEW: Traveler's "View Bids" Button Handler ---
+            const viewMyRequestsBtn = document.getElementById('view-my-requests-btn');
+            const myRequestsModal = document.getElementById('my-requests-modal');
+
+            if (viewMyRequestsBtn && myRequestsModal) {
+                viewMyRequestsBtn.addEventListener('click', () => {
+                    myRequestsModal.classList.add('active');
+                    if (window.populateMyRideRequests) {
+                        window.populateMyRideRequests();
+                    } else {
+                        console.error("populateMyRideRequests function not found");
+                    }
+                });
+            }
+            // --- END NEW ---
+
             // --- Populate Ride Requests (Driver) ---
             const populateAndListenForRideRequests = () => {
                 const requestsListEl = document.getElementById('ride-requests-list');
@@ -6777,8 +6832,8 @@
                 requestsListEl.innerHTML = '<li><p>Listening for new ride requests...</p></li>';
 
                 const requestsColRef = window.fs.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests');
-                // Query for pending requests
-                const q = window.fs.query(requestsColRef, window.fs.where('status', '==', 'pending'));
+                // Query for bidding requests
+                const q = window.fs.query(requestsColRef, window.fs.where('status', '==', 'bidding'));
 
                 // Save the unsubscribe function returned by onSnapshot
                 window.rideRequestsListener = window.fs.onSnapshot(q, (querySnapshot) => {
@@ -6798,10 +6853,16 @@
                             const requestEl = document.createElement('li');
                             requestEl.className = 'modal-list-item ride-request-item';
                             requestEl.innerHTML = `
-                                <span><strong>Vehicle:</strong> ${request.vehicle}</span>
-                            </div>
-                            <button class="accept-btn" data-id="${doc.id}">Accept</button>
-                        `;
+                                <div class="icon"><i class="fas fa-user-tag"></i></div>
+                                <div class="details">
+                                    <p><strong>From:</strong> ${request.from}</p>
+                                    <p><strong>To:</strong> ${request.to}</p>
+                                    <span><strong>Vehicle:</strong> ${request.vehicle}</span>
+                                </div>
+                                <button class="bid-btn profile-btn profile-btn-driver" data-id="${doc.id}" style="padding: 8px 12px; font-size: 0.9em; flex-shrink: 0;">
+                                    Place Bid
+                                </button>
+                            `;
                             requestsListEl.appendChild(requestEl);
 
                             // --- NEW: Close filter condition ---
@@ -6811,34 +6872,30 @@
 
                     // --- NEW: Check if any requests were found *after* filtering ---
                     if (requestsFound === 0) {
-                        requestsListEl.innerHTML = '<li><p>No pending ride requests found in your locality.</p></li>';
+                        requestsListEl.innerHTML = '<li><p>No ride requests found in your locality. Check back later!</p></li>';
                     }
                     // --- END NEW ---
 
-                    // Add listeners to new accept buttons
-                    requestsListEl.querySelectorAll('.accept-btn').forEach(btn => {
-                        btn.addEventListener('click', async (e) => {
-                            const requestId = e.target.dataset.id;
-                            e.target.disabled = true;
-                            e.target.textContent = 'Accepting...';
-
-                            try {
-                                const requestDocRef = window.fs.doc(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests', requestId);
-                                await window.fs.updateDoc(requestDocRef, {
-                                    status: 'accepted',
-                                    driverId: window.currentUserId,
-                                    driverName: window.currentUserData.name || 'Community Driver'
-                                });
-                                showAlert('Ride Accepted!', 'The traveler has been notified.', 'success');
-                                // The ride will disappear from the list automatically due to the onSnapshot query
-                            } catch (error) {
-                                console.error("Error accepting ride:", error);
-                                showAlert('Error', `Could not accept ride: ${error.message}`, 'error');
-                                e.target.disabled = false;
-                                e.target.textContent = 'Accept';
+                    // --- NEW: Delegated click listener for "Place Bid" buttons ---
+                    // Use event delegation to handle dynamically added buttons
+                    requestsListEl.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('bid-btn') || e.target.closest('.bid-btn')) {
+                            const btn = e.target.classList.contains('bid-btn') ? e.target : e.target.closest('.bid-btn');
+                            const requestId = btn.dataset.id;
+                            const bidModal = document.getElementById('bid-modal');
+                            const bidForm = document.getElementById('place-bid-form');
+                            
+                            if (bidModal && bidForm) {
+                                // Store the requestId on the form itself
+                                bidForm.dataset.requestId = requestId;
+                                bidForm.reset(); // Clear old amounts
+                                const bidError = document.getElementById('place-bid-error');
+                                if (bidError) bidError.style.display = 'none';
+                                bidModal.classList.add('active');
                             }
-                        });
+                        }
                     });
+                    // --- END NEW ---
 
                 }, (error) => {
                     console.error("Error listening to ride requests:", error);
@@ -6925,6 +6982,264 @@
                     populateAndListenForActiveAlerts(); // Call the function
                 });
             }
+
+            // --- NEW: Populate My Ride Requests (Traveler) ---
+            async function populateMyRideRequests() {
+                const requestsListEl = document.getElementById('my-requests-list');
+                if (!requestsListEl) return;
+
+                if (!window.db || !window.fs || !window.currentUserId) {
+                    requestsListEl.innerHTML = '<li><p>Please log in to see your requests.</p></li>';
+                    return;
+                }
+
+                requestsListEl.innerHTML = '<li><p>Loading your ride requests...</p></li>';
+
+                try {
+                    const requestsColRef = window.fs.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests');
+                    const q = window.fs.query(requestsColRef,
+                        window.fs.where('travelerId', '==', window.currentUserId),
+                        window.fs.where('status', '==', 'bidding')
+                    );
+
+                    const querySnapshot = await window.fs.getDocs(q);
+
+                    if (querySnapshot.empty) {
+                        requestsListEl.innerHTML = '<li><p>You have no active ride requests.</p></li>';
+                        return;
+                    }
+
+                    requestsListEl.innerHTML = '';
+
+                    // Remove old event listener if it exists to prevent duplicates
+                    const oldList = requestsListEl.cloneNode(false);
+                    requestsListEl.parentNode.replaceChild(oldList, requestsListEl);
+                    const newList = oldList;
+
+                    querySnapshot.forEach(doc => {
+                        const request = doc.data();
+                        const requestId = doc.id;
+                        const requestEl = document.createElement('li');
+                        requestEl.className = 'modal-list-item my-request-item';
+                        requestEl.style.cssText = 'flex-direction: column; align-items: flex-start;';
+
+                        requestEl.innerHTML = `
+                            <div style="display: flex; width: 100%; gap: 15px; align-items: center;">
+                                <div class="icon"><i class="fas fa-route" style="color: var(--traveler-color);"></i></div>
+                                <div class="details" style="flex-grow: 1;">
+                                    <p style="font-size: 1em; margin-bottom: 2px;"><strong>From:</strong> ${request.from}</p>
+                                    <p style="font-size: 1em;"><strong>To:</strong> ${request.to}</p>
+                                    <span class="timestamp">Requested: ${new Date(request.createdAt).toLocaleString('en-IN')}</span>
+                                </div>
+                                <button class="view-bids-btn profile-btn profile-btn-traveler" data-id="${requestId}" style="padding: 8px 12px; font-size: 0.9em; flex-shrink: 0;">View Bids</button>
+                            </div>
+                            <div class="bids-container" id="bids-for-${requestId}" style="display: none; width: 100%; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee;">
+                                <!-- Bids will be loaded here -->
+                            </div>
+                        `;
+                        newList.appendChild(requestEl);
+                    });
+
+                    // Event listener for "View Bids" and "Accept Bid" buttons using delegation
+                    newList.addEventListener('click', async (e) => {
+                        // Handle "View Bids" button click
+                        if (e.target.classList.contains('view-bids-btn')) {
+                            const btn = e.target;
+                            const requestId = btn.dataset.id;
+                            const bidsContainer = document.getElementById(`bids-for-${requestId}`);
+
+                            if (!bidsContainer) return;
+
+                            // Toggle display
+                            if (bidsContainer.style.display === 'block') {
+                                bidsContainer.style.display = 'none';
+                                btn.textContent = 'View Bids';
+                                return;
+                            }
+
+                            // Show and load bids
+                            btn.disabled = true;
+                            btn.textContent = 'Loading...';
+                            bidsContainer.style.display = 'block';
+                            bidsContainer.innerHTML = '<p style="text-align: center; color: #555;">Loading bids...</p>';
+
+                            try {
+                                const bidsColRef = window.fs.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests', requestId, 'bids');
+                                const bidsSnapshot = await window.fs.getDocs(bidsColRef);
+
+                                if (bidsSnapshot.empty) {
+                                    bidsContainer.innerHTML = '<p style="text-align: center; color: #555;">No bids placed yet.</p>';
+                                    btn.textContent = 'Refresh Bids';
+                                    btn.disabled = false;
+                                    return;
+                                }
+
+                                bidsContainer.innerHTML = '';
+                                bidsSnapshot.forEach(bidDoc => {
+                                    const bid = bidDoc.data();
+                                    const bidEl = document.createElement('div');
+                                    bidEl.className = 'bid-item';
+                                    bidEl.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px; background: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 5px;';
+
+                                    bidEl.innerHTML = `
+                                        <img src="${bid.driverPhotoUrl || 'https://placehold.co/40x40/ccc/eee?text=' + (bid.driverName ? bid.driverName.charAt(0) : 'D')}" alt="${bid.driverName}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                        <div class="details" style="flex-grow: 1; overflow: hidden;">
+                                            <p style="font-weight: 600; margin: 0; color: #333; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${bid.driverName}</p>
+                                            <span style="font-size: 0.9em; color: #666; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${bid.vehicle || 'Vehicle details n/a'}</span>
+                                        </div>
+                                        <strong style="font-size: 1.1em; color: var(--driver-color); margin: 0 10px;">₹${bid.bidAmount.toFixed(2)}</strong>
+                                        <button class="accept-bid-btn profile-btn profile-btn-traveler" 
+                                            data-request-id="${requestId}" 
+                                            data-driver-id="${bid.driverId}"
+                                            data-driver-name="${bid.driverName}"
+                                            data-bid-amount="${bid.bidAmount}"
+                                            data-vehicle="${bid.vehicle || ''}"
+                                            style="padding: 6px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9em; flex-shrink: 0;">
+                                            Accept
+                                        </button>
+                                    `;
+                                    bidsContainer.appendChild(bidEl);
+                                });
+
+                            } catch (err) {
+                                console.error("Error fetching bids:", err);
+                                bidsContainer.innerHTML = `<p style="color: red; text-align: center;">Error: ${err.message}</p>`;
+                            } finally {
+                                btn.disabled = false;
+                                btn.textContent = 'Hide Bids';
+                            }
+                        }
+
+                        // Handle "Accept Bid" button click
+                        if (e.target.classList.contains('accept-bid-btn')) {
+                            const btn = e.target;
+                            const requestId = btn.dataset.requestId;
+                            const driverId = btn.dataset.driverId;
+                            const driverName = btn.dataset.driverName;
+                            const bidAmount = parseFloat(btn.dataset.bidAmount);
+                            const vehicle = btn.dataset.vehicle;
+
+                            btn.disabled = true;
+                            btn.textContent = 'Accepting...';
+                            // Disable all other accept buttons for this request
+                            btn.closest('.bids-container').querySelectorAll('.accept-bid-btn').forEach(b => b.disabled = true);
+
+                            try {
+                                const requestDocRef = window.fs.doc(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests', requestId);
+
+                                await window.fs.updateDoc(requestDocRef, {
+                                    status: 'confirmed',
+                                    confirmedDriverId: driverId,
+                                    confirmedDriverName: driverName,
+                                    confirmedBidAmount: bidAmount,
+                                    confirmedVehicle: vehicle
+                                });
+
+                                showAlert('Bid Accepted!', `You have accepted ${driverName}'s bid of ₹${bidAmount.toFixed(2)}. The driver has been notified.`, 'success');
+                                
+                                // Close modal and refresh
+                                const myRequestsModal = document.getElementById('my-requests-modal');
+                                if (myRequestsModal) myRequestsModal.classList.remove('active');
+                                setTimeout(() => {
+                                    if (window.populateMyRideRequests) {
+                                        window.populateMyRideRequests();
+                                    }
+                                }, 500);
+
+                            } catch (error) {
+                                console.error("Error accepting bid:", error);
+                                showAlert('Error', `Could not accept bid: ${error.message}`, 'error');
+                                btn.disabled = false;
+                                btn.textContent = 'Accept';
+                                btn.closest('.bids-container').querySelectorAll('.accept-bid-btn').forEach(b => b.disabled = false);
+                            }
+                        }
+                    });
+
+                } catch (error) {
+                    console.error("Error fetching ride requests:", error);
+                    requestsListEl.innerHTML = `<li><p>Error loading requests: ${error.message}</p></li>`;
+                }
+            }
+            window.populateMyRideRequests = populateMyRideRequests;
+            // --- END NEW ---
+
+            // --- NEW: Place Bid Form Submission Handler ---
+            const bidForm = document.getElementById('place-bid-form');
+            if (bidForm) {
+                bidForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const bidModal = document.getElementById('bid-modal');
+                    const bidError = document.getElementById('place-bid-error');
+                    const submitBtn = bidForm.querySelector('.submit-btn');
+                    const bidAmountInput = document.getElementById('bid-amount') || bidForm['bid-amount'];
+                    const bidAmount = bidAmountInput ? parseFloat(bidAmountInput.value) : NaN;
+                    const requestId = bidForm.dataset.requestId;
+
+                    if (isNaN(bidAmount) || bidAmount <= 0) {
+                        if (bidError) {
+                            bidError.textContent = 'Please enter a valid bid amount.';
+                            bidError.style.display = 'block';
+                        }
+                        return;
+                    }
+                    if (!requestId) {
+                        if (bidError) {
+                            bidError.textContent = 'Error: No request ID found. Please close and try again.';
+                            bidError.style.display = 'block';
+                        }
+                        return;
+                    }
+                    // Check for login
+                    if (!window.db || !window.fs || !window.currentUserId || !window.currentUserData) {
+                        if (bidError) {
+                            bidError.textContent = 'Error: You are not logged in.';
+                            bidError.style.display = 'block';
+                        }
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
+                    if (bidError) bidError.style.display = 'none';
+
+                    try {
+                        const driverData = window.currentUserData;
+                        const driverId = window.currentUserId;
+
+                        const bidData = {
+                            driverId: driverId,
+                            driverName: driverData.name || 'Community Driver',
+                            driverPhotoUrl: driverData.photoUrl || null,
+                            vehicle: `${driverData.vehicleMake || ''} ${driverData.vehicleModel || ''} (${driverData.licensePlate || 'N/A'})`.trim() || 'Vehicle details not available',
+                            bidAmount: bidAmount,
+                            timestamp: new Date().toISOString()
+                        };
+
+                        // Path to the 'bids' subcollection
+                        // Use driverId as the bid document ID to enforce one bid per driver per request
+                        const bidDocRef = window.fs.doc(window.db, 'artifacts', window.appId, 'public', 'data', 'ride-requests', requestId, 'bids', driverId);
+
+                        await window.fs.setDoc(bidDocRef, bidData);
+
+                        showAlert('Bid Placed!', `Your bid of ₹${bidAmount.toFixed(2)} has been sent to the traveler.`, 'success');
+                        if (bidModal) bidModal.classList.remove('active');
+                        bidForm.reset();
+                        delete bidForm.dataset.requestId;
+
+                    } catch (error) {
+                        console.error("Error placing bid:", error);
+                        if (bidError) {
+                            bidError.textContent = `Error: ${error.message}`;
+                            bidError.style.display = 'block';
+                        }
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Bid';
+                    }
+                });
+            }
+            // --- END NEW ---
 
 
         }); // --- End of DOMContentLoaded ---
