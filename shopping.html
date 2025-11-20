@@ -1,243 +1,990 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SafeReturn | Smart Safety & AI Monitoring Shop</title>
-    <!-- Load Tailwind CSS CDN -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configure Tailwind to use Inter font and custom colors -->
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // New Theme Colors based on SafeReturn image
-                        'theme-dark': '#222831', // Dark header/footer background
-                        'theme-coral': '#E96C5B', // Hero background, main accent
-                        'theme-light': '#F7F9FB', // Main body background
-                        'smart-blue': '#1D4ED8', // Used for tech emphasis in cards
-
-                        // Keeping these for potential secondary accents
-                        'safety-yellow': '#FFD700', 
+                        'theme-coral': '#E96C5B',
+                        'smart-blue': '#2778FF',
+                        'neo-purple': '#7C3AED',
+                        'theme-darktext': '#1A1A1A',
+                        'theme-lightgray': '#F7F7F7'
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                }
-            }
-        }
+                },
+            },
+        };
     </script>
+
     <style>
-        /* Apply Inter font globally and ensure smooth scrolling */
         body {
-            font-family: 'Inter', sans-serif;
-            /* --- BACKGROUND IMAGE URL START ---
-               
-               Replace the URL below with your desired external background image link! 
-            */
-            background-color: #1a1a2e; /* Deep blue/dark fallback */
+            font-family: "Inter", sans-serif;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            color: #1a1a1a;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Background Image with Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            /* Aesthetic road/journey background */
             background-image: url('photoes/index.jpg'); 
             background-size: cover;
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Ensures pattern stays put */
-            /* --- BACKGROUND IMAGE URL END ---
-            */
-            scroll-behavior: smooth;
+            background-position: center;
+            opacity: 0.15; 
+            z-index: -1;
+            pointer-events: none;
         }
-        /* Custom message box styling */
+
+        /* Product cards */
+        .smart-card {
+            transition: all 0.35s ease;
+            border-bottom: 3px solid transparent;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .smart-card:hover {
+            transform: translateY(-5px);
+            border-bottom-color: #e96c5b;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Glow buttons */
+        .glow-btn {
+            transition: all 0.3s ease;
+        }
+
+        .glow-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(39, 120, 255, 0.4);
+        }
+
+        /* Toast Message */
         .message-box {
             position: fixed;
             top: 1rem;
             right: 1rem;
             padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            transform: translateX(100%);
+            border-radius: 0.8rem;
+            background: #2778FF;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             opacity: 0;
+            transform: translateX(130%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         .message-box.show {
-            transform: translateX(0);
             opacity: 1;
+            transform: translateX(0);
         }
-        /* Custom styling for high-tech product cards */
-        .smart-card {
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border-bottom: 5px solid transparent;
+
+        /* Cart sidebar */
+        #cart-sidebar {
+            background: #ffffff !important;
+            color: #1a1a1a !important;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
         }
-        .smart-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(34, 40, 49, 0.15); /* Shadow matching new dark color */
-            border-bottom-color: #E96C5B; /* Coral border on hover */
-        }
-        /* Ensures block-level elements inside the hidden span appear correctly when shown */
-        .more-content.show {
-            display: block !important;
-        }
-        /* Quote box styling */
+
         .quote-box {
-            position: relative;
-            padding: 1.5rem;
-            border-left: 5px solid #fff; /* White vertical line */
+            border-left: 4px solid #e96c5b;
+            padding-left: 1rem;
             font-style: italic;
-            font-size: 1.25rem;
+            color: #333;
+        }
+
+        /* Read More smooth reveal */
+        .more-content {
+            display: none;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .more-content.show {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
         }
     </style>
 </head>
-<!-- Changed global text color to light gray for visibility against the new dark background -->
-<body class="text-gray-100">
 
-    <!-- Custom Message Box for Notifications -->
-    <div id="message-box" class="message-box bg-theme-coral text-white"></div>
+<body>
+    <!-- Toast -->
+    <div id="message-box" class="message-box">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span id="message-text">Item added!</span>
+    </div>
 
-    <!-- Header / Navigation Bar (Dark Theme) -->
-    <header class="sticky top-0 bg-theme-dark shadow-xl z-50">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-white tracking-wider flex items-center">
-                <!-- SafeReturn Logo/Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline-block mr-2" viewBox="0 0 24 24" fill="#E96C5B">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15.5l-3-3 1.41-1.41L11 14.6l5.59-5.59L18 10.5l-7 7z"/>
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40 backdrop-blur-sm transition-opacity duration-300"></div>
+
+    <!-- Slide-In Cart -->
+    <aside id="cart-sidebar"
+        class="fixed inset-y-0 right-0 w-full max-w-sm transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gray-50">
+            <h2 class="text-xl font-bold text-theme-darktext flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-theme-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                SHOP <span class="text-theme-coral text-sm ml-1">SMART</span>
-            </a>
-            <!-- Using white text for navigation links -->
-        
-            <button class="md:hidden p-2 rounded-full hover:bg-gray-700 transition duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                Your Cart
+            </h2>
+            <button id="cart-close" class="text-gray-400 hover:text-theme-coral transition-colors text-3xl leading-none">&times;</button>
+        </div>
+
+        <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-white">
+            <!-- Items injected here -->
+        </div>
+
+        <div class="border-t border-gray-200 px-6 py-6 bg-gray-50">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-gray-600 font-medium">Subtotal</span>
+                <span id="cart-subtotal" class="text-2xl font-bold text-theme-darktext">$0.00</span>
+            </div>
+
+            <button class="w-full bg-theme-coral hover:bg-red-500 shadow-lg shadow-red-200 text-white font-bold py-3.5 rounded-xl transition-all transform active:scale-95">
+                Proceed to Checkout
             </button>
+        </div>
+    </aside>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center text-2xl font-extrabold text-theme-darktext tracking-tight group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 mr-2 text-theme-coral group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15.5l-3-3 1.41-1.41L11 14.6l5.59-5.59L18 10.5l-7 7z" />
+                </svg>
+                SafeReturn <span class="text-theme-coral ml-1 text-lg font-bold">STORE</span>
+            </a>
+
+            <div class="hidden md:flex space-x-8 font-medium text-gray-600">
+                <a href="#" class="hover:text-theme-coral transition-colors">Home</a>
+                <a href="#" class="hover:text-theme-coral transition-colors">Safety Tips</a>
+                <a href="#smart-tech" class="text-theme-coral">Shop Gear</a>
+                <button onclick="document.getElementById('cart-sidebar').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden');" class="hover:text-theme-coral transition-colors flex items-center gap-1">
+                    Cart
+                    <span id="cart-count" class="bg-theme-coral text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
+                </button>
+            </div>
         </nav>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero Section -->
+    <section class="max-w-7xl mx-auto mt-8 px-4">
+        <div class="bg-gradient-to-br from-white/90 to-white/60 backdrop-blur-xl border border-white/50 rounded-3xl p-10 md:p-16 shadow-xl text-center relative overflow-hidden">
+            <!-- Decorative blob -->
+            <div class="absolute top-0 left-0 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
-        <!-- Hero Section (Coral Theme) -->
-        <section class="bg-theme-coral text-white rounded-xl shadow-2xl p-8 md:p-16 mb-12 flex flex-col items-center text-center">
-            <!-- Updated Heading -->
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-snug mb-4 text-white">
-                Shop Smart
-            </h1>
-            <p class="text-xl sm:text-2xl font-semibold mb-4 text-white">
-                Your journey is precious. Awareness is your best defense.
-            </p>
-            
-            <!-- Quote Box Style -->
-            <div class="quote-box max-w-2xl mt-6">
-                <p class="text-white">
-                    "The only thing we need from your trip is your safe return."
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-theme-darktext mb-4 tracking-tight">
+                    Smart Safety for <span class="text-transparent bg-clip-text bg-gradient-to-r from-theme-coral to-orange-500">Every Journey</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Advanced monitoring tools and AI-powered gear designed to ensure you always make it back home.
                 </p>
+
+                <div class="quote-box max-w-xl mx-auto mt-8 text-gray-600 text-lg bg-white/50 p-4 rounded-r-lg rounded-bl-lg">
+                    “The only thing we need from your trip is your safe return.”
+                </div>
+
+                <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#smart-tech"
+                        class="bg-theme-coral hover:bg-orange-600 text-white font-bold py-3.5 px-8 rounded-full shadow-lg shadow-orange-200 transition-all transform hover:-translate-y-1">
+                        Explore Smart Gear
+                    </a>
+                    <a href="#"
+                        class="bg-white text-gray-700 border border-gray-200 font-bold py-3.5 px-8 rounded-full hover:bg-gray-50 transition-all">
+                        Learn More
+                    </a>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <a href="#smart-tech" class="inline-block bg-theme-dark hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105 mt-8">
-                Explore Smart Gear
-            </a>
-        </section>
+    <!-- PRODUCTS GRID -->
+    <main class="max-w-7xl mx-auto px-4 py-16">
+        <div class="flex items-center mb-10">
+            <div class="bg-theme-coral w-2 h-10 rounded-r-md mr-4"></div>
+            <h2 id="smart-tech" class="text-3xl font-bold text-gray-900">
+                Smart Technology & Monitoring
+            </h2>
+        </div>
 
-        <!-- Product Categories Grid -->
-        <div class="space-y-16">
-            
-            <!-- Category 1: Smart Technology & Monitoring -->
-            <section id="smart-tech">
-                <h2 class="text-4xl font-extrabold mb-10 text-theme-coral border-b-4 border-theme-coral pb-3">🧠 Smart Technology & Monitoring</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                    <!-- Product Card 1: AI Traffic Light Cam Kit -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
-                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Traffic+AI+System" alt="AI Traffic Camera Kit" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
-                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">AI Traffic Flow Optimization Kit</h3>
-                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Urban Planning Grade</span>
-                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-1">
-                            This comprehensive kit leverages cutting-edge computer vision and neural networks to analyze traffic patterns, pedestrian flow, and congestion in real-time. It dynamically adjusts signal timing to optimize throughput and reduce gridlock.
-                            
-                            <!-- Hidden Content -->
-                            <span class="more-content" id="more-1" style="display: none;">
-                                , lowering fuel consumption and accident risks. The integrated high-resolution cameras provide violation monitoring and deep data analytics for proactive urban planning. 
-                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
-                                    <li>Real-time adaptive signaling</li>
-                                    <li>Vehicle and pedestrian classification</li>
-                                    <li>Remote diagnostics and cloud reporting</li>
-                                </ul>
-                            </span>
-                            <!-- Read More Button -->
-                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="1">
-                                Read More
-                            </button>
-                        </p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                            <span class="text-3xl font-extrabold text-theme-dark">$1,299.00</span>
-                            <button data-product="AI Traffic Flow Kit" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
+            <!-- Product 1: AI Traffic -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="traffic-kit" data-name="AI Traffic Flow Optimization Kit"
+                data-price="1299.00"
+                data-img="Photoes/tr">
 
-                    <!-- Product Card 2: AI-Enabled Smart Safety Helmet (AI Run Helmets with GPS and Sensors) -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
-                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Smart+Work+Helmet" alt="AI Smart Safety Helmet" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
-                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">AI Smart Safety Helmet (GPS/Sensor)</h3>
-                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Worker Protection Essential</span>
-                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-2">
-                            Designed for high-risk work environments, this industrial-grade smart helmet is equipped with a high-precision GPS tracker, impact sensors, and a thermal camera. The integrated AI continuously monitors the wearer's environment and physical state.
-                            
-                            <!-- Hidden Content -->
-                            <span class="more-content" id="more-2" style="display: none;">
-                                , triggering automated alerts for falls, collisions, or sudden physiological changes. It ensures two-way, noise-canceling communication and provides an indispensable layer of protection and accountability for every worker.
-                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
-                                    <li>Geofencing and instant fall detection</li>
-                                    <li>Vital sign monitoring and fatigue alerts</li>
-                                    <li>Emergency SOS transmission</li>
-                                </ul>
-                            </span>
-                            <!-- Read More Button -->
-                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="2">
-                                Read More
-                            </button>
-                        </p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                            <span class="text-3xl font-extrabold text-theme-dark">$349.99</span>
-                            <button data-product="Smart Safety Helmet" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
-                                Buy Now
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 3: Smart LED Road Flares (Other/Advanced LED Lamps) -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
-                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Sync+Flares" alt="Smart LED Road Flares" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
-                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">Smart Magnetic LED Road Flares (4-pack)</h3>
-                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Next-Gen Road Warning</span>
-                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-3">
-                            A revolutionary upgrade from traditional chemical flares, these IP67-rated, ultra-durable LED disks offer 360-degree visibility for up to 10 hours on a single charge. Featuring 9 flash patterns, they can be magnetically mounted to vehicles or infrastructure.
-                            
-                            <!-- Hidden Content -->
-                            <span class="more-content" id="more-3" style="display: none;">
-                                The 'Smart' capability allows all units to wirelessly synchronize their flash patterns, creating a highly noticeable, uniform warning signal for superior roadside safety.
-                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
-                                    <li>IP67 weatherproof and crush-resistant</li>
-                                    <li>Wireless flash synchronization</li>
-                                    <li>Inductive charging case included</li>
-                                </ul>
-                            </span>
-                            <!-- Read More Button -->
-                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="3">
-                                Read More
-                            </button>
-                        </p>
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                            <span class="text-3xl font-extrabold text-theme-dark">$79.99</span>
-                            <button data-product="Smart LED Flares" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
-                                Buy Now
-                            </button>
-                        </div>
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="Photoes/traffic.jpg" 
+                        alt="AI Traffic System" />
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm">
+                        Pro Grade
                     </div>
                 </div>
-            </section>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 leading-tight">AI Traffic Flow Kit</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">
+                        Urban Infrastructure
+                    </span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        AI-powered system that analyzes live traffic feed to optimize signal timing.
+                        <span class="more-content mt-2">
+                            Built for smart cities, it detects density, violations, and bottlenecks in real-time.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>Adaptive signal timing</li>
+                                <li>Congestion forecasting</li>
+                                <li>Pedestrian detection</li>
+                                <li>Cloud dashboard</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button type="button" class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">
+                        Read More
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$1,299<span class="text-sm font-normal text-gray-500">.00</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 2: Smart Helmet -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="smart-helmet-industrial"
+                data-name="AI Smart Safety Helmet"
+                data-price="349.99"
+                data-img="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=500&q=80">
+
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="Photoes/helmet.jpg" 
+                        alt="Smart Helmet"/>
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">AI Smart Safety Helmet</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Industrial Safety</span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        Industrial-grade helmet with GPS, impact detection, and thermal monitoring.
+                        <span class="more-content mt-2">
+                            Ensures real-time worker protection in high-risk environments.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>Fall & collision detection</li>
+                                <li>Geo-fencing alerts</li>
+                                <li>Health monitoring</li>
+                                <li>SOS trigger</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button type="button" class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$349<span class="text-sm font-normal text-gray-500">.99</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 3: LED Flares -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="smart-flares"
+                data-name="Smart Magnetic LED Flares"
+                data-price="79.99"
+                data-img="">
+
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="Photoes/led flair.jpg" 
+                        alt="LED Flares"/>
+                     <div class="absolute top-3 left-3 bg-red-500 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm">
+                        Best Seller
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">Smart Magnetic LED Flares</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Roadside Emergency</span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        Heavy-duty LED flares with 360° visibility for breakdown situations.
+                        <span class="more-content mt-2">
+                            Waterproof, crushproof, and syncs wirelessly for high visibility patterns.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>9+ flash modes</li>
+                                <li>Magnetic mount</li>
+                                <li>Rechargeable case</li>
+                                <li>Visible up to 1 mile</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button type="button" class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$79<span class="text-sm font-normal text-gray-500">.99</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 4: Seatbelt Clip -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="seatbelt-clip" data-name="Smart Seatbelt Alarm Clip"
+                data-price="19.99"
+                data-img="https://images.unsplash.com/photo-1518110540457-3a0f5a34b41e?auto=format&fit=crop&w=500&q=80">
+
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="Photoes/seat belt .jpg" 
+                        alt="Seatbelt"/>
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">Smart Seatbelt Alarm</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Vehicle Essential</span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        Audible alert system that reminds passengers to buckle up instantly.
+                        <span class="more-content mt-2">
+                            No wiring required—just clip into the buckle slot. Smart motion detection included.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>Universal fit</li>
+                                <li>Motion activated</li>
+                                <li>Long battery life</li>
+                                <li>Compact design</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$19<span class="text-sm font-normal text-gray-500">.99</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 5: Blindspot Sensor -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="blindspot-sensor" data-name="Blind Spot Detection System"
+                data-price="129.99"
+                data-img="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=500&q=80">
+
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="Photoes/sensor.jpg" 
+                        alt="Car Mirror"/>
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">Blind Spot Detection</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Driver Assistance</span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        Radar-based monitor that alerts you to hidden vehicles during lane changes.
+                        <span class="more-content mt-2">
+                            Alerts via LED indicators & buzzer. Works in all weather conditions.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>Wide-angle radar</li>
+                                <li>Indicator activation</li>
+                                <li>Weatherproof sensors</li>
+                                <li>Retrofit compatible</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$129<span class="text-sm font-normal text-gray-500">.99</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 6: Driver Alert -->
+            <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+                data-product-card data-id="driver-alert" data-name="Anti-Sleep Driver Alert Band"
+                data-price="59.99"
+                data-img="https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=500&q=80">
+
+                <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                    <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        src="https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=600&q=80" 
+                        alt="Wearable Tech"/>
+                </div>
+
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">Anti-Sleep Alert Band</h3>
+                    <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Fatigue Management</span>
+
+                    <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                        Smart wearable that detects drowsiness and vibrates to keep drivers awake.
+                        <span class="more-content mt-2">
+                            Essential for night shifts and long haul truckers. Monitors galvanic skin response.
+                            <br><br>
+                            <strong class="text-gray-900">Key Specs:</strong>
+                            <ul class="list-disc ml-4 mt-1 space-y-1">
+                                <li>Vibration feedback</li>
+                                <li>Adjustable sensitivity</li>
+                                <li>24h battery life</li>
+                                <li>Comfort strap</li>
+                            </ul>
+                        </span>
+                    </p>
+                    <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <span class="text-2xl font-extrabold text-gray-900">$59<span class="text-sm font-normal text-gray-500">.99</span></span>
+                    <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+             <!-- Product 7: Smart Biker Helmet -->
+             <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+             data-product-card data-id="smart-biker-helmet" data-name="Smart Rider Helmet"
+             data-price="199.99"
+             data-img="https://images.unsplash.com/photo-1558981806-ec527fa84b3d?auto=format&fit=crop&w=500&q=80">
+
+             <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                 <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                     src="Photoes/helmetsensor.jpeg" 
+                     alt="Motorcycle Helmet"/>
+             </div>
+
+             <div class="flex-1">
+                 <h3 class="text-xl font-bold text-gray-900">Smart Rider Helmet</h3>
+                 <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Motorcycle Safety</span>
+
+                 <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                     Bluetooth-enabled helmet with crash alerts & hands-free communication.
+                     <span class="more-content mt-2">
+                         Connects to your phone for GPS prompts and emergency SOS calls if a fall is detected.
+                         <br><br>
+                         <strong class="text-gray-900">Key Specs:</strong>
+                         <ul class="list-disc ml-4 mt-1 space-y-1">
+                             <li>Crash SOS trigger</li>
+                             <li>Integrated speakers</li>
+                             <li>Voice command ready</li>
+                             <li>DOT certified</li>
+                         </ul>
+                     </span>
+                 </p>
+                 <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+             </div>
+
+             <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                 <span class="text-2xl font-extrabold text-gray-900">$199<span class="text-sm font-normal text-gray-500">.99</span></span>
+                 <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                     Add to Cart
+                 </button>
+             </div>
+         </div>
+
+         <!-- Product 8: Emergency Triangle -->
+         <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+             data-product-card data-id="triangle-led" data-name="LED Triangle Kit"
+             data-price="24.99"
+             data-img="https://images.unsplash.com/photo-1599578091866-3f4a75929381?aut">
+
+             <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                 <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                     src="Photoes/led.jpg" 
+                     alt="Warning Triangle"/>
+             </div>
+
+             <div class="flex-1">
+                 <h3 class="text-xl font-bold text-gray-900">LED Triangle Kit</h3>
+                 <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Breakdown Safety</span>
+
+                 <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                     High-intensity LED triangle for breakdown visibility at night.
+                     <span class="more-content mt-2">
+                         Foldable and compact. Can be placed on the road or attached magnetically to the trunk.
+                         <br><br>
+                         <strong class="text-gray-900">Key Specs:</strong>
+                         <ul class="list-disc ml-4 mt-1 space-y-1">
+                             <li>500 Lumens</li>
+                             <li>3 Flash modes</li>
+                             <li>USB Rechargeable</li>
+                             <li>Rugged build</li>
+                         </ul>
+                     </span>
+                 </p>
+                 <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+             </div>
+
+             <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                 <span class="text-2xl font-extrabold text-gray-900">$24<span class="text-sm font-normal text-gray-500">.99</span></span>
+                 <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                     Add to Cart
+                 </button>
+             </div>
+         </div>
+
+         <!-- Product 9: Smart Dashcam -->
+         <div class="smart-card bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full"
+             data-product-card data-id="smart-dashcam" data-name="4K Night Vision Dashcam"
+             data-price="149.99"
+             data-img="https://images.unsplash.com/photo-1678006493275-9536f3460d44?auto=format&fit=crop&w=500&q=80">
+
+             <div class="relative h-56 mb-5 overflow-hidden rounded-xl group">
+                 <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                     src="Photoes/dashcam.jpeg" 
+                     alt="Dashcam"/>
+                 <div class="absolute top-3 left-3 bg-black/70 backdrop-blur px-2 py-1 rounded text-xs font-bold text-white border border-gray-600">
+                     4K HDR
+                 </div>
+             </div>
+
+             <div class="flex-1">
+                 <h3 class="text-xl font-bold text-gray-900">4K Night Vision Dashcam</h3>
+                 <span class="text-theme-coral text-xs font-semibold uppercase tracking-wider mt-1 block">Evidence & Security</span>
+
+                 <p class="text-sm text-gray-600 mt-3 leading-relaxed">
+                     Crystal clear 4K recording with Sony Starvis sensor for superior night vision.
+                     <span class="more-content mt-2">
+                         Features G-sensor to automatically lock files during a collision.
+                         <br><br>
+                         <strong class="text-gray-900">Key Specs:</strong>
+                         <ul class="list-disc ml-4 mt-1 space-y-1">
+                             <li>4K UHD @ 30fps</li>
+                             <li>Parking surveillance</li>
+                             <li>WiFi app control</li>
+                             <li>170° Wide Angle</li>
+                         </ul>
+                     </span>
+                 </p>
+                 <button class="read-more-btn text-smart-blue font-medium text-sm mt-2 hover:underline">Read More</button>
+             </div>
+
+             <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                 <span class="text-2xl font-extrabold text-gray-900">$149<span class="text-sm font-normal text-gray-500">.99</span></span>
+                 <button class="buy-btn bg-smart-blue hover:bg-blue-600 text-white py-2.5 px-6 rounded-full font-semibold shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                     Add to Cart
+                 </button>
+             </div>
+         </div>
+
+
         </div>
     </main>
 
-  
+      <!-- footer -->
+<footer
+    style="background-color: var(--dark-bg); color: var(--light-text); padding: 50px 0; font-family: 'Poppins', sans-serif;">
+    <div
+        style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding: 0 20px;">
+
+        <div class="footer-section">
+            <h3
+                style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em; display: flex; align-items: center;">
+                <span style="margin-right: 10px;">🚦</span> Road Safety Club
+            </h3>
+            <p style="line-height: 1.6;">
+                Our mission is to empower everyone with the knowledge to drive and walk safely. Join us in making
+                roads safer
+                for all!
+            </p>
+
+            <button onclick="window.scrollTo({top:0, behavior:'smooth'});" class="back-to-top-btn"
+                style="margin-top: 25px; padding: 12px 25px; background-color: var(--accent-color); border: none; color: var(--dark-bg); font-weight: 700; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                ↑ Zoom Back Up!
+            </button>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">📞 Connect With Us</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <li><a href="mailto:info@roadsafetyclub.com" class="footer-link email-link">info@roadsafetyclub.com</a>
+                </li>
+            </ul>
+
+            <h4 style="color: var(--light-text); margin-top: 15px; margin-bottom: 5px; font-weight: 600;">Team
+                Contacts:</h4>
+            <ul style="list-style: none; padding: 0; line-height: 1.8;">
+                <li><a href="tel:9996445592" class="footer-link contact-list-link"><strong>Vivek Yadav:</strong>
+                        9996445592</a>
+                </li>
+                <li><a href="tel:9251399133" class="footer-link contact-list-link"><strong>Shri ji
+                            Aggarwal:</strong>
+                        9457057473</a></li>
+                <li><a href="tel:9389864319" class="footer-link contact-list-link"><strong>Shreya
+                            Chaudhary:</strong>
+                        9389864319</a></li>
+                <li><a href="tel:7056123205" class="footer-link contact-list-link"><strong>Ekta Pannu:</strong>
+                        7056123205</a>
+                </li>
+                <li><a href="tel:9457057473" class="footer-link contact-list-link"><strong>Khush Raghav:</strong>
+                        9251399133</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.2em;">🔗 Quick Resources</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <!-- This is the updated link -->
+                <li><a href="Road-safety-handbook.pdf" class="footer-link">Traffic Rules Handbook</a></li>
+                <li><a href="/events" class="footer-link">Upcoming Safety Events</a></li>
+                <li><a href="/blog" class="footer-link">Safety Blog</a></li>
+                <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSf4sZdUmq6lhWxHyZ9yFuACp7wRLufzcB2VzmCBoVyg7qvn7w/viewform"
+                        class="footer-link">Join Our Volunteer Team</a></li>
+            </ul>
+
+            <div style="margin-top: 20px;">
+                <a href="#" class="social-icon" aria-label="Follow us on World Wide Web">🌐</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Facebook">📘</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Twitter">🐦</a>
+                <a href="#" class="social-icon" aria-label="Follow us on Instagram">📸</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding-top: 25px; border-top: 1px solid var(--border-color); margin-top: 50px;">
+        <p>&copy; 2025 Road Safety Club. Drive Smart, Live Safe.</p>
+    </div>
+
+    <div id="cursor-wrapper" class="cursor-wrapper">
+        <div class="single-segment">
+            <div class="segment-color red"></div>
+            <div class="segment-color yellow"></div>
+            <div class="segment-color green"></div>
+        </div>
+    </div>
+    <style>
+        /* CSS Variables for easy color changes */
+        :root {
+            --dark-bg: #1a1a1a;
+            --light-text: #fff;
+            --accent-color: #ffcc00;
+            /* Yellow */
+            --accent-hover: #e6b800;
+            --border-color: #444;
+        }
+
+        footer {
+            /* This ensures the font-family from the inline style is the starting point */
+            font-family: 'Poppins', Arial, sans-serif !important;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 280px;
+            margin-bottom: 20px;
+        }
+
+        /* General Link Styling */
+        .footer-link {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+            display: inline-block;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+            /* Subtle shift */
+        }
+
+        /* Team Contact List specific styling - removes the phone icon for this block */
+        .contact-list-link {
+            padding-left: 20px;
+            /* Indent slightly for visual hierarchy */
+        }
+
+        /* Social Icon Animation */
+        .social-icon {
+            color: var(--light-text);
+            font-size: 24px;
+            margin-right: 15px;
+            /* Use margin-right for spacing */
+            display: inline-block;
+            transition: transform 0.3s, color 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            color: var(--accent-color);
+            transform: translateY(-5px) scale(1.1);
+            /* Lift and enlarge */
+        }
+
+        /* Back to Top Button hover */
+        .back-to-top-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px) scale(1.02);
+            /* Lift and slightly enlarge */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Clear focus state for accessibility */
+        .footer-link:focus,
+        .social-icon:focus,
+        .back-to-top-btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 3px;
+        }
+
+        /* Specific Link Icons (A friendlier touch) - Applied only to General/Email links */
+        .phone-link::before {
+            content: '📞 ';
+            color: var(--accent-color);
+        }
+
+        .email-link::before {
+            content: '📧 ';
+            color: var(--accent-color);
+        }
+
+    </style>
     
+</footer>
+</body>
+
+</html>
+
+    <!-- JS: Cart + Read More -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const messageBox = document.getElementById("message-box");
+            const messageText = document.getElementById("message-text");
+            const cartSidebar = document.getElementById("cart-sidebar");
+            const cartOverlay = document.getElementById("cart-overlay");
+            const cartItemsContainer = document.getElementById("cart-items");
+            const cartSubtotalEl = document.getElementById("cart-subtotal");
+            const cartCloseBtn = document.getElementById("cart-close");
+            const cartCountBadge = document.getElementById("cart-count");
+            let cart = [];
+
+            /* Toast */
+            function showMessage(text) {
+                messageText.textContent = text;
+                messageBox.classList.add("show");
+                setTimeout(() => messageBox.classList.remove("show"), 2300);
+            }
+
+            /* Cart open & close */
+            function openCart() {
+                cartSidebar.classList.remove("translate-x-full");
+                cartOverlay.classList.remove("hidden");
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCart() {
+                cartSidebar.classList.add("translate-x-full");
+                cartOverlay.classList.add("hidden");
+                // Enable body scroll
+                document.body.style.overflow = 'auto';
+            }
+
+            cartCloseBtn.onclick = closeCart;
+            cartOverlay.onclick = closeCart;
+
+            function formatPrice(amount) { return "$" + amount.toFixed(2); }
+
+            function updateCartCount() {
+                const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+                cartCountBadge.textContent = totalQty;
+                if(totalQty > 0) {
+                    cartCountBadge.classList.remove('hidden');
+                } else {
+                    cartCountBadge.classList.add('hidden');
+                }
+            }
+
+            /* Render Cart */
+            function renderCart() {
+                cartItemsContainer.innerHTML = "";
+
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-64 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-3 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <p class="text-sm">Your cart is empty.</p>
+                            <button onclick="document.getElementById('cart-close').click()" class="mt-4 text-theme-coral font-semibold text-sm hover:underline">Start Shopping</button>
+                        </div>`;
+                    cartSubtotalEl.textContent = "$0.00";
+                    updateCartCount();
+                    return;
+                }
+
+                let subtotal = 0;
+
+                cart.forEach((item) => {
+                    const itemTotal = item.qty * item.price;
+                    subtotal += itemTotal;
+
+                    const el = document.createElement("div");
+                    el.className = "flex items-start space-x-4 p-4 border border-gray-100 rounded-xl bg-white shadow-sm animate-fade-in-up";
+
+                    el.innerHTML = `
+                        <img src="${item.img}" class="w-16 h-16 rounded-lg object-cover border border-gray-100" />
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-gray-800 leading-tight">${item.name}</p>
+                            <p class="text-xs text-gray-500 mt-1">${formatPrice(item.price)} each</p>
+                            
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="flex items-center border rounded-md overflow-hidden">
+                                    <button class="px-2 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600 transition-colors" data-action="dec" data-id="${item.id}">-</button>
+                                    <span class="px-2 py-1 text-sm font-medium min-w-[1.5rem] text-center">${item.qty}</span>
+                                    <button class="px-2 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600 transition-colors" data-action="inc" data-id="${item.id}">+</button>
+                                </div>
+                                <span class="font-bold text-theme-coral">${formatPrice(itemTotal)}</span>
+                            </div>
+                        </div>
+                        <button class="text-gray-300 hover:text-red-500 transition-colors p-1" data-action="remove" data-id="${item.id}">&times;</button>
+                    `;
+
+                    cartItemsContainer.appendChild(el);
+                });
+
+                cartSubtotalEl.textContent = formatPrice(subtotal);
+                updateCartCount();
+            }
+
+            /* Add to Cart */
+            function addToCart(product) {
+                const exists = cart.find((p) => p.id === product.id);
+                if (exists) exists.qty++;
+                else cart.push({ ...product, qty: 1 });
+                renderCart();
+            }
+
+            /* Cart button handlers */
+            cartItemsContainer.addEventListener("click", (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                
+                const id = btn.getAttribute("data-id");
+                const action = btn.getAttribute("data-action");
+                const item = cart.find((p) => p.id === id);
+
+                if (!item) return;
+
+                if (action === "inc") item.qty++;
+                if (action === "dec") item.qty--;
+                if (action === "remove") cart = cart.filter((p) => p.id !== id);
+                if (item.qty <= 0) cart = cart.filter((p) => p.id !== id);
+
+                renderCart();
+            });
+
+            /* Buy Buttons */
+            document.querySelectorAll(".buy-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest("[data-product-card]");
+                    const product = {
+                        id: card.dataset.id,
+                        name: card.dataset.name,
+                        price: parseFloat(card.dataset.price),
+                        img: card.dataset.img,
+                    };
+
+                    addToCart(product);
+                    showMessage("Added to cart!");
+                    openCart();
+                });
+            });
+
+            /* Read More Buttons */
+            document.querySelectorAll(".read-more-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const container = btn.parentElement;
+                    const more = container.querySelector(".more-content");
+
+                    if (more.classList.contains("show")) {
+                        more.classList.remove("show");
+                        btn.textContent = "Read More";
+                    } else {
+                        more.classList.add("show");
+                        btn.textContent = "Read Less";
+                    }
+                });
+            });
+
+            renderCart();
+        });
+    </script>
+
+</body>
+</html>
