@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReturn | Smart Safety & AI Monitoring Shop</title>
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use Inter font and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // New Theme Colors based on SafeReturn image
+                        'theme-dark': '#222831', // Dark header/footer background
+                        'theme-coral': '#E96C5B', // Hero background, main accent
+                        'theme-light': '#F7F9FB', // Main body background
+                        'smart-blue': '#1D4ED8', // Used for tech emphasis in cards
+
+                        // Keeping these for potential secondary accents
+                        'safety-yellow': '#FFD700', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Apply Inter font globally and ensure smooth scrolling */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* --- BACKGROUND IMAGE URL START ---
+               
+               Replace the URL below with your desired external background image link! 
+            */
+            background-color: #1a1a2e; /* Deep blue/dark fallback */
+            background-image: url('photoes/index.jpg'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Ensures pattern stays put */
+            /* --- BACKGROUND IMAGE URL END ---
+            */
+            scroll-behavior: smooth;
+        }
+        /* Custom message box styling */
+        .message-box {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        .message-box.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        /* Custom styling for high-tech product cards */
+        .smart-card {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-bottom: 5px solid transparent;
+        }
+        .smart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(34, 40, 49, 0.15); /* Shadow matching new dark color */
+            border-bottom-color: #E96C5B; /* Coral border on hover */
+        }
+        /* Ensures block-level elements inside the hidden span appear correctly when shown */
+        .more-content.show {
+            display: block !important;
+        }
+        /* Quote box styling */
+        .quote-box {
+            position: relative;
+            padding: 1.5rem;
+            border-left: 5px solid #fff; /* White vertical line */
+            font-style: italic;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<!-- Changed global text color to light gray for visibility against the new dark background -->
+<body class="text-gray-100">
+
+    <!-- Custom Message Box for Notifications -->
+    <div id="message-box" class="message-box bg-theme-coral text-white"></div>
+
+    <!-- Header / Navigation Bar (Dark Theme) -->
+    <header class="sticky top-0 bg-theme-dark shadow-xl z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white tracking-wider flex items-center">
+                <!-- SafeReturn Logo/Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline-block mr-2" viewBox="0 0 24 24" fill="#E96C5B">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15.5l-3-3 1.41-1.41L11 14.6l5.59-5.59L18 10.5l-7 7z"/>
+                </svg>
+                SHOP <span class="text-theme-coral text-sm ml-1">SMART</span>
+            </a>
+            <!-- Using white text for navigation links -->
+        
+            <button class="md:hidden p-2 rounded-full hover:bg-gray-700 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Hero Section (Coral Theme) -->
+        <section class="bg-theme-coral text-white rounded-xl shadow-2xl p-8 md:p-16 mb-12 flex flex-col items-center text-center">
+            <!-- Updated Heading -->
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-snug mb-4 text-white">
+                Shop Smart
+            </h1>
+            <p class="text-xl sm:text-2xl font-semibold mb-4 text-white">
+                Your journey is precious. Awareness is your best defense.
+            </p>
+            
+            <!-- Quote Box Style -->
+            <div class="quote-box max-w-2xl mt-6">
+                <p class="text-white">
+                    "The only thing we need from your trip is your safe return."
+                </p>
+            </div>
+
+            <a href="#smart-tech" class="inline-block bg-theme-dark hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105 mt-8">
+                Explore Smart Gear
+            </a>
+        </section>
+
+        <!-- Product Categories Grid -->
+        <div class="space-y-16">
+            
+            <!-- Category 1: Smart Technology & Monitoring -->
+            <section id="smart-tech">
+                <h2 class="text-4xl font-extrabold mb-10 text-theme-coral border-b-4 border-theme-coral pb-3">🧠 Smart Technology & Monitoring</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Product Card 1: AI Traffic Light Cam Kit -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
+                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Traffic+AI+System" alt="AI Traffic Camera Kit" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">AI Traffic Flow Optimization Kit</h3>
+                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Urban Planning Grade</span>
+                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-1">
+                            This comprehensive kit leverages cutting-edge computer vision and neural networks to analyze traffic patterns, pedestrian flow, and congestion in real-time. It dynamically adjusts signal timing to optimize throughput and reduce gridlock.
+                            
+                            <!-- Hidden Content -->
+                            <span class="more-content" id="more-1" style="display: none;">
+                                , lowering fuel consumption and accident risks. The integrated high-resolution cameras provide violation monitoring and deep data analytics for proactive urban planning. 
+                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
+                                    <li>Real-time adaptive signaling</li>
+                                    <li>Vehicle and pedestrian classification</li>
+                                    <li>Remote diagnostics and cloud reporting</li>
+                                </ul>
+                            </span>
+                            <!-- Read More Button -->
+                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="1">
+                                Read More
+                            </button>
+                        </p>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <span class="text-3xl font-extrabold text-theme-dark">$1,299.00</span>
+                            <button data-product="AI Traffic Flow Kit" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2: AI-Enabled Smart Safety Helmet (AI Run Helmets with GPS and Sensors) -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
+                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Smart+Work+Helmet" alt="AI Smart Safety Helmet" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">AI Smart Safety Helmet (GPS/Sensor)</h3>
+                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Worker Protection Essential</span>
+                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-2">
+                            Designed for high-risk work environments, this industrial-grade smart helmet is equipped with a high-precision GPS tracker, impact sensors, and a thermal camera. The integrated AI continuously monitors the wearer's environment and physical state.
+                            
+                            <!-- Hidden Content -->
+                            <span class="more-content" id="more-2" style="display: none;">
+                                , triggering automated alerts for falls, collisions, or sudden physiological changes. It ensures two-way, noise-canceling communication and provides an indispensable layer of protection and accountability for every worker.
+                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
+                                    <li>Geofencing and instant fall detection</li>
+                                    <li>Vital sign monitoring and fatigue alerts</li>
+                                    <li>Emergency SOS transmission</li>
+                                </ul>
+                            </span>
+                            <!-- Read More Button -->
+                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="2">
+                                Read More
+                            </button>
+                        </p>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <span class="text-3xl font-extrabold text-theme-dark">$349.99</span>
+                            <button data-product="Smart Safety Helmet" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3: Smart LED Road Flares (Other/Advanced LED Lamps) -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg smart-card">
+                        <img src="https://placehold.co/300x200/222831/E96C5B?text=Sync+Flares" alt="Smart LED Road Flares" class="w-full h-40 object-cover rounded-lg mb-4 border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-2 text-smart-blue">Smart Magnetic LED Road Flares (4-pack)</h3>
+                        <span class="inline-block bg-theme-coral text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mb-3">Next-Gen Road Warning</span>
+                        <p class="text-gray-700 mb-2 text-sm leading-relaxed" id="desc-3">
+                            A revolutionary upgrade from traditional chemical flares, these IP67-rated, ultra-durable LED disks offer 360-degree visibility for up to 10 hours on a single charge. Featuring 9 flash patterns, they can be magnetically mounted to vehicles or infrastructure.
+                            
+                            <!-- Hidden Content -->
+                            <span class="more-content" id="more-3" style="display: none;">
+                                The 'Smart' capability allows all units to wirelessly synchronize their flash patterns, creating a highly noticeable, uniform warning signal for superior roadside safety.
+                                <ul class="list-disc ml-5 mt-2 text-xs text-gray-600">
+                                    <li>IP67 weatherproof and crush-resistant</li>
+                                    <li>Wireless flash synchronization</li>
+                                    <li>Inductive charging case included</li>
+                                </ul>
+                            </span>
+                            <!-- Read More Button -->
+                            <button class="read-more-btn text-theme-coral font-semibold hover:text-smart-blue text-xs mt-2" data-target="3">
+                                Read More
+                            </button>
+                        </p>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <span class="text-3xl font-extrabold text-theme-dark">$79.99</span>
+                            <button data-product="Smart LED Flares" class="buy-btn bg-smart-blue text-white py-3 px-6 rounded-full hover:bg-theme-coral transition duration-200 shadow-xl">
+                                Buy Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+  
+    
