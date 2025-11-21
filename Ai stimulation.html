@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI vs. Traditional Traffic Lights</title>
+    
+    <!-- 1. Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Three.js Library for 3D simulation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- 3. OrbitControls for camera interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        /* Use the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Ensure canvas is responsive and doesn't overflow */
+        #simulation-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        #simulation-container {
+            height: 60vh; /* Viewport height for the simulation */
+            min-height: 450px; /* Increased min-height */
+            width: 100%;
+            background-color: #111827; /* Fallback background */
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        .info-box {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 0.875rem;
+            z-index: 10;
+        }
+        
+        /* Add pulsing animation for AI button */
+        @keyframes pulse-blue {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+        }
+        
+        /* Apply animation to the AI button */
+        #btn-ai {
+            /* We use tailwind's 'focus:ring' as a base, and animation overrides */
+            animation: pulse-blue 2s infinite;
+        }
+        
+        /* Flashing animation for emergency light */
+        @keyframes flash-red {
+            0%, 49% {
+                background-color: #ef4444;
+            }
+            50%, 100% {
+                background-color: #b91c1c;
+            }
+        }
+        .flashing-light {
+            /* This is a visual indicator, not the 3D light */
+            animation: flash-red 0.5s infinite;
+        }
+    </style>
+    
+    <!-- Preload Inter font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+</head>
+<body class="bg-gray-900 text-gray-100 antialiased">
+
+    <!-- Header -->
+    <header class="py-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">
+            Smarter Intersections
+        </h1>
+        <p class="text-center text-lg text-gray-400 mt-2">
+            AI-Powered vs. Traditional Traffic Lights
+        </p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- 3D Simulation Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Interactive 3D Simulation</h2>
+            
+            <!-- Controls -->
+            <div class="flex flex-wrap justify-center gap-4 mb-4">
+                <button id="btn-traditional" class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75">
+                    Run Traditional Mode
+                </button>
+                <button id="btn-ai" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-500 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                    Run AI-Adaptive Mode
+                </button>
+                <button id="btn-day-night" class="px-6 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-yellow-400 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-opacity-75">
+                    Toggle Day/Night
+                </button>
+                <!-- New Emergency Vehicle Button -->
+                <button id="btn-emergency" class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-500 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75">
+                    Spawn Emergency Vehicle
+                </button>
+            </div>
+
+            <!-- Simulation Container -->
+            <div id="simulation-container" class="shadow-2xl">
+                <!-- Info Box for Mode -->
+                <div class="info-box">
+                    <p><strong>Mode:</strong> <span id="mode-status">Traditional</span></p>
+                    <p><strong>Wait Time (N/S):</strong> <span id="wait-ns">0</span> cars</p>
+                    <p><strong>Wait Time (E/W):</strong> <span id="wait-ew">0</span> cars</p>
+                    <p id="ev-status" class="hidden text-red-300 font-bold">EMERGENCY VEHICLE ACTIVE</p>
+                </div>
+                <!-- Canvas will be inserted here by Three.js -->
+            </div>
+            <p class="text-center text-gray-400 mt-3 text-sm">Click and drag to rotate the camera. Scroll to zoom.</p>
+        </section>
+        
+        <!-- NEW: Live Statistics Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">Live Performance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                
+                <!-- Traditional Stats Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700">
+                    <h3 class="text-2xl font-bold text-red-400 mb-4 text-center">Traditional Mode</h3>
+                    <div class="flex justify-around text-center">
+                        <div>
+                            <span class="block text-3xl font-bold" id="stats-wait-trad">0.0s</span>
+                            <span class="text-sm text-gray-400">Avg. Wait Time</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-bold" id="stats-cars-trad">0</span>
+                            <span class="text-sm text-gray-400">Total Cars Through</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Stats Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-xl border border-blue-400">
+                    <h3 class="text-2xl font-bold text-blue-400 mb-4 text-center">AI-Adaptive Mode</h3>
+                    <div class="flex justify-around text-center">
+                        <div>
+                            <span class="block text-3xl font-bold" id="stats-wait-ai">0.0s</span>
+                            <span class="text-sm text-gray-400">Avg. Wait Time</span>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-bold" id="stats-cars-ai">0</span>
+                            <span class="text-sm text-gray-400">Total Cars Through</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section>
+<!-- ... (rest of the HTML is unchanged) ... -->
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">How They Compare</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Traditional Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700">
+                    <h3 class="text-2xl font-bold text-red-400 mb-4">Traditional Traffic Lights</h3>
+                    <p class="text-gray-300 mb-4">
+                        These lights operate on simple, fixed timers. They cycle through red, yellow, and green at predetermined intervals, regardless of the actual traffic.
+                    </p>
+                    <ul class="space-y-2 list-disc list-inside text-gray-300">
+                        <li><strong class="text-red-300">Fixed Timers:</strong> Inefficient during off-peak hours or when traffic is one-sided.</li>
+                        <li><strong class="text-red-300">Ignores Real-Time Data:</strong> Can't adapt to accidents, congestion, or special events.</li>
+                        <li><strong class="text-red-300">No Priority:</strong> Cannot prioritize emergency vehicles, leading to critical delays.</li>
+                        <li><strong class="text-red-300">Increased Idling:</strong> Leads to more frustrated drivers, wasted fuel, and higher emissions.</li>
+                    </ul>
+                </div>
+                
+                <!-- AI-Powered Card -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-xl border border-blue-400">
+                    <h3 class="text-2xl font-bold text-blue-400 mb-4">AI-Powered Traffic Lights</h3>
+                    <p class="text-gray-300 mb-4">
+                        These "smart" lights use cameras, sensors, and AI algorithms to analyze traffic in real-time and make dynamic decisions.
+                    </p>
+                    <ul class="space-y-2 list-disc list-inside text-gray-300">
+                        <li><strong class="text-blue-300">Adaptive Control:</strong> Adjusts signal timing based on actual traffic flow, minimizing wait times.</li>
+                        <li><strong class="text-blue-300">Senses Demand:</strong> Can detect a long queue of cars and extend the green light.</li>
+                        <li><strong class="text-blue-300">Emergency Priority:</strong> Detects ambulances or police and clears their path.</li>
+                        <li><strong class="text-blue-300">Reduced Congestion:</strong> Improves overall traffic flow, leading to shorter commutes.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 py-8 mt-12">
+        <p>A 3D demonstration by Apke apne bhaiya vivek bhaiya</p>
+    </footer>
+
+
+    <!-- JavaScript for the 3D Simulation -->
+    <script type="module">
+        // Ensure Three.js and OrbitControls are loaded
+        if (typeof THREE === 'undefined' || typeof THREE.OrbitControls === 'undefined') {
+            document.getElementById('simulation-container').innerHTML = '<p class="text-white text-center p-8">Error: Could not load 3D libraries. Please refresh the page.</p>';
+        }
+
+        let scene, camera, renderer, controls, clock;
+        let cars = [];
+        let trafficLights = {}; // { ns1, ns2, ew1, ew2 }
+        let streetLights = []; // To store streetlights
+        
+        // --- Scene State ---
+        let isDay = true;
+        let ambientLight, directionalLight;
+        let emergencyVehicle = null; // Track the EV
+        
+        let simulationMode = 'traditional'; // 'traditional' or 'ai'
+        let lightState = 'NS_GREEN'; // NS_GREEN, NS_YELLOW, EW_GREEN, EW_YELLOW
+        let stateTimer = 0;
+        const stateDurations = {
+            'NS_GREEN': 10,
+            'NS_YELLOW': 3,
+            'EW_GREEN': 10,
+            'EW_YELLOW': 3
+        };
+
+        // --- Statistics ---
+        let stats = {
+            tradWait: 0, tradCount: 0, aiWait: 0, aiCount: 0, tradCars: 0, aiCars: 0
+        };
+
+        const INTERSECTION_POS = new THREE.Vector3(0, 0.1, 0);
+        const STOP_DISTANCE = 4; // How far from the intersection cars stop
+        const CAR_SPEED = 5;
+
+        // UI Elements
+        const modeStatusEl = document.getElementById('mode-status');
+        const waitNsEl = document.getElementById('wait-ns');
+        const waitEwEl = document.getElementById('wait-ew');
+        const evStatusEl = document.getElementById('ev-status');
+        
+        // Stats UI Elements
+        const statsWaitTradEl = document.getElementById('stats-wait-trad');
+        const statsCarsTradEl = document.getElementById('stats-cars-trad');
+        const statsWaitAiEl = document.getElementById('stats-wait-ai');
+        const statsCarsAiEl = document.getElementById('stats-cars-ai');
+
+        function init() {
+            // --- Basic Setup ---
+            scene = new THREE.Scene();
+            // Start with a day-time sky blue
+            scene.background = new THREE.Color(0x87CEEB); 
+            // Add matching fog
+            scene.fog = new THREE.Fog(0x87CEEB, 20, 100); 
+            clock = new THREE.Clock();
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(15, 20, 15);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialiias: true });
+            const container = document.getElementById('simulation-container');
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.domElement.id = 'simulation-canvas';
+            container.appendChild(renderer.domElement);
+
+            // --- Controls ---
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 10;
+            controls.maxDistance = 50;
+            controls.maxPolarAngle = Math.PI / 2.2; // Don't let camera go below ground
+
+            // --- Lighting ---
+            // Store lights in global vars to toggle
+            ambientLight = new THREE.AmbientLight(0x404040, 2); 
+            scene.add(ambientLight);
+
+            directionalLight = new THREE.DirectionalLight(0xffffff, 3); 
+            directionalLight.position.set(10, 20, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // --- Build Scene ---
+            createIntersection();
+            createTrafficLights();
+            createStreetLights(); // Added streetlights
+            createEnvironment(); // Added buildings and trees
+            createCars();
+
+            // --- Event Listeners ---
+            document.getElementById('btn-traditional').onclick = () => {
+                simulationMode = 'traditional';
+                modeStatusEl.textContent = 'Traditional';
+                modeStatusEl.className = 'text-red-300 font-semibold';
+                resetTimer();
+            };
+            document.getElementById('btn-ai').onclick = () => {
+                simulationMode = 'ai';
+                modeStatusEl.textContent = 'AI-Adaptive';
+                modeStatusEl.className = 'text-blue-300 font-semibold';
+                resetTimer();
+            };
+            document.getElementById('btn-day-night').onclick = toggleDayNight;
+            document.getElementById('btn-emergency').onclick = spawnEmergencyVehicle;
+
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start loop
+            animate();
+        }
+
+        function createIntersection() {
+            // Ground
+            const groundGeo = new THREE.PlaneGeometry(100, 100);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x374151 }); // Darker ground
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Roads
+            const roadMat = new THREE.MeshStandardMaterial({ color: 0x1f2937 });
+            
+            // N/S Road
+            const roadNSGeo = new THREE.PlaneGeometry(6, 100);
+            const roadNS = new THREE.Mesh(roadNSGeo, roadMat);
+            roadNS.rotation.x = -Math.PI / 2;
+            roadNS.position.y = 0.05; // Slightly above ground
+            roadNS.receiveShadow = true;
+            scene.add(roadNS);
+            
+            // E/W Road
+            const roadEWGeo = new THREE.PlaneGeometry(100, 6);
+            const roadEW = new THREE.Mesh(roadEWGeo, roadMat);
+            roadEW.rotation.x = -Math.PI / 2;
+            roadEW.position.y = 0.05; // Slightly above ground
+            roadEW.receiveShadow = true;
+            scene.add(roadEW);
+            
+            // --- Road Markings ---
+            const markingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+            const stopLineGeo = new THREE.PlaneGeometry(6, 0.3); // width, thickness
+            const dashLineGeo = new THREE.PlaneGeometry(1, 0.15);
+            
+            // Stop Lines
+            const stopLineNS1 = new THREE.Mesh(stopLineGeo, markingMat);
+            stopLineNS1.rotation.x = -Math.PI / 2;
+            stopLineNS1.position.set(0, 0.06, 3.5);
+            scene.add(stopLineNS1);
+            
+            const stopLineNS2 = new THREE.Mesh(stopLineGeo, markingMat);
+            stopLineNS2.rotation.x = -Math.PI / 2;
+            stopLineNS2.position.set(0, 0.06, -3.5);
+            scene.add(stopLineNS2);
+            
+            const stopLineEW1 = new THREE.Mesh(stopLineGeo, markingMat);
+            stopLineEW1.rotation.x = -Math.PI / 2;
+            stopLineEW1.rotation.z = Math.PI / 2;
+            stopLineEW1.position.set(3.5, 0.06, 0);
+            scene.add(stopLineEW1);
+            
+            const stopLineEW2 = new THREE.Mesh(stopLineGeo, markingMat);
+            stopLineEW2.rotation.x = -Math.PI / 2;
+            stopLineEW2.rotation.z = Math.PI / 2;
+            stopLineEW2.position.set(-3.5, 0.06, 0);
+            scene.add(stopLineEW2);
+
+            // Dashed Lines (N/S)
+            for (let z = 6; z < 50; z += 3) {
+                const dash1 = new THREE.Mesh(dashLineGeo, markingMat);
+                dash1.rotation.x = -Math.PI / 2;
+                dash1.position.set(0, 0.06, z);
+                scene.add(dash1);
+                const dash2 = new THREE.Mesh(dashLineGeo, markingMat);
+                dash2.rotation.x = -Math.PI / 2;
+                dash2.position.set(0, 0.06, -z);
+                scene.add(dash2);
+            }
+            // Dashed Lines (E/W)
+             for (let x = 6; x < 50; x += 3) {
+                const dash1 = new THREE.Mesh(dashLineGeo, markingMat);
+                dash1.rotation.x = -Math.PI / 2;
+                dash1.rotation.z = Math.PI / 2;
+                dash1.position.set(x, 0.06, 0);
+                scene.add(dash1);
+                const dash2 = new THREE.Mesh(dashLineGeo, markingMat);
+                dash2.rotation.x = -Math.PI / 2;
+                dash2.rotation.z = Math.PI / 2;
+                dash2.position.set(-x, 0.06, 0);
+                scene.add(dash2);
+            }
+        }
+
+        function createTrafficLights() {
+            const poleGeo = new THREE.CylinderGeometry(0.1, 0.1, 4, 8);
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0x808080 });
+            
+            // N/S Lights (control N/S traffic)
+            trafficLights.ns1 = createLight(poleGeo, poleMat, -4, 4); // For South-bound
+            trafficLights.ns2 = createLight(poleGeo, poleMat, 4, -4); // For North-bound
+            
+            // E/W Lights (control E/W traffic)
+            trafficLights.ew1 = createLight(poleGeo, poleMat, 4, 4); // For West-bound
+            trafficLights.ew2 = createLight(poleGeo, poleMat, -4, -4); // For East-bound
+
+            scene.add(trafficLights.ns1, trafficLights.ns2, trafficLights.ew1, trafficLights.ew2);
+        }
+
+        // New function to create simple streetlights
+        function createStreetLights() {
+            const poleGeo = new THREE.CylinderGeometry(0.1, 0.1, 5, 8);
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0x555555 }); // Dark gray
+            
+            const lightGeo = new THREE.SphereGeometry(0.3, 16, 16);
+            // Emissive material so it glows, but dimly in day
+            // Start "off" (dark)
+            const lightMat = new THREE.MeshBasicMaterial({ color: 0x555555 }); 
+
+            const positions = [
+                { x: 5, z: 5 },
+                { x: 5, z: -5 },
+                { x: -5, z: 5 },
+                { x: -5, z: -5 }
+            ];
+
+            positions.forEach(pos => {
+                const lightGroup = new THREE.Group();
+                
+                const pole = new THREE.Mesh(poleGeo, poleMat);
+                pole.position.y = 2.5; // Half height
+                pole.castShadow = true;
+                lightGroup.add(pole);
+                
+                const light = new THREE.Mesh(lightGeo, lightMat.clone()); // Clone material
+                light.position.y = 5.2;
+                lightGroup.add(light);
+                
+                // Store reference to the light bulb mesh
+                lightGroup.lightBulb = light; 
+                
+                lightGroup.position.set(pos.x, 0, pos.z);
+                scene.add(lightGroup);
+                streetLights.push(lightGroup); // Add to global array
+            });
+        }
+        
+        // --- New Building Texture Function ---
+        function createBuildingTexture() {
+            const canvas = document.createElement('canvas');
+            const canvasSize = 64; // Small texture size
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+            const ctx = canvas.getContext('2d');
+            
+            // Random building "wall" color
+            const colors = ['#A9A9A9', '#D2B48C', '#8B4513', '#696969', '#778899']; // Gray, Tan, Brown, DGray, SGray
+            const baseColor = colors[Math.floor(Math.random() * colors.length)];
+            ctx.fillStyle = baseColor;
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
+            
+            // Window color (dark blue/black)
+            const windowColor = '#222233'; 
+            ctx.fillStyle = windowColor;
+            
+            // Draw a grid of windows
+            const windowSize = 8;
+            const windowSpacing = 16; // 16px between start of windows
+            const windowMargin = 4; // 4px margin
+            
+            for (let y = windowMargin; y < canvasSize - windowMargin; y += windowSpacing) {
+                for (let x = windowMargin; x < canvasSize - windowMargin; x += windowSpacing) {
+                    ctx.fillRect(x, y, windowSize, windowSize);
+                }
+            }
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            // Set anisotropy for sharper textures at an angle
+            if (renderer) {
+                texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            }
+            texture.needsUpdate = true; // Tell THREE.js to update the texture
+            return texture;
+        }
+        
+        // Updated function to create simple building environment
+        function createEnvironment() {
+            for (let i = 0; i < 30; i++) {
+                const height = Math.random() * 10 + 5;
+                const width = Math.random() * 3 + 2;
+                const depth = Math.random() * 3 + 2;
+                
+                const buildingGeo = new THREE.BoxGeometry(width, height, depth);
+                
+                // --- New Textured Material Logic ---
+                const texture = createBuildingTexture();
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                // Repeat texture based on building size. Let's say one "texture block" is 8x8 units.
+                texture.repeat.set(width / 8, height / 8); 
+
+                const sideMat = new THREE.MeshStandardMaterial({ 
+                    map: texture
+                });
+                
+                const roofMat = new THREE.MeshStandardMaterial({ color: 0x222222 }); // Dark roof
+                const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333 }); // Dark floor
+                
+                // Apply materials to different faces: [right, left, top, bottom, front, back]
+                const materials = [
+                    sideMat, // right
+                    sideMat, // left
+                    roofMat, // top
+                    floorMat, // bottom
+                    sideMat, // front
+                    sideMat  // back
+                ];
+                
+                const building = new THREE.Mesh(buildingGeo, materials);
+                // --- End New Logic ---
+                
+                // Position buildings away from the intersection
+                const x = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 20 + 8); // At least 8 units from center
+                const z = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 20 + 8); // At least 8 units from center
+                
+                building.position.set(x, height / 2, z); // Position based on center
+                building.castShadow = true;
+                building.receiveShadow = true;
+                
+                scene.add(building);
+            }
+            
+            // Create trees
+            createTrees();
+        }
+        
+        // New helper to create trees
+        function createTrees() {
+            const trunkGeo = new THREE.CylinderGeometry(0.2, 0.2, 1, 8);
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Brown
+            const leavesGeo = new THREE.ConeGeometry(0.8, 2, 8);
+            const leavesMat = new THREE.MeshStandardMaterial({ color: 0x228B22 }); // Forest Green
+
+            for (let i = 0; i < 40; i++) {
+                const tree = new THREE.Group();
+                
+                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+                trunk.position.y = 0.5; // Half height
+                trunk.castShadow = true;
+                tree.add(trunk);
+                
+                const leaves = new THREE.Mesh(leavesGeo, leavesMat);
+                leaves.position.y = 1 + 1; // Trunk height + half leaves height
+                leaves.castShadow = true;
+                tree.add(leaves);
+                
+                // Position trees on the "grass" area
+                const x = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 20 + 6); // At least 6 units from center
+                const z = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 20 + 6); // At least 6 units from center
+                
+                // Ensure not on roads
+                if (Math.abs(x) > 3.5 || Math.abs(z) > 3.5) { // Only spawn on grass
+                    tree.position.set(x, 0, z);
+                    scene.add(tree);
+                }
+            }
+        }
+        
+        function createLight(poleGeo, poleMat, x, z) {
+            const lightGroup = new THREE.Group();
+            
+            const pole = new THREE.Mesh(poleGeo, poleMat);
+            pole.position.set(0, 2, 0);
+            pole.castShadow = true;
+            lightGroup.add(pole);
+            
+            // The light bulb
+            const lightGeo = new THREE.SphereGeometry(0.4, 16, 16);
+            // Emissive material so it glows
+            const lightMat = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Default red
+            const light = new THREE.Mesh(lightGeo, lightMat);
+            light.position.set(0, 4.2, 0);
+            
+            // Store reference to the material for easy color change
+            lightGroup.lightMaterial = lightMat; 
+            lightGroup.add(light);
+            
+            lightGroup.position.set(x, 0, z);
+            return lightGroup;
+        }
+
+        function createCars() {
+            const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xeab308, 0xa855f7, 0xec4899];
+            
+            // Geometries for the car parts
+            const bodyGeo = new THREE.BoxGeometry(1.2, 0.6, 2.5);
+            const cabinGeo = new THREE.BoxGeometry(1.0, 0.6, 1.2);
+            const wheelGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.1, 16); // radius, radius, thickness
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a }); // Dark tire color
+            
+            // Materials for headlights and taillights
+            const headLightMat = new THREE.MeshBasicMaterial({ color: 0x333300 }); // Off
+            const tailLightMat = new THREE.MeshBasicMaterial({ color: 0x330000 }); // Off
+            const lightGeo = new THREE.SphereGeometry(0.1, 8, 8);
+            
+            // Material for EV flashing light
+            const flashingLightGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+            const flashingLightMat = new THREE.MeshBasicMaterial({ color: 0xef4444, visible: false });
+
+            for (let i = 0; i < 20; i++) {
+                // Material for the car body
+                const carMat = new THREE.MeshStandardMaterial({ 
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+                
+                // Group to hold all parts of the car
+                const carGroup = new THREE.Group();
+                
+                // Car Body
+                const body = new THREE.Mesh(bodyGeo, carMat);
+                body.position.y = 0.3 + 0.2; // Half of body height (0.3) + wheel radius (0.2)
+                body.castShadow = true;
+                carGroup.add(body);
+                
+                // Car Cabin
+                const cabinMat = new THREE.MeshStandardMaterial({ 
+                    color: 0xeeeeee, // Light gray cabin
+                    transparent: true,
+                    opacity: 0.9
+                });
+                const cabin = new THREE.Mesh(cabinGeo, cabinMat);
+                // Position on top of the body
+                const cabinY = (0.6 + 0.2) + 0.3; // Body top + cabin half-height
+                cabin.position.set(0, cabinY, -0.2); // Slightly forward
+                cabin.castShadow = true;
+                carGroup.add(cabin);
+                
+                // Car Wheels
+                const wheels = [];
+                const wheelPositions = [
+                    { x: -0.6, y: 0.2, z: 0.9 }, // Front-left
+                    { x: 0.6, y: 0.2, z: 0.9 },  // Front-right
+                    { x: -0.6, y: 0.2, z: -0.9 }, // Rear-left
+                    { x: 0.6, y: 0.2, z: -0.9 }  // Rear-right
+                ];
+                
+                wheelPositions.forEach(pos => {
+                    const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                    // Rotate cylinder to be on its side (axle along X-axis)
+                    wheel.rotation.z = Math.PI / 2;
+                    wheel.position.set(pos.x, pos.y, pos.z);
+                    carGroup.add(wheel);
+                    wheels.push(wheel);
+                });
+                
+                // Headlights
+                const hl1 = new THREE.Mesh(lightGeo, headLightMat.clone());
+                hl1.position.set(-0.4, 0.4, 1.25);
+                carGroup.add(hl1);
+                const hl2 = new THREE.Mesh(lightGeo, headLightMat.clone());
+                hl2.position.set(0.4, 0.4, 1.25);
+                carGroup.add(hl2);
+                
+                // Taillights
+                const tl1 = new THREE.Mesh(lightGeo, tailLightMat.clone());
+                tl1.position.set(-0.4, 0.4, -1.25);
+                carGroup.add(tl1);
+                const tl2 = new THREE.Mesh(lightGeo, tailLightMat.clone());
+                tl2.position.set(0.4, 0.4, -1.25);
+                carGroup.add(tl2);
+                
+                // EV Flashing Light
+                const flashingLight = new THREE.Mesh(flashingLightGeo, flashingLightMat.clone());
+                flashingLight.position.set(0, cabinY + 0.4, 0); // On top of cabin
+                carGroup.add(flashingLight);
+
+                // Create the car object to manage state
+                const carObj = {
+                    mesh: carGroup, // Use the group as the main mesh
+                    bodyMesh: body, // Reference to body for color change
+                    direction: 'N', // N, S, E, W
+                    speed: CAR_SPEED,
+                    wheels: wheels, // Store wheels for rotation
+                    headlights: [hl1, hl2],
+                    taillights: [tl1, tl2],
+                    flashingLight: flashingLight,
+                    isEmergency: false,
+                    waitTime: 0, // For stats
+                    originalColor: carMat.color.clone() // Store original color
+                };
+                
+                resetCar(carObj);
+                cars.push(carObj);
+                scene.add(carGroup); // Add the entire group to the scene
+            }
+        }
+        
+        function resetCar(carObj) {
+            // --- Stats Calculation ---
+            if (carObj.waitTime > 0) {
+                if (simulationMode === 'traditional') {
+                    stats.tradWait += carObj.waitTime;
+                    stats.tradCount++;
+                } else {
+                    stats.aiWait += carObj.waitTime;
+                    stats.aiCount++;
+                }
+            }
+            // Increment throughput count *after* passing
+            if (carObj.mesh.position.z > 40 || carObj.mesh.position.z < -40 || carObj.mesh.position.x > 40 || carObj.mesh.position.x < -40) {
+                 if (simulationMode === 'traditional') {
+                    stats.tradCars++;
+                } else {
+                    stats.aiCars++;
+                }
+            }
+            
+            // --- Reset Car State ---
+            carObj.waitTime = 0;
+            if (carObj.isEmergency) {
+                // De-activate emergency vehicle
+                carObj.isEmergency = false;
+                carObj.flashingLight.material.visible = false;
+                carObj.bodyMesh.material.color.copy(carObj.originalColor);
+                emergencyVehicle = null;
+                evStatusEl.classList.add('hidden');
+            }
+
+            const directions = ['N', 'S', 'E', 'W'];
+            carObj.direction = directions[Math.random() * 4 | 0];
+            carObj.speed = CAR_SPEED;
+            
+            // Set car base to be on top of the road, accounting for wheel radius
+            const carBaseY = 0.05 + 0.2; // 0.05 (road) + 0.2 (wheel radius)
+            
+            switch(carObj.direction) {
+                case 'N': // Moving North
+                    carObj.mesh.rotation.y = 0;
+                    carObj.mesh.position.set(-1.5, carBaseY, -30 - Math.random() * 30);
+                    break;
+                case 'S': // Moving South
+                    carObj.mesh.rotation.y = Math.PI;
+                    carObj.mesh.position.set(1.5, carBaseY, 30 + Math.random() * 30);
+                    break;
+                case 'E': // Moving East
+                    carObj.mesh.rotation.y = -Math.PI / 2;
+                    carObj.mesh.position.set(-30 - Math.random() * 30, carBaseY, 1.5);
+                    break;
+                case 'W': // Moving West
+                    carObj.mesh.rotation.y = Math.PI / 2;
+                    carObj.mesh.position.set(30 + Math.random() * 30, carBaseY, -1.5);
+                    break;
+            }
+        }
+        
+        function spawnEmergencyVehicle() {
+            if (emergencyVehicle) return; // Only one at a time
+
+            // Find a car that is off-screen
+            let carToSpawn = cars.find(c => Math.abs(c.mesh.position.z) > 40 || Math.abs(c.mesh.position.x) > 40);
+            if (!carToSpawn) {
+                carToSpawn = cars[0]; // Fallback, just grab the first one
+            }
+            
+            emergencyVehicle = carToSpawn;
+            carToSpawn.isEmergency = true;
+            
+            // Make it an ambulance
+            carToSpawn.originalColor.copy(carToSpawn.bodyMesh.material.color);
+            carToSpawn.bodyMesh.material.color.setHex(0xffffff); // White body
+            carToSpawn.flashingLight.material.visible = true;
+            
+            evStatusEl.classList.remove('hidden');
+            
+            // Reset its position to ensure it approaches
+            resetCar(carToSpawn);
+            carToSpawn.isEmergency = true; // resetCar clears it, so set it again
+            carToSpawn.flashingLight.material.visible = true;
+            carToSpawn.bodyMesh.material.color.setHex(0xffffff);
+            emergencyVehicle = carToSpawn; // Re-assign
+        }
+        
+        function resetTimer() {
+            stateTimer = 0;
+            // Go to a red-red state briefly
+            lightState = 'EW_YELLOW'; 
+            stateDurations.EW_YELLOW = 1; // Short "all red"
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            stateTimer += delta;
+
+            updateTrafficLogic();
+            updateCars(delta);
+            updateStatsUI(); // Update stats display
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        function updateTrafficLogic() {
+            // --- Emergency Vehicle Override (AI Mode Only) ---
+            if (simulationMode === 'ai' && emergencyVehicle) {
+                const car = emergencyVehicle.mesh;
+                let distToStopLine = 1000;
+                
+                switch(emergencyVehicle.direction) {
+                    case 'N': distToStopLine = -car.position.z - 3.5; break;
+                    case 'S': distToStopLine = car.position.z - 3.5; break;
+                    case 'E': distToStopLine = -car.position.x - 3.5; break;
+                    case 'W': distToStopLine = car.position.x - 3.5; break;
+                }
+                
+                // If EV is approaching
+                if (distToStopLine > 0 && distToStopLine < 30) {
+                    if (emergencyVehicle.direction === 'N' || emergencyVehicle.direction === 'S') {
+                        if (lightState !== 'NS_GREEN') {
+                            lightState = 'NS_GREEN'; // Force green for EV
+                            stateTimer = 0;
+                        }
+                    } else { // E or W
+                         if (lightState !== 'EW_GREEN') {
+                            lightState = 'EW_GREEN'; // Force green for EV
+                            stateTimer = 0;
+                        }
+                    }
+                    updateLightVisuals(); // Immediately update visuals
+                    return; // Skip normal logic
+                }
+            }
+        
+            // --- AI Mode Logic (Normal) ---
+            if (simulationMode === 'ai') {
+                const { ns, ew } = countWaitingCars();
+                
+                // Check if green light time is over minimum and if other direction has more demand
+                if (lightState === 'NS_GREEN' && stateTimer > 5) { // Min green time
+                    if (ew > 0 && ew > ns) {
+                        lightState = 'NS_YELLOW';
+                        stateTimer = 0;
+                    }
+                } else if (lightState === 'EW_GREEN' && stateTimer > 5) { // Min green time
+                    if (ns > 0 && ns > ew) {
+                        lightState = 'EW_YELLOW';
+                        stateTimer = 0;
+                    }
+                } else if (lightState === 'NS_YELLOW' && stateTimer > stateDurations.NS_YELLOW) {
+                    lightState = 'EW_GREEN';
+                    stateTimer = 0;
+                } else if (lightState === 'EW_YELLOW' && stateTimer > stateDurations.EW_YELLOW) {
+                    lightState = 'NS_GREEN';
+                    stateTimer = 0;
+                }
+            
+            // --- Traditional Mode Logic ---
+            } else {
+                if (lightState === 'NS_GREEN' && stateTimer > stateDurations.NS_GREEN) {
+                    lightState = 'NS_YELLOW';
+                    stateTimer = 0;
+                } else if (lightState === 'NS_YELLOW' && stateTimer > stateDurations.NS_YELLOW) {
+                    lightState = 'EW_GREEN';
+                    stateTimer = 0;
+                } else if (lightState === 'EW_GREEN' && stateTimer > stateDurations.EW_GREEN) {
+                    lightState = 'EW_YELLOW';
+                    stateTimer = 0;
+                } else if (lightState === 'EW_YELLOW' && stateTimer > stateDurations.EW_YELLOW) {
+                    lightState = 'NS_GREEN';
+                    stateTimer = 0;
+                }
+            }
+            
+            updateLightVisuals();
+        }
+        
+        function updateLightVisuals() {
+            const red = 0xff0000;
+            const yellow = 0xffff00;
+            const green = 0x00ff00;
+            
+            let nsColor, ewColor;
+            
+            switch(lightState) {
+                case 'NS_GREEN': nsColor = green; ewColor = red; break;
+                case 'NS_YELLOW': nsColor = yellow; ewColor = red; break;
+                case 'EW_GREEN': nsColor = red; ewColor = green; break;
+                case 'EW_YELLOW': nsColor = red; ewColor = yellow; break;
+            }
+            
+            trafficLights.ns1.lightMaterial.color.setHex(nsColor);
+            trafficLights.ns2.lightMaterial.color.setHex(nsColor);
+            trafficLights.ew1.lightMaterial.color.setHex(ewColor);
+            trafficLights.ew2.lightMaterial.color.setHex(ewColor);
+        }
+        
+        function updateCars(delta) {
+            let waitingNS = 0;
+            let waitingEW = 0;
+
+            cars.forEach(carObj => {
+                const car = carObj.mesh;
+                let isRed = false;
+                let distToStopLine = 1000;
+                
+                // EV Logic: In AI mode, EV ignores lights. In Trad mode, it stops.
+                if (carObj.isEmergency && simulationMode === 'ai') {
+                    isRed = false;
+                } else {
+                    // Normal red light check
+                    switch(carObj.direction) {
+                        case 'N':
+                        case 'S':
+                            isRed = (lightState === 'EW_GREEN' || lightState === 'EW_YELLOW' || lightState === 'NS_YELLOW');
+                            break;
+                        case 'E':
+                        case 'W':
+                            isRed = (lightState === 'NS_GREEN' || lightState === 'NS_YELLOW' || lightState === 'EW_YELLOW');
+                            break;
+                    }
+                }
+                
+                // Car Movement & Stopping Logic
+                switch(carObj.direction) {
+                    case 'N':
+                        distToStopLine = -car.position.z - 3.5; // Stop line at z = -3.5
+                        if (isRed && distToStopLine > 0 && distToStopLine < STOP_DISTANCE) {
+                            carObj.speed = 0;
+                            carObj.waitTime += delta;
+                            waitingNS++;
+                        } else {
+                            carObj.speed = CAR_SPEED;
+                            car.position.z += carObj.speed * delta;
+                        }
+                        if(car.position.z > 50) resetCar(carObj);
+                        break;
+                    case 'S':
+                        distToStopLine = car.position.z - 3.5; // Stop line at z = 3.5
+                        if (isRed && distToStopLine > 0 && distToStopLine < STOP_DISTANCE) {
+                            carObj.speed = 0;
+                            carObj.waitTime += delta;
+                            waitingNS++;
+                        } else {
+                            carObj.speed = CAR_SPEED;
+                            car.position.z -= carObj.speed * delta;
+                        }
+                        if(car.position.z < -50) resetCar(carObj);
+                        break;
+                    case 'E':
+                        distToStopLine = -car.position.x - 3.5; // Stop line at x = -3.5
+                         if (isRed && distToStopLine > 0 && distToStopLine < STOP_DISTANCE) {
+                            carObj.speed = 0;
+                            carObj.waitTime += delta;
+                            waitingEW++;
+                        } else {
+                            carObj.speed = CAR_SPEED;
+                            car.position.x += carObj.speed * delta;
+                        }
+                        if(car.position.x > 50) resetCar(carObj);
+                        break;
+                    case 'W':
+                        distToStopLine = car.position.x - 3.5; // Stop line at x = 3.5
+                        if (isRed && distToStopLine > 0 && distToStopLine < STOP_DISTANCE) {
+                            carObj.speed = 0;
+                            carObj.waitTime += delta;
+                            waitingEW++;
+                        } else {
+                            carObj.speed = CAR_SPEED;
+                            car.position.x -= carObj.speed * delta;
+                        }
+                        if(car.position.x < -50) resetCar(carObj);
+                        break;
+                }
+            });
+
+            // Update UI
+            waitNsEl.textContent = `${waitingNS} cars`;
+            waitEwEl.textContent = `${waitingEW} cars`;
+
+            // Spin wheels if car is moving
+            cars.forEach(carObj => {
+                if (carObj.speed > 0) {
+                    const wheelRotation = carObj.speed * delta * -5; // -5 to spin "forward"
+                    carObj.wheels.forEach(wheel => {
+                        wheel.rotation.y += wheelRotation;
+                    });
+                }
+                
+                // Update brake lights (only at night)
+                if (!isDay) {
+                    const brakeColor = (carObj.speed === 0) ? 0xff4444 : 0xff0000; // Brighter red when stopped
+                    carObj.taillights.forEach(tl => tl.material.color.setHex(brakeColor));
+                }
+                
+                // Update EV flashing light
+                if (carObj.isEmergency) {
+                    // Flash color every 0.25 seconds
+                    const flash = Math.floor(clock.elapsedTime * 4) % 2 === 0;
+                    carObj.flashingLight.material.color.setHex(flash ? 0xef4444 : 0x3b82f6); // Red/Blue
+                }
+            });
+        }
+        
+        // Helper to be used by AI logic
+        function countWaitingCars() {
+            let ns = 0;
+            let ew = 0;
+            cars.forEach(carObj => {
+                if (carObj.speed === 0) {
+                    if (carObj.direction === 'N' || carObj.direction === 'S') ns++;
+                    if (carObj.direction === 'E' || carObj.direction === 'W') ew++;
+                }
+            });
+            return { ns, ew };
+        }
+        
+        // --- New Stats UI Update Function ---
+        function updateStatsUI() {
+            const avgWaitTrad = stats.tradCount > 0 ? (stats.tradWait / stats.tradCount).toFixed(1) + 's' : '0.0s';
+            const avgWaitAI = stats.aiCount > 0 ? (stats.aiWait / stats.aiCount).toFixed(1) + 's' : '0.0s';
+            
+            statsWaitTradEl.textContent = avgWaitTrad;
+            statsCarsTradEl.textContent = stats.tradCars;
+            statsWaitAiEl.textContent = avgWaitAI;
+            statsCarsAiEl.textContent = stats.aiCars;
+        }
+
+        // --- New Day/Night Toggle Function ---
+        function toggleDayNight() {
+            isDay = !isDay;
+            
+            const dayButton = document.getElementById('btn-day-night');
+
+            if (isDay) {
+                // --- Switch to Day ---
+                scene.background.setHex(0x87CEEB);
+                scene.fog.color.setHex(0x87CEEB);
+                ambientLight.intensity = 2.0;
+                directionalLight.intensity = 3.0;
+                dayButton.textContent = "Switch to Night";
+                dayButton.classList.remove('bg-gray-700', 'text-white');
+                dayButton.classList.add('bg-yellow-500', 'text-gray-900');
+                
+                // Turn off streetlights
+                streetLights.forEach(sl => {
+                    sl.lightBulb.material.color.setHex(0x555555); // Off color
+                });
+                
+                // Turn off car lights
+                cars.forEach(carObj => {
+                    carObj.headlights.forEach(hl => hl.material.color.setHex(0x333300)); // Off
+                    carObj.taillights.forEach(tl => tl.material.color.setHex(0x330000)); // Off
+                });
+
+            } else {
+                // --- Switch to Night ---
+                scene.background.setHex(0x111827);
+                scene.fog.color.setHex(0x111827);
+                ambientLight.intensity = 0.5;
+                directionalLight.intensity = 1.0; // Dim sunlight (moonlight)
+                dayButton.textContent = "Switch to Day";
+                dayButton.classList.add('bg-gray-700', 'text-white');
+                dayButton.classList.remove('bg-yellow-500', 'text-gray-900');
+                
+                // Turn on streetlights
+                streetLights.forEach(sl => {
+                    sl.lightBulb.material.color.setHex(0xffffdd); // On color
+                });
+                
+                // Turn on car lights
+                cars.forEach(carObj => {
+                    carObj.headlights.forEach(hl => hl.material.color.setHex(0xffffaa)); // On
+                    carObj.taillights.forEach(tl => tl.material.color.setHex(0xff0000)); // On
+                });
+            }
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('simulation-container');
+            if (container) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        }
+
+        // --- Start Everything ---
+        // We must wait for the external scripts (THREE, OrbitControls) to load
+        window.onload = init;
+        
+    </script>
+
+</body>
+</html>
